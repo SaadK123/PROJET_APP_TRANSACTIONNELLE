@@ -34,6 +34,10 @@ Spring Boot est un sous-framework de Spring qui ajoute plein de fonctionnalités
 - (Java) Spring Boot + MongoDB Driver / Spring Data MongoDB (pour la partie NoSQL) (API / logique)
 
 
-## UTILISATION IA ##
+### Front-end stack ###
 
-Vu que c
+- Nous allons utiliser **React** pour développer le front-end. Ce sera notre “moteur” principal.
+- Comme framework de liaison/routing, nous allons utiliser **Next.js**.
+- Pour le design, nous allons utiliser **shadcn/ui** et/ou **Tailwind CSS** *(à confirmer)*.
+- La mise en place peut être assez complexe.
+
