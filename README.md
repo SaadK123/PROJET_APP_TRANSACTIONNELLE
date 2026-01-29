@@ -9,7 +9,7 @@
 - Alexis  
 
 ## Description du projet
-**LinkUp** est une application **full stack** qui s’appuie sur une base de données **MongoDB** , une **API Spring Boot (Java)** , **Next.js**  , **React** et pleins d'autres fonctionalitées afin d’offrir une expérience complète sur le web.
+**LinkUp** est une application **full stack** qui s’appuie sur une base de données **MongoDB ET PostgresSQL** , une **API Spring Boot (Java)** , **Next.js**  , **React** et pleins d'autres fonctionalitées afin d’offrir une expérience complète sur le web.
 
 Depuis notre arrivée au cégep, nous avons remarqué que l’un des plus grands défis pour les étudiants est de **trouver un temps commun** afin de se rencontrer et de **communiquer efficacement**. Au cégep, contrairement au secondaire où les horaires sont souvent similaires, chaque étudiant possède un emploi du temps différent. Il faut donc s’adapter à une réalité où l’organisation devient essentielle.
 
