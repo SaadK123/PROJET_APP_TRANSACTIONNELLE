@@ -41,3 +41,21 @@ Spring Boot est un sous-framework de Spring qui ajoute plein de fonctionnalités
 - Pour le design, nous allons utiliser **shadcn/ui** et/ou **Tailwind CSS** *(à confirmer)*.
 - La mise en place peut être assez complexe.
 
+
+
+
+
+
+
+
+
+
+
+
+
+## Liens Utiles des frameworks : ##
+
+[Spring Initializr](https://start.spring.io/)
+[figma design] (https://www.figma.com/board/ZNcBkLRwdPjHNpP4II4f20/Untitled?node-id=0-1&p=f&t=7vmst3t1WXfSEGc6-0)
+
+
