@@ -60,5 +60,5 @@ Spring Boot est un sous-framework de Spring qui ajoute plein de fonctionnalités
 [figma design] design
 
 [Next site](https://nextjs.org/)
-
+[zod site validation](https://zod.dev/)
 
