@@ -6,7 +6,8 @@
 ## Équipe
 - Saad Kayrouz  
 - Charbel  
-- Alexis  
+- Alexis
+- Marat
 
 ## Description du projet
 **LinkUp** est une application **full stack** qui s’appuie sur une base de données **MongoDB ET PostgresSQL** , une **API Spring Boot (Java)** , **Next.js**  , **React** et pleins d'autres fonctionalitées afin d’offrir une expérience complète sur le web.
