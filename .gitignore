@@ -1,0 +1,13 @@
+# Compilation (le dossier qui contient tes .class)
+/target/
+
+# Configuration de l'IDE (IntelliJ)
+.idea/
+*.iml
+
+# Fichiers système
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
