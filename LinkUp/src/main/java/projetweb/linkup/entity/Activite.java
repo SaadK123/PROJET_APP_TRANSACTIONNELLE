@@ -6,8 +6,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import projetweb.linkup.DTO_RECORDS.Dto;
+import lombok.extern.apachecommons.CommonsLog;
+import org.springframework.cglib.core.Local;
 import projetweb.linkup.Interfaces.JsonEntity;
+
+import java.time.LocalTime;
+import java.util.HashMap;
 
 @Getter
 @Entity
@@ -16,7 +20,6 @@ import projetweb.linkup.Interfaces.JsonEntity;
 @NoArgsConstructor
 @Table(name="Activite")
 public class Activite implements JsonEntity {
-
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
@@ -24,15 +27,20 @@ public class Activite implements JsonEntity {
     @Column(nullable = false)
     private String description = "";
 
+
     @Column(nullable = false)
-    private Integer dateDeFin;
+    private LocalTime DateDeDebut;
+    @Column(nullable = false)
+    private LocalTime dateDeFin;
 
     @Column(nullable = false)
     private String titre;
 
 
-    @Override
-    public Dto toDto() {
 
-    }
+   private HashMap<String,String>
+   @Override
+    public HashMap<String,String> toDto() {
+
+   }
 }

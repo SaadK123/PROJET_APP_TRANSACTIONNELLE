@@ -1,10 +1,10 @@
 package projetweb.linkup.Interfaces;
 
-import projetweb.linkup.DTO_RECORDS.Dto;
+import java.util.HashMap;
 
 /**
  * json entity implements the method toDto to give it back as a dto
  */
 public interface JsonEntity {
-   Dto toDto();
+   HashMap<String,String> toDto();
 }

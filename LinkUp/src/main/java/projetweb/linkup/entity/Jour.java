@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.TreeMap;
 
 @Entity
@@ -20,9 +22,13 @@ public class Jour {
     @GeneratedValue(strategy = GenerationType.UUID)
     private  Long id;
 
-    @MapKeyColumn(name = "periodes_du_jour",nullable = false)
-    @OneToMany(cascade = CascadeType.ALL)
-    @MapKey(name = "temps_debut")
-    private TreeMap<Integer,Activite> periodes = new TreeMap<>();
+
+    @OneToMany(
+            mappedBy = "jour",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    @OrderBy(" ASC")
+   private List<Activite> activitesDuJour = new ArrayList<>();
 
 }

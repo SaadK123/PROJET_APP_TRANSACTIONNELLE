@@ -6,10 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import projetweb.linkup.Interfaces.JsonEntity;
-import projetweb.linkup.Interfaces.ParserJson;
-
-import java.util.Set;
 
 @Entity()
 @Getter
@@ -18,11 +14,6 @@ import java.util.Set;
 @NoArgsConstructor
 @Table(name="Etudiants")
 public class Etudiant  {
-
-
-
-
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

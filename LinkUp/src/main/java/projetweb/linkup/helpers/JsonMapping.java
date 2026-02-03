@@ -1,19 +1,13 @@
 package projetweb.linkup.helpers;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import projetweb.linkup.Enumerations.EntityType;
+
+import java.util.HashMap;
 
 public  abstract class JsonMapping {
 
-    private JsonMapping() {}
+    public String toJson(EntityType type, HashMap<String,String> map) {
 
-    public    static String EntryToJson(String attributename,String attributevalue) {
-        return "\"" + attributename + "\" : " + attributevalue;
     }
-
-
-
-
 
 }
