@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import projetweb.linkup.DTO_RECORDS.Dto;
+import projetweb.linkup.Interfaces.JsonEntity;
 
 @Getter
 @Entity
@@ -13,7 +15,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name="Activite")
-public class Activite {
+public class Activite implements JsonEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -29,4 +31,8 @@ public class Activite {
     private String titre;
 
 
+    @Override
+    public Dto toDto() {
+
+    }
 }

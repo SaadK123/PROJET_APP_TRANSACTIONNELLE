@@ -6,9 +6,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import projetweb.linkup.Interfaces.JsonEntity;
 import projetweb.linkup.Interfaces.ParserJson;
 
-import java.util.*;
+import java.util.Set;
 
 @Entity()
 @Getter
@@ -16,20 +17,11 @@ import java.util.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name="Etudiants")
-public class Etudiant  implements ParserJson {
+public class Etudiant  {
 
-    private final  static Set<String> contenu = new HashSet<>(){{
-        add("id");
-        add("email");
-        add("username");
-        add("lastname");
-        add("firstname");
-        add("password");
-    }};
 
-    public static Set<String> getContenu() {
-        return Collections.unmodifiableSet(contenu);
-    }
+
+
 
 
     @Id
@@ -54,12 +46,5 @@ public class Etudiant  implements ParserJson {
 
     @OneToOne
     private Horaire horaire;
-
-
-    @Override
-    public String toJson() {
-    return null; // todo
-    }
-
 }
 

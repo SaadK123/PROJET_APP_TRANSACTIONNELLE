@@ -23,11 +23,5 @@ public class TestController {
         }
 
 
-        public class MapParser {
-
-                private HashMap<String,Class<?>> childrens;
-
-
-        }
 
 }
