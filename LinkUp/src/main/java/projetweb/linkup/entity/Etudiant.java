@@ -39,7 +39,7 @@ public class Etudiant  {
     @OneToOne
     private Horaire horaire;
 
-    @OneToMany(mappedBy = "", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Notification> notifications;
 }
 

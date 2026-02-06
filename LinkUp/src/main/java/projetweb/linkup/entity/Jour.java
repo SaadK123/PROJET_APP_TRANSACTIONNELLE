@@ -25,12 +25,5 @@ public class Jour {
     @OneToMany(mappedBy = "jour", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Activite> activitesDuJour = new ArrayList<>();
 
-    public void addActivite(Activite a) {
-        activitesDuJour.add(a);
-        a.setJour(this);
-    }
 
-    public void removeActivite(Activite a) {
-        activitesDuJour.remove(a);
-    }
 }

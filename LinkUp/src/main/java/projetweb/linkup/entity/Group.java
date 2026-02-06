@@ -21,12 +21,16 @@ public class Group {
     private String id;
 
     @MapKey(name = "id")
-    @OneToMany
+    @ManyToMany
     // id etudiant ; etudiant
     private Map<String,Etudiant> etudiants;
 
 
+    public void removeEtudiant(String key) {
+        etudiants.remove(key);
+    }
+
     @OneToOne(cascade = CascadeType.ALL)
-    private Horaire horaireCommun = new Horaire();
+    private Horaire horaireCommun;
 
 }

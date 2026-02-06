@@ -8,6 +8,7 @@ import projetweb.linkup.Interfaces.JsonEntity;
 import projetweb.linkup.entity.Etudiant;
 
 import javax.swing.text.html.parser.Entity;
+import java.util.HashMap;
 import java.util.Optional;
 
 
@@ -15,7 +16,7 @@ import java.util.Optional;
 @Repository
 public interface Action<T>{
 
-    Optional<T> Execute(String... obj);
+    Optional<T> Execute(HashMap<String,String> data);
 
 
 }

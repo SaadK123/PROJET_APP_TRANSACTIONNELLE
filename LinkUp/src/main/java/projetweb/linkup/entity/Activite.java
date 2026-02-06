@@ -33,8 +33,6 @@ public class Activite {
     @Column(nullable = false)
     private String titre;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "jour_id", nullable = false)
-    @com.fasterxml.jackson.annotation.JsonIgnore // évite loop JSON
-    private Jour jour;
+
+    // todo ajouter un timestamp
 }
