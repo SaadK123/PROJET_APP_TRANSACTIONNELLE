@@ -18,7 +18,7 @@ import java.util.*;
 public class Horaire {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private long String;
+    private String id;
 
     @MapKeyColumn(name = "jours",nullable = false)
 

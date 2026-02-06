@@ -25,18 +25,6 @@ public class ServiceEtudiant {
 
 
     public final HashMap<String, Action> GETS = new HashMap<>() {{
-
-     put("GetById", new Action<ServiceEtudiant>() {
-         @Override
-         public Optional<ServiceEtudiant> Execute(String... obj) {
-
-             Query jpqlQuery = entityManager.createQuery("SELECT u FROM Group u WHERE u.id=:id");
-             jpqlQuery.setParameter("id", id);
-             return (UserEntity) jpqlQuery.getSingleResult();
-         }
-
-
-     });
     }} ;// TODO
 
 

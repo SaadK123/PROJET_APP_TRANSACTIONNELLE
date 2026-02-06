@@ -8,6 +8,8 @@ public  abstract class JsonMapping {
 
     public String toJson(EntityType type, HashMap<String,String> map) {
 
+        return "";
+
     }
 
 }

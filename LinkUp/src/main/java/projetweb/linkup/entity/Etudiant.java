@@ -2,6 +2,7 @@ package projetweb.linkup.entity;
 
 
 import jakarta.persistence.*;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -37,5 +38,8 @@ public class Etudiant  {
 
     @OneToOne
     private Horaire horaire;
+
+    @OneToMany(mappedBy = "", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Notification> notifications;
 }
 

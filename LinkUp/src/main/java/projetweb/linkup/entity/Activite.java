@@ -1,23 +1,22 @@
 package projetweb.linkup.entity;
 
-
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import projetweb.linkup.Interfaces.JsonEntity;
+import projetweb.linkup.entity.Jour;
 
 import java.time.LocalTime;
-import java.util.HashMap;
 
-@Getter
 @Entity
+@Table(name = "activite")
+@Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
-@Table(name="Activite")
-public class Activite implements JsonEntity {
+@AllArgsConstructor
+public class Activite {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
@@ -25,19 +24,17 @@ public class Activite implements JsonEntity {
     @Column(nullable = false)
     private String description = "";
 
-
     @Column(nullable = false)
-    private LocalTime DateDeDebut;
+    private LocalTime dateDeDebut;
+
     @Column(nullable = false)
     private LocalTime dateDeFin;
 
     @Column(nullable = false)
     private String titre;
 
-
-
-   private HashMap<String,String> dto() {
-
-   }
-
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "jour_id", nullable = false)
+    @com.fasterxml.jackson.annotation.JsonIgnore // évite loop JSON
+    private Jour jour;
 }

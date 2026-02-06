@@ -17,7 +17,7 @@ public enum EntityType {
      * une activite comporte un temps et une description
      */
 
-    EntityType(String type, HashSet<String> attributes) {
+    EntityType(String type) {
 
         
     }
