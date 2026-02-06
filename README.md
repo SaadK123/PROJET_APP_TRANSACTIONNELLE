@@ -62,6 +62,7 @@ Spring Boot est un sous-framework de Spring qui ajoute plein de fonctionnalités
 [Next site](https://nextjs.org/)
 
 [zod site validation](https://zod.dev/)
+[Auth0 site ](https://auth0.com/)
 
 ## Liens Vers l'excel de temps : ##
 https://bdebqcca-my.sharepoint.com/:x:/g/personal/6221960_bdeb_qc_ca/IQDga5DoxkX6ToXMT_D-j3yPAaTbivsrVGcdyGXWfruNJFA?e=R4yFfF
