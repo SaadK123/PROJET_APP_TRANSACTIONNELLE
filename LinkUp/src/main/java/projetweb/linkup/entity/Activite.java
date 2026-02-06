@@ -6,8 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.extern.apachecommons.CommonsLog;
-import org.springframework.cglib.core.Local;
 import projetweb.linkup.Interfaces.JsonEntity;
 
 import java.time.LocalTime;
@@ -38,9 +36,8 @@ public class Activite implements JsonEntity {
 
 
 
-   private HashMap<String,String>
-   @Override
-    public HashMap<String,String> toDto() {
+   private HashMap<String,String> dto() {
 
    }
+
 }

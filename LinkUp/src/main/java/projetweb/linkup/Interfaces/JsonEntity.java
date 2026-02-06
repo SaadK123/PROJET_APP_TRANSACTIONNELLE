@@ -5,6 +5,6 @@ import java.util.HashMap;
 /**
  * json entity implements the method toDto to give it back as a dto
  */
-public interface JsonEntity {
+public interface JsonEntity  {
    HashMap<String,String> toDto();
 }
