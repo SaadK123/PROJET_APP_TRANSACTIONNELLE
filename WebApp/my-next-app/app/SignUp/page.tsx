@@ -22,7 +22,7 @@ export default function () {
                   <input className="col-12" type="text" />
                 </div>
               </div>
-              {/* Prénonm */}
+              {/* Prénom */}
               <div className="col-5">
                 <label className="row ms-5">Prénom</label>
                 <div className="row ms-5">
