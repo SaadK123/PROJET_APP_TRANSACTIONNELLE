@@ -50,11 +50,11 @@ public class ServiceEtudiant {
 
                 try {
                     Etudiant e = (Etudiant) EntityManagement.entity.entityManager.createQuery("select e from Etudiant  e where email = :email");
-                    
+                    return Optional.of(e);
                 } catch (Exception e) {
                     return Optional.empty();
                 }
             }
-        })
+        });
     }};
 }
