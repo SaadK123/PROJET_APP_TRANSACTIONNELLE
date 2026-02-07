@@ -1,12 +1,17 @@
 package projetweb.linkup.Services;
 
 
+import DTO.ACTIONS.AuthentificationDTO;
 import DTO.ACTIONS.CreateStudentDTO;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.TransactionScoped;
+import jakarta.transaction.Transactional;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import projetweb.linkup.entity.Etudiant;
+import projetweb.linkup.entity.SecurityConfig;
 
 import javax.swing.text.html.Option;
 import java.util.List;
@@ -15,6 +20,7 @@ import java.util.Optional;
 @Service
 public class ServiceEtudiant {
 
+    private final PasswordEncoder passwordEncoder;
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -58,14 +64,19 @@ public class ServiceEtudiant {
 
 
 
+    public  ServiceEtudiant( PasswordEncoder passwordEncoder) {
 
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    @Transactional
     public Optional<Etudiant> createEtudiant(CreateStudentDTO dto) {
         if(dto == null) return Optional.empty();
        Etudiant e = new Etudiant();
 
        e.setEmail(dto.email());
        e.setFirstname(dto.firstname());
-       e.setPasswordhash(dto.password());
+       e.setPasswordhash(passwordEncoder.encode(dto.password()));
        e.setLastname(dto.lastname());
        e.setUsername(dto.username());
 
@@ -73,6 +84,8 @@ public class ServiceEtudiant {
 
        return Optional.of(e);
     }
+
+
 
 
 

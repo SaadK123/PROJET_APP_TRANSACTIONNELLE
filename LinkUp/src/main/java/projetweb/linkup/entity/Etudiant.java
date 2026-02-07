@@ -46,5 +46,6 @@ public class Etudiant  {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Notification> notifications;
+
 }
 
