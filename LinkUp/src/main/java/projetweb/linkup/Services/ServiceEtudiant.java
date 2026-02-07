@@ -65,7 +65,7 @@ public class ServiceEtudiant {
 
        e.setEmail(dto.email());
        e.setFirstname(dto.firstname());
-       e.setPasswordhash(dto.passwordhash());
+       e.setPasswordhash(dto.password());
        e.setLastname(dto.lastname());
        e.setUsername(dto.username());
 
