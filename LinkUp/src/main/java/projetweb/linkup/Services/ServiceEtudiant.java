@@ -1,60 +1,63 @@
 package projetweb.linkup.Services;
 
 
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
-import jakarta.persistence.TypedQuery;
+import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Service;
-import projetweb.linkup.DB_SERVICES.Action;
 import projetweb.linkup.entity.Etudiant;
 
-import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 
 @Service
 public class ServiceEtudiant {
 
+    @PersistenceContext
+    private EntityManager entityManager;
 
 
+    public Optional<Etudiant> getEtudiantById(String id) {
+        if(id == null || id.isBlank() || id.length() != 36) return Optional.empty();
+        try {
+            Etudiant e = (Etudiant) entityManager.createQuery("select e from Etudiant  e where id = :id")
+                    .setParameter("id",id).getSingleResult();
+            return Optional.of(e);
+        }catch(NoResultException ex) {
+            return Optional.empty(); // todo error enum
+        }
+    }
+
+    public Optional<Etudiant> getEtudiantByUsername(String username) {
+        if(username == null || username.isBlank()) return Optional.empty();
+
+        try {
+            Etudiant e = (Etudiant) entityManager.createQuery("select e from Etudiant e where username = :username")
+                    .setParameter("username",username).getSingleResult();
+            return Optional.of(e);
+        } catch (NoResultException e) {
+            return Optional.empty(); // todo error enum
+        }
+
+    }
+
+    public Optional<List<Etudiant>> getEtudiantsByFirstName(String firstname) {
+        if(firstname == null || firstname.isBlank()) return Optional.empty();
+        firstname = firstname.toLowerCase();
+        List<Etudiant> etudiants =  entityManager.createQuery("select e from Etudiant e where lower(e.firstName) like concat(:firstname, '%')",Etudiant.class)
+                .setParameter("firstname",firstname).getResultList();
+
+        return etudiants.isEmpty() ? Optional.empty() : Optional.of(etudiants);
+    }
 
 
+    
+    public Optional<List<Etudiant>> getEtudiantsByLastName(String lastname) {
+        if(lastname == null || lastname.isBlank()) return Optional.empty();
+        lastname = lastname.toLowerCase();
+        List<Etudiant> etudiants = entityManager.createQuery("select  e from Etudiant e where lower(e.lastname) like concat(:lastname,'%')",Etudiant.class)
+                .setParameter("lastname",lastname).getResultList();
 
-
-    public final HashMap<String,Action<Etudiant>> GETS = new HashMap<>() {{
-        put("getById", new Action<Etudiant>() {
-            @Override
-            public Optional<Etudiant> Execute(HashMap<String,String> data) {
-              String id = data.get("id");
-              if(id == null) return Optional.empty();
-
-              try {
-                    Etudiant e = EntityManagement.entity.entityManager.createQuery(
-                                    "select e from Etudiant e where e.id = :id",
-                                    Etudiant.class
-                            ).setParameter("id", id)
-                            .getSingleResult();
-
-                    return Optional.of(e);
-                } catch (NoResultException ex) {
-                    return Optional.empty();
-                }
-
-            };
-
-
-        });
-        put("GetByEmail", new Action<Etudiant>() {
-            @Override
-            public Optional<Etudiant> Execute(HashMap<String, String> data) {
-                String email = data.get("email");
-                if(email == null) return Optional.empty();
-
-                try {
-                    Etudiant e = (Etudiant) EntityManagement.entity.entityManager.createQuery("select e from Etudiant  e where email = :email");
-                    return Optional.of(e);
-                } catch (Exception e) {
-                    return Optional.empty();
-                }
-            }
-        });
-    }};
+        return etudiants.isEmpty() ? Optional.empty() : Optional.of(etudiants);
+    }
 }
