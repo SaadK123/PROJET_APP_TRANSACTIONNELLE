@@ -1,12 +1,14 @@
 package projetweb.linkup.Services;
 
 
+import DTO.ACTIONS.CreateStudentDTO;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Service;
 import projetweb.linkup.entity.Etudiant;
 
+import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
@@ -55,13 +57,23 @@ public class ServiceEtudiant {
     }
 
 
-    
-    public Optional<List<Etudiant>> getEtudiantsByLastName(String lastname) {
-        if(lastname == null || lastname.isBlank()) return Optional.empty();
-        lastname = lastname.toLowerCase();
-        List<Etudiant> etudiants = entityManager.createQuery("select  e from Etudiant e where lower(e.lastname) like concat(:lastname,'%')",Etudiant.class)
-                .setParameter("lastname",lastname).getResultList();
 
-        return etudiants.isEmpty() ? Optional.empty() : Optional.of(etudiants);
+
+    public Optional<Etudiant> createEtudiant(CreateStudentDTO dto) {
+        if(dto == null) return Optional.empty();
+       Etudiant e = new Etudiant();
+
+       e.setEmail(dto.email());
+       e.setFirstname(dto.firstname());
+       e.setPasswordhash(dto.passwordhash());
+       e.setLastname(dto.lastname());
+       e.setUsername(dto.username());
+
+       entityManager.persist(e);
+
+       return Optional.of(e);
     }
+
+
+
 }

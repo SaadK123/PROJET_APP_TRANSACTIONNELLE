@@ -2,6 +2,8 @@ package projetweb.linkup.entity;
 
 
 import jakarta.persistence.*;
+
+import java.time.LocalDate;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,6 +22,9 @@ public class Etudiant  {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
+
+    @Column(name = "lastdateconnected")
+    private LocalDate lastdate;
     @Column(name = "email", nullable = false,unique = true)
     private String email;
 
@@ -31,10 +36,10 @@ public class Etudiant  {
     private String lastname;
 
     @Column(name = "firstname",nullable = false)
-    private String firstName;
+    private String firstname;
 
     @Column(name="password",nullable = false)
-    private String password;
+    private String passwordhash;
 
     @OneToOne
     private Horaire horaire;
