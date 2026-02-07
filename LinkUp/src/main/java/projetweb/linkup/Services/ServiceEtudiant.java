@@ -41,11 +41,15 @@ public class ServiceEtudiant {
 
     }
 
-    public Optional<List<Etudiant>> getEtudiantsByFirstName(String firstname) {
-        if(firstname == null || firstname.isBlank()) return Optional.empty();
-        firstname = firstname.toLowerCase();
-        List<Etudiant> etudiants =  entityManager.createQuery("select e from Etudiant e where lower(e.firstName) like concat(:firstname, '%')",Etudiant.class)
-                .setParameter("firstname",firstname).getResultList();
+    public Optional<List<Etudiant>> getEtudiantsByFirstName(String name,boolean isfirstname) {
+        if(name == null || name.isBlank()) return Optional.empty();
+        name = name.toLowerCase();
+        List<Etudiant> etudiants =  isfirstname ?
+                entityManager.createQuery("select e from Etudiant e where lower(e.firstname) = :firstname ",Etudiant.class)
+                        .setParameter("firstname",name).getResultList():
+                entityManager.createQuery("select e from Etudiant e where lower(e.lastname) = :lastname",Etudiant.class)
+                        .setParameter("lastname",name).getResultList();
+
 
         return etudiants.isEmpty() ? Optional.empty() : Optional.of(etudiants);
     }
