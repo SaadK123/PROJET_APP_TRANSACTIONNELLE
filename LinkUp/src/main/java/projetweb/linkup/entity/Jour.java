@@ -9,6 +9,7 @@ import projetweb.linkup.entity.Activite;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "jour")
@@ -20,7 +21,7 @@ public class Jour {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    private UUID id;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Activite> activitesDuJour = new ArrayList<>();

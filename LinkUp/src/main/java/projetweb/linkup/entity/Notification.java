@@ -9,6 +9,7 @@ import projetweb.linkup.Enumerations.NotificationType;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.UUID;
 
 @Entity
 @Getter
@@ -19,7 +20,7 @@ import java.time.LocalTime;
 public abstract class Notification {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    private UUID id;
 
     @Column(name = "message", nullable = false)
     private String message;
@@ -33,5 +34,6 @@ public abstract class Notification {
     public Notification(String message,NotificationType type) {
         this.type = type;
         this.message = message;
+        this.tempsCreation = LocalDateTime.now();
     }
 }
