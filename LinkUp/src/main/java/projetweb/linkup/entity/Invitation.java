@@ -23,7 +23,4 @@ public class Invitation extends Notification {
         super(type.getMessage(),type);
     }
 
-
-
-
 }

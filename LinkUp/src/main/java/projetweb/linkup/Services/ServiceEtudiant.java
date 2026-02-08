@@ -6,6 +6,7 @@ import DTO.ACTIONS.CreateStudentDTO;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.UniqueConstraint;
 import jakarta.transaction.TransactionScoped;
 import jakarta.transaction.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -85,8 +86,11 @@ public class ServiceEtudiant {
        e.setLastname(dto.lastname());
        e.setUsername(dto.username());
        e.setLastdate(LocalDate.now());
-       e.setHoraire(new Horaire(new HashMap<LocalDate, Jour>()));
-       entityManager.persist(e);
+
+       try {
+           entityManager.persist(e);
+       }catch ()
+
 
        return Optional.of(e);
     }

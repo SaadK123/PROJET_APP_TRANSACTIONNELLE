@@ -36,4 +36,6 @@ public abstract class Notification {
         this.message = message;
         this.tempsCreation = LocalDateTime.now();
     }
+
+
 }
