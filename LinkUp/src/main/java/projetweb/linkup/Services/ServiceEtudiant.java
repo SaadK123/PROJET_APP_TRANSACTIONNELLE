@@ -11,9 +11,13 @@ import jakarta.transaction.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import projetweb.linkup.entity.Etudiant;
+import projetweb.linkup.entity.Horaire;
+import projetweb.linkup.entity.Jour;
 import projetweb.linkup.entity.SecurityConfig;
 
 import javax.swing.text.html.Option;
+import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -79,11 +83,13 @@ public class ServiceEtudiant {
        e.setPasswordhash(passwordEncoder.encode(dto.password()));
        e.setLastname(dto.lastname());
        e.setUsername(dto.username());
-
+       e.setLastdate(LocalDate.now());
+       e.setHoraire(new Horaire(new HashMap<LocalDate, Jour>()));
        entityManager.persist(e);
 
        return Optional.of(e);
     }
+
 
 
 

@@ -41,10 +41,12 @@ public class Etudiant  {
     @Column(name="password",nullable = false)
     private String passwordhash;
 
-    @OneToOne
+
+    @OneToOne(cascade = CascadeType.ALL)
     private Horaire horaire;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+
     private List<Notification> notifications;
 
 }

@@ -16,7 +16,7 @@ import java.time.LocalTime;
 @NoArgsConstructor
 @AllArgsConstructor
 
-public class Notification {
+public abstract class Notification {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
@@ -30,5 +30,8 @@ public class Notification {
     @Column(name = "temps_creation", nullable = false)
     private LocalDateTime tempsCreation;
 
-
+    public Notification(String message,NotificationType type) {
+        this.type = type;
+        this.message = message;
+    }
 }

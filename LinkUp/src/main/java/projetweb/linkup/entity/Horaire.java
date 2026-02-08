@@ -26,4 +26,8 @@ public class Horaire {
     Map<LocalDate,Jour> map = new HashMap<>();
 
 
+    public Horaire(HashMap<LocalDate,Jour> map) {
+        this.map = map;
+    }
+
 }
