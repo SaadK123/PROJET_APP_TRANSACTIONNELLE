@@ -55,7 +55,7 @@ public class Etudiant  {
     private String passwordhash;
 
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Horaire horaire;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)

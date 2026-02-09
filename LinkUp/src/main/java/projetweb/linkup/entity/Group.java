@@ -34,7 +34,7 @@ public class Group {
 
 
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Horaire horaireCommun;
 
 }
