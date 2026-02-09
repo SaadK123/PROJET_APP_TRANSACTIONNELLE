@@ -87,10 +87,10 @@ public class ServiceEtudiant {
        e.setUsername(dto.username());
        e.setLastdate(LocalDate.now());
 
-       try {
-           entityManager.persist(e);
-       }catch ()
 
+           entityManager.persist(e);
+
+        entityManager.flush();
 
        return Optional.of(e);
     }
