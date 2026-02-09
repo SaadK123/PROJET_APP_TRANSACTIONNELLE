@@ -1,9 +1,6 @@
 package projetweb.linkup.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.LocalDateTimeField;
 import lombok.Getter;
@@ -19,7 +16,8 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 public class Invitation extends Notification {
-    @OneToOne (fetch = FetchType.LAZY)
+    @ManyToOne (fetch = FetchType.LAZY)
+    @JoinColumn(name = "group_id", nullable = false)
     private Group group;
     private String envoyeur;
     private String receveur;

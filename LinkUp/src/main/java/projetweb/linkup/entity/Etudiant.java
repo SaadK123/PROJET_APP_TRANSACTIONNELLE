@@ -56,9 +56,11 @@ public class Etudiant  {
 
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "horaire_id")
     private Horaire horaire;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "etudiant_id")
 
     private List<Notification> notifications;
 

@@ -6,7 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -26,15 +28,20 @@ public class Group {
     @JoinColumn(name = "chef_id", nullable = false)
     private Etudiant chef;
 
-    @MapKey(name = "id")
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "group_etudiants",
+            joinColumns = @JoinColumn(name = "group_id"),
+            inverseJoinColumns = @JoinColumn(name = "etudiant_id")
+    )
     // id etudiant ; etudiant
-    private Map<UUID,Etudiant> etudiants;
+    private Set<Etudiant> etudiants;
 
 
 
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "horaire_id", nullable = false)
     private Horaire horaireCommun;
 
 }

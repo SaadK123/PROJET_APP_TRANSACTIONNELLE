@@ -24,6 +24,7 @@ public class Jour {
     private UUID id;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn (name = "jour_id", nullable = false)
     private List<Activite> activitesDuJour = new ArrayList<>();
 
 
