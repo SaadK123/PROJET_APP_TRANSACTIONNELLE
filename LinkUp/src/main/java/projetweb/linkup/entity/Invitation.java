@@ -15,7 +15,6 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "invitations")
 public class Invitation extends Notification {
     private String groupName;
     private String inviteperson;
