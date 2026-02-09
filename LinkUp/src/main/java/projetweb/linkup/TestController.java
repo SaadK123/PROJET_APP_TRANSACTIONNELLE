@@ -25,6 +25,8 @@ public class TestController {
         public Etudiant createUser(@RequestBody CreateStudentDTO dto) {
                return serviceEtudiant.createEtudiant(dto).orElseThrow();
         }
+        @DeleteMapping("/api/etudiants/{id}")
+
 
 
 

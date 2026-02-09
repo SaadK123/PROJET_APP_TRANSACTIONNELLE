@@ -32,22 +32,22 @@ public class ServiceEtudiant {
 
 
     public Optional<Etudiant> getEtudiantById(String id) {
-        if(id == null || id.isBlank() || id.length() != 36) return Optional.empty();
+        if (id == null || id.isBlank() || id.length() != 36) return Optional.empty();
         try {
             Etudiant e = (Etudiant) entityManager.createQuery("select e from Etudiant  e where id = :id")
-                    .setParameter("id",id).getSingleResult();
+                    .setParameter("id", id).getSingleResult();
             return Optional.of(e);
-        }catch(NoResultException ex) {
+        } catch (NoResultException ex) {
             return Optional.empty(); // todo error enum
         }
     }
 
     public Optional<Etudiant> getEtudiantByUsername(String username) {
-        if(username == null || username.isBlank()) return Optional.empty();
+        if (username == null || username.isBlank()) return Optional.empty();
 
         try {
             Etudiant e = (Etudiant) entityManager.createQuery("select e from Etudiant e where username = :username")
-                    .setParameter("username",username).getSingleResult();
+                    .setParameter("username", username).getSingleResult();
             return Optional.of(e);
         } catch (NoResultException e) {
             return Optional.empty(); // todo error enum
@@ -55,45 +55,57 @@ public class ServiceEtudiant {
 
     }
 
-    public Optional<List<Etudiant>> getEtudiantsByFirstName(String name,boolean isfirstname) {
-        if(name == null || name.isBlank()) return Optional.empty();
+    public Optional<List<Etudiant>> getEtudiantsByFirstName(String name, boolean isfirstname) {
+        if (name == null || name.isBlank()) return Optional.empty();
         name = name.toLowerCase();
-        List<Etudiant> etudiants =  isfirstname ?
-                entityManager.createQuery("select e from Etudiant e where lower(e.firstname) = :firstname ",Etudiant.class)
-                        .setParameter("firstname",name).getResultList():
-                entityManager.createQuery("select e from Etudiant e where lower(e.lastname) = :lastname",Etudiant.class)
-                        .setParameter("lastname",name).getResultList();
+        List<Etudiant> etudiants = isfirstname ?
+                entityManager.createQuery("select e from Etudiant e where lower(e.firstname) = :firstname ", Etudiant.class)
+                        .setParameter("firstname", name).getResultList() :
+                entityManager.createQuery("select e from Etudiant e where lower(e.lastname) = :lastname", Etudiant.class)
+                        .setParameter("lastname", name).getResultList();
 
 
         return etudiants.isEmpty() ? Optional.empty() : Optional.of(etudiants);
     }
 
 
-
-    public  ServiceEtudiant( PasswordEncoder passwordEncoder) {
+    public ServiceEtudiant(PasswordEncoder passwordEncoder) {
 
         this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional
     public Optional<Etudiant> createEtudiant(CreateStudentDTO dto) {
-        if(dto == null) return Optional.empty();
-       Etudiant e = new Etudiant();
+        if (dto == null) return Optional.empty();
+        Etudiant e = new Etudiant();
 
-       e.setEmail(dto.email());
-       e.setFirstname(dto.firstname());
-       e.setPasswordhash(passwordEncoder.encode(dto.password()));
-       e.setLastname(dto.lastname());
-       e.setUsername(dto.username());
-       e.setLastdate(LocalDate.now());
+        e.setEmail(dto.email());
+        e.setFirstname(dto.firstname());
+        e.setPasswordhash(passwordEncoder.encode(dto.password()));
+        e.setLastname(dto.lastname());
+        e.setUsername(dto.username());
+        e.setLastdate(LocalDate.now());
 
 
-           entityManager.persist(e);
+        entityManager.persist(e);
 
         entityManager.flush();
 
-       return Optional.of(e);
+        return Optional.of(e);
     }
+
+    @Transactional
+    public Optional<Etudiant> deleteEtudiant(CreateStudentDTO dto) {
+        if (dto == null) return Optional.empty();
+
+        Etudiant e = entityManager.find(Etudiant.class, dto.);
+        if (e == null) return false;
+
+        entityManager.remove(e);
+        return true;
+    }
+
+
 
 
 
