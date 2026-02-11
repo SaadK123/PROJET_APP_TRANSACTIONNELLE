@@ -94,22 +94,5 @@ public class ServiceEtudiant {
         return Optional.of(e);
     }
 
-    @Transactional
-    public Optional<Etudiant> deleteEtudiant(CreateStudentDTO dto) {
-        if (dto == null) return Optional.empty();
-
-        Etudiant e = entityManager.find(Etudiant.class, dto.);
-        if (e == null) return false;
-
-        entityManager.remove(e);
-        return true;
-    }
-
-
-
-
-
-
-
-
+    
 }
