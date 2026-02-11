@@ -2,7 +2,11 @@ package projetweb.linkup.entity;
 
 
 import jakarta.persistence.*;
+
+import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,13 +17,27 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name="Etudiants")
+@Table(
+
+name="Etudiants",
+
+uniqueConstraints = {
+        @UniqueConstraint(name = "UK_EMAIL", columnNames = "email"),
+        @UniqueConstraint(name = "UK_USERNAME",columnNames = "username")
+}
+
+
+)
+
 public class Etudiant  {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    private UUID id;
 
+
+    @Column(name = "lastdateconnected")
+    private LocalDate lastdate;
     @Column(name = "email", nullable = false,unique = true)
     private String email;
 
@@ -31,15 +49,20 @@ public class Etudiant  {
     private String lastname;
 
     @Column(name = "firstname",nullable = false)
-    private String firstName;
+    private String firstname;
 
     @Column(name="password",nullable = false)
-    private String password;
+    private String passwordhash;
 
-    @OneToOne
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "horaire_id")
     private Horaire horaire;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "etudiant_id")
+
     private List<Notification> notifications;
+
 }
 

@@ -1,14 +1,18 @@
 package projetweb.linkup;
 
-import org.hibernate.annotations.Parameter;
-import org.springframework.data.repository.query.Param;
+import DTO.ACTIONS.AuthentificationDTO;
+import DTO.ACTIONS.CreateStudentDTO;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.HashMap;
+import projetweb.linkup.Services.ServiceEtudiant;
+import projetweb.linkup.entity.Etudiant;
 
 @RestController
 public class TestController {
 
+        private final ServiceEtudiant serviceEtudiant;
+        public TestController(ServiceEtudiant serviceEtudiant) {
+                this.serviceEtudiant = serviceEtudiant;
+        }
         @GetMapping("/api/health")
         public String health() { return "OK"; }
 
@@ -18,9 +22,11 @@ public class TestController {
         }
 
         @PostMapping("/api/createUser")
-        public void createUser() {
-
+        public Etudiant createUser(@RequestBody CreateStudentDTO dto) {
+               return serviceEtudiant.createEtudiant(dto).orElseThrow();
         }
+        @DeleteMapping("/api/etudiants/{id}")
+
 
 
 

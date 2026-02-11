@@ -6,7 +6,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Getter
@@ -18,19 +21,27 @@ public class Group {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
 
-    private String id;
+    private UUID id;
 
-    @MapKey(name = "id")
-    @ManyToMany
+
+    @ManyToOne
+    @JoinColumn(name = "chef_id", nullable = false)
+    private Etudiant chef;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "group_etudiants",
+            joinColumns = @JoinColumn(name = "group_id"),
+            inverseJoinColumns = @JoinColumn(name = "etudiant_id")
+    )
     // id etudiant ; etudiant
-    private Map<String,Etudiant> etudiants;
+    private Set<Etudiant> etudiants;
 
 
-    public void removeEtudiant(String key) {
-        etudiants.remove(key);
-    }
 
-    @OneToOne(cascade = CascadeType.ALL)
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "horaire_id", nullable = false)
     private Horaire horaireCommun;
 
 }

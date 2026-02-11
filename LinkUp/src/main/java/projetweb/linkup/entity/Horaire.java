@@ -18,12 +18,17 @@ import java.util.*;
 public class Horaire {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    private UUID id;
 
-    @MapKeyColumn(name = "jours",nullable = false)
 
-    @OneToMany(cascade = CascadeType.ALL)
-    Map<LocalDate,Jour> map = new HashMap<>();
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "horaire_id", nullable = false)
+    @OrderBy("date ASC")
+    List<Jour> jours = new ArrayList<>();
 
+
+    public Horaire(List<Jour> jours) {
+        this.jours = jours;
+    }
 
 }
