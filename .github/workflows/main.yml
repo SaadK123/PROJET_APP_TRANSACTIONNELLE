@@ -2,7 +2,9 @@ name: CI
 
 on:
   push:
+    branches: [SPRING_BOOT]
   pull_request:
+    branches: [SPRING_BOOT]
 
 jobs:
   build-test:
