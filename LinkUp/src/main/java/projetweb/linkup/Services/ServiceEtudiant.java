@@ -3,6 +3,7 @@ package projetweb.linkup.Services;
 
 import DTO.ACTIONS.AuthentificationDTO;
 import DTO.ACTIONS.CreateStudentDTO;
+import DTO.ACTIONS.DeleteStudentDTO;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
@@ -93,6 +94,33 @@ public class ServiceEtudiant {
 
         return Optional.of(e);
     }
+
+    @Transactional
+    public Optional<Etudiant> deleteEtudiant(DeleteStudentDTO dto) {
+        if (dto == null) return Optional.empty();
+        if (dto.email() == null || dto.password() == null) return Optional.empty();
+
+        Etudiant e = entityManager.createQuery(
+                        "select e from Etudiant e where e.email = :email",
+                        Etudiant.class
+                )
+                .setParameter("email", dto.email())
+                .getResultStream()
+                .findFirst()
+                .orElse(null);
+
+        if (e == null) return Optional.empty();
+
+        if (!passwordEncoder.matches(dto.password(), e.getPasswordhash())) {
+            return Optional.empty();
+        }
+
+        entityManager.remove(e);
+        entityManager.flush();
+
+        return Optional.of(e);
+    }
+
 
 
 }

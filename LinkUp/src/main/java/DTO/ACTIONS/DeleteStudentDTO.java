@@ -1,4 +1,4 @@
 package DTO.ACTIONS;
 
-public record DeleteStudentDTO() {
+public record DeleteStudentDTO(String email, String password) {
 }
