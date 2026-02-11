@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches: [SPRING_BOOT]
+  pull_request:
+    branches: [SPRING_BOOT]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: LinkUp
+
+    env:
+      SPRING_DATASOURCE_URL: ${{ secrets.AIVEN_JDBC_URL }}
+      SPRING_DATASOURCE_USERNAME: ${{ secrets.AIVEN_DB_USER }}
+      SPRING_DATASOURCE_PASSWORD: ${{ secrets.AIVEN_DB_PASSWORD }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: maven
+          cache-dependency-path: LinkUp/pom.xml
+
+      - name: Make mvnw executable
+        run: chmod +x mvnw
+
+      - name: Tests
+        run: ./mvnw -B test
+
+      - name: Build
+        run: ./mvnw -B package
