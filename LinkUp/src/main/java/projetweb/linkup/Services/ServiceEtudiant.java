@@ -94,5 +94,5 @@ public class ServiceEtudiant {
         return Optional.of(e);
     }
 
-    
+
 }
