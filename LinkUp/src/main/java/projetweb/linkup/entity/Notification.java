@@ -18,7 +18,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Inheritance(strategy = InheritanceType.JOINED)
 
-public abstract class Notification {
+public  class Notification {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
