@@ -8,6 +8,7 @@ import lombok.Setter;
 import projetweb.linkup.entity.Activite;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,6 +23,9 @@ public class Jour {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
+    @Column (name = "date_du_jour")
+    private Date dateDuJour;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn (name = "jour_id", nullable = false)
