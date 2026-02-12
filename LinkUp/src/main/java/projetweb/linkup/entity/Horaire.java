@@ -23,7 +23,7 @@ public class Horaire {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "horaire_id", nullable = false)
-    @OrderBy("date ASC")
+    @OrderBy("dateDuJour ASC")
     List<Jour> jours = new ArrayList<>();
 
 
