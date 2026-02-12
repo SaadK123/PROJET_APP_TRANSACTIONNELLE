@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import projetweb.linkup.entity.Activite;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -25,7 +26,7 @@ public class Jour {
     private UUID id;
 
     @Column (name = "date_du_jour")
-    private Date dateDuJour;
+    private LocalDate dateDuJour;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn (name = "jour_id", nullable = false)
