@@ -3,8 +3,6 @@ name: CI
 on:
   push:
     branches: [SPRING_BOOT]
-  pull_request:
-    branches: [SPRING_BOOT]
 
 jobs:
   build-test:
@@ -14,37 +12,11 @@ jobs:
       run:
         working-directory: LinkUp
 
-    services:
-      postgres:
-        image: postgres:16
-        env:
-          POSTGRES_USER: linkup
-          POSTGRES_PASSWORD: linkup
-          POSTGRES_DB: linkup
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd="pg_isready -U linkup -d linkup"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
-
-      mongo:
-        image: mongo:7
-        ports:
-          - 27017:27017
-        options: >-
-          --health-cmd="mongosh --eval 'db.runCommand({ ping: 1 })'"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
-
     env:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/linkup
-      SPRING_DATASOURCE_USERNAME: linkup
-      SPRING_DATASOURCE_PASSWORD: linkup
-      SPRING_DATA_MONGODB_URI: mongodb://localhost:27017/linkup
-      SPRING_JPA_HIBERNATE_DDL_AUTO: create-drop
+      SPRING_DATASOURCE_URL: ${{ secrets.AIVEN_JDBC_URL }}
+      SPRING_DATASOURCE_USERNAME: ${{ secrets.AIVEN_DB_USER }}
+      SPRING_DATASOURCE_PASSWORD: ${{ secrets.AIVEN_DB_PASSWORD }}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
 
     steps:
       - name: Checkout
@@ -60,6 +32,14 @@ jobs:
 
       - name: Make mvnw executable
         run: chmod +x ./mvnw
+
+      - name: Verify secrets exist
+        run: |
+          if [ -z "$SPRING_DATASOURCE_URL" ]; then
+            echo "AIVEN_JDBC_URL is missing"
+            exit 1
+          fi
+          echo "Secrets loaded correctly"
 
       - name: Tests
         run: ./mvnw -B -ntp test
