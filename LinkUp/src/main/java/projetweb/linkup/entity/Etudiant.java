@@ -54,6 +54,9 @@ public class Etudiant  {
     @Column(name="password",nullable = false)
     private String passwordhash;
 
+    @Column(name= "ecole", nullable = false)
+    private String ecole;
+
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "horaire_id")
