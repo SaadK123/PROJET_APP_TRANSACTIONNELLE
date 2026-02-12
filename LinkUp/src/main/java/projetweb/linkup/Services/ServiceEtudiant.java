@@ -4,6 +4,7 @@ package projetweb.linkup.Services;
 import DTO.ACTIONS.AuthentificationDTO;
 import DTO.ACTIONS.CreateStudentDTO;
 import DTO.ACTIONS.DeleteStudentDTO;
+import DTO.ACTIONS.UpdateStudentDTO;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
@@ -31,7 +32,7 @@ public class ServiceEtudiant {
     @PersistenceContext
     private EntityManager entityManager;
 
-
+    @Transactional
     public Optional<Etudiant> getEtudiantById(String id) {
         if (id == null || id.isBlank() || id.length() != 36) return Optional.empty();
         try {
@@ -43,6 +44,7 @@ public class ServiceEtudiant {
         }
     }
 
+    @Transactional
     public Optional<Etudiant> getEtudiantByUsername(String username) {
         if (username == null || username.isBlank()) return Optional.empty();
 
@@ -56,6 +58,7 @@ public class ServiceEtudiant {
 
     }
 
+    @Transactional
     public Optional<List<Etudiant>> getEtudiantsByFirstName(String name, boolean isfirstname) {
         if (name == null || name.isBlank()) return Optional.empty();
         name = name.toLowerCase();
@@ -120,6 +123,39 @@ public class ServiceEtudiant {
 
         return Optional.of(e);
     }
+
+    @Transactional
+    public Optional<Etudiant> updateEtudiant(UpdateStudentDTO dto) {
+
+        if (dto == null) return Optional.empty();
+        if (dto.email() == null || dto.password() == null) return Optional.empty();
+
+        Etudiant e = entityManager.createQuery(
+                        "select e from Etudiant e where e.email = :email",
+                        Etudiant.class
+                )
+                .setParameter("email", dto.email())
+                .getResultStream()
+                .findFirst()
+                .orElse(null);
+
+
+        if (e==null) return Optional.empty();
+
+        if (!passwordEncoder.matches(dto.password(), e.getPasswordhash())) {
+            return Optional.empty();
+        }
+
+        if (dto.firstname() != null) e.setFirstname(dto.firstname());
+        if (dto.lastname() != null) e.setLastname(dto.lastname());
+        if (dto.username() != null) e.setUsername(dto.username());
+
+        entityManager.flush();
+
+        return Optional.of(e);
+
+    }
+
 
 
 

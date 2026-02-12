@@ -3,6 +3,7 @@ package projetweb.linkup;
 import DTO.ACTIONS.AuthentificationDTO;
 import DTO.ACTIONS.CreateStudentDTO;
 import DTO.ACTIONS.DeleteStudentDTO;
+import DTO.ACTIONS.UpdateStudentDTO;
 import org.springframework.web.bind.annotation.*;
 import projetweb.linkup.Services.ServiceEtudiant;
 import projetweb.linkup.entity.Etudiant;
@@ -29,6 +30,10 @@ public class TestController {
         @DeleteMapping("/api/deleteUser")
         public Etudiant deleteUser(@RequestBody DeleteStudentDTO dto) {
                 return serviceEtudiant.deleteEtudiant(dto).orElseThrow();
+        }
+        @PutMapping("/api/updateUser")
+        public Etudiant updateUser(@RequestBody UpdateStudentDTO dto) {
+                return serviceEtudiant.updateEtudiant(dto).orElseThrow();
         }
 
 
