@@ -36,7 +36,7 @@ public class Etudiant  {
     private UUID id;
 
 
-    @Column(name = "lastdateconnected")
+    @Column(name = "last_date_connected")
     private LocalDate lastdate;
     @Column(name = "email", nullable = false,unique = true)
     private String email;

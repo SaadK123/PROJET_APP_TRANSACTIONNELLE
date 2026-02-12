@@ -1,29 +1,20 @@
 package projetweb.linkup.Services;
 
 
-import DTO.ACTIONS.AuthentificationDTO;
 import DTO.ACTIONS.CreateStudentDTO;
 import DTO.ACTIONS.DeleteStudentDTO;
 import DTO.ACTIONS.UpdateStudentDTO;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.UniqueConstraint;
-import jakarta.transaction.TransactionScoped;
 import jakarta.transaction.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import projetweb.linkup.entity.Etudiant;
-import projetweb.linkup.entity.Horaire;
-import projetweb.linkup.entity.Jour;
-import projetweb.linkup.entity.SecurityConfig;
 
-import javax.swing.text.html.Option;
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class ServiceEtudiant {
