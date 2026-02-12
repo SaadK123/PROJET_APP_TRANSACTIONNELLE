@@ -2,6 +2,7 @@ package projetweb.linkup;
 
 import DTO.ACTIONS.AuthentificationDTO;
 import DTO.ACTIONS.CreateStudentDTO;
+import DTO.ACTIONS.DeleteStudentDTO;
 import org.springframework.web.bind.annotation.*;
 import projetweb.linkup.Services.ServiceEtudiant;
 import projetweb.linkup.entity.Etudiant;
@@ -25,6 +26,11 @@ public class TestController {
         public Etudiant createUser(@RequestBody CreateStudentDTO dto) {
                return serviceEtudiant.createEtudiant(dto).orElseThrow();
         }
+        @DeleteMapping("/api/deleteUser")
+        public Etudiant deleteUser(@RequestBody DeleteStudentDTO dto) {
+                return serviceEtudiant.deleteEtudiant(dto).orElseThrow();
+        }
+
 
 
 
