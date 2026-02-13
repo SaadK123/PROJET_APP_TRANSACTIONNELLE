@@ -18,6 +18,9 @@
   background-position: center;
 }
 .signup-form {
-  background-color: rgba(255, 255, 255, 0.7);
-  border: none !important;
+  background-color: rgba(255, 255, 255) !important;
+  border: none;
+}
+body {
+  background-color: white !important;
 }
