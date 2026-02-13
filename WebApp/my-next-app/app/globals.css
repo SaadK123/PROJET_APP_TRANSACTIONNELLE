@@ -1,26 +1,28 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+.homepage-background { 
+  background-color: #E7E5FF;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+.btn-createAcc {
+  background-color: #32cd32;
+  color: white;
+  border: none;
 }
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+.btn-createAcc:hover,
+.btn-createAcc:focus,
+.btn-createAcc:active {
+  background-color: #32cd32 !important;
+  color: white !important;
+  box-shadow: none !important;
+}
+.signup-background {
+  background-image: url("./SignUp/Img/SignUpBackground.png");
+  background-size: cover;
+  background-position: center;
+}
+.signup-form {
+  background-color: rgba(255, 255, 255, 0.7);
+  border: none !important;
 }
