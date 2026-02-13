@@ -8,14 +8,9 @@ export default function NavigationButtons() {
     router.push("/SignUp");
   };
 
-  const gotoSignUpTest = () => {
-    router.push("/SignUpTest");
-  };
-
   return (
     <>
       <button onClick={gotoSignUp}>Go to Sign Up</button>
-      <button onClick={gotoSignUpTest}>Go to Sign Up Test</button>
     </>
   );
 }
