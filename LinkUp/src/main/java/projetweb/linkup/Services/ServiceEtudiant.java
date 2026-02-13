@@ -79,6 +79,7 @@ public class ServiceEtudiant {
         e.setPasswordhash(passwordEncoder.encode(dto.password()));
         e.setLastname(dto.lastname());
         e.setUsername(dto.username());
+        e.setEcole(dto.ecole());
         e.setLastdate(LocalDate.now());
 
 
@@ -140,6 +141,7 @@ public class ServiceEtudiant {
         if (dto.firstname() != null) e.setFirstname(dto.firstname());
         if (dto.lastname() != null) e.setLastname(dto.lastname());
         if (dto.username() != null) e.setUsername(dto.username());
+        if (dto.ecole() != null) e.setEcole(dto.ecole());
 
         entityManager.flush();
 
