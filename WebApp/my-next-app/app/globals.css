@@ -1,10 +1,26 @@
 @import "tailwindcss";
-
-.homepage-background { 
-  background-color: #E7E5FF;
+/* HomePage */
+.homepage-background {
+  background-color: #e7e5ff;
 }
 
+.homepage-logo {
+  width: 80px;
+  padding-left: 20px;
+}
+.h1-WritingHP {
+  font-family: arial;
+}
 
+.btn-startHP {
+  border: black;
+}
+
+.h4-HP {
+  margin-bottom: 0%;
+}
+
+/* SignUp */
 
 .btn-createAcc {
   background-color: #32cd32;
