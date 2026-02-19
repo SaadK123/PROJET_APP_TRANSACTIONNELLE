@@ -13,6 +13,7 @@ public abstract class Utilitary {
     public final static String EXCEPTION_MESSAGE_INVALID_NAME = "Le nom doit contenir au moins 2 caracteres et ne doit pas contenir de chiffres";
     public final static String EXCEPTION_MESSAGE_INVALID_ECOLE = "Le nom de l'ecole doit contenir au moins 2 caracteres et ne doit pas contenir de chiffres";
     public final static String EXCEPTION_MESSAGE_NON_EXISTANT = "L'etudiant n'existe pas";
+    public final static String EXCEPTION_MESSAGE_IDENTIFIANTS_INVALIDES = "Email ou mot de passe invalide";
     public final static  String EXCEPTION_MESSAGE_CHAMPS_MANQUANTS = "Tous les champs sont obligatoires";
     public final static String EXCEPTION_MESSAGE_CONTRAINTE_UNIQUE = "Une contrainte unique a ete violee";
     public final static String EXCEPTION_MESSAGE_UNAUTHORIZED = "Vous n'etes pas autorise a effectuer cette action";

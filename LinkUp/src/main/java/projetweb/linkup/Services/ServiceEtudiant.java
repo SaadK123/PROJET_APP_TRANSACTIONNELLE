@@ -123,7 +123,7 @@ public class ServiceEtudiant {
         if (e == null) new LinkUpException(ERROR_TYPE.NON_EXISTANT, Utilitary.EXCEPTION_MESSAGE_NON_EXISTANT).throwIt();
 
         if (!passwordEncoder.matches(dto.password(), e.getPasswordhash())) {
-            return Optional.empty();
+            new LinkUpException(ERROR_TYPE.NON_EXISTANT, Utilitary.EXCEPTION_MESSAGE_IDENTIFIANTS_INVALIDES).throwIt();
         }
 
         entityManager.remove(e);
