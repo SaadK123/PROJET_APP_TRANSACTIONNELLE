@@ -12,5 +12,6 @@ ERROR_TYPE(int http_code) {
   this.http_code = http_code;
 }
 
+  public int getHttp_code() { return http_code; }
 
 }
