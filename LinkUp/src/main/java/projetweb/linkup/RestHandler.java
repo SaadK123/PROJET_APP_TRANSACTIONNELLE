@@ -1,3 +1,5 @@
+package projetweb.linkup;
+
 import DTO.ACTIONS.HandlerErreurDTO;
 import Exceptions.LinkUpException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,20 +15,24 @@ import java.time.LocalDateTime;
 public class RestHandler {
 
     @ExceptionHandler(LinkUpException.class)
-    public HandlerErreurDTO handleLinkUp(LinkUpException ex) {
-
-        return new HandlerErreurDTO(ex.getError().http_code, ex.getMessage(), LocalDateTime.now());
-    }
-
-
-    @ExceptionHandler(Exception.class)
-    public HandlerErreurDTO handleOther(Exception ex, HttpServletRequest req) {
+    public ResponseEntity<HandlerErreurDTO> handleLinkUp(LinkUpException ex) {
         HandlerErreurDTO body = new HandlerErreurDTO(
-                ERROR_TYPE.DEFAULT.http_code,
-                "Unexpected server error",
+                ex.getMessage(),
                 LocalDateTime.now()
         );
-        return body;
+
+        return ResponseEntity
+                .status(ex.getError().http_code)
+                .body(body);
     }
 
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<HandlerErreurDTO> handleOther(Exception ex) {
+        HandlerErreurDTO body = new HandlerErreurDTO(
+
+                "server error",
+                LocalDateTime.now()
+        );
+        return ResponseEntity.status(ERROR_TYPE.DEFAULT.http_code).body(body);
+    }
 }

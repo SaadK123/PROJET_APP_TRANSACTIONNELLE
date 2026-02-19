@@ -4,7 +4,6 @@ package projetweb.linkup.Services;
 import DTO.ACTIONS.CreateStudentDTO;
 import DTO.ACTIONS.DeleteStudentDTO;
 import DTO.ACTIONS.UpdateEtudiantDTO;
-import DTO.ACTIONS.UpdateStudentDTO;
 import Exceptions.LinkUpException;
 import Util.Utilitary;
 import jakarta.persistence.EntityManager;
@@ -97,10 +96,11 @@ public class ServiceEtudiant {
 
      entityManager.flush();
  }catch (Exception ex) {
+
      switch (ex.getMessage()) {
          case "UK_EMAIL" -> new LinkUpException(ERROR_TYPE.CONTRAINTE_UNIQUE, Utilitary.EXCEPTION_MESSAGE_DUPLICATION_EMAIL).throwIt();
          case "UK_USERNAME" -> new LinkUpException(ERROR_TYPE.CONTRAINTE_UNIQUE, Utilitary.EXCEPTION_MESSAGE_DUPLICATION_USERNAME).throwIt();
-         default -> throw ex;
+         default ->  new LinkUpException(ERROR_TYPE.CONTRAINTE_UNIQUE, Utilitary.EXCEPTION_MESSAGE_DUPLICATION_USERNAME).throwIt();
      }
  }
 
@@ -132,9 +132,10 @@ public class ServiceEtudiant {
         return Optional.of(e);
     }
 
-    @Transactional
+    /*@Transactional
     public Optional<Etudiant> updateEtudiant(){
 
     }
+     */
 
 }

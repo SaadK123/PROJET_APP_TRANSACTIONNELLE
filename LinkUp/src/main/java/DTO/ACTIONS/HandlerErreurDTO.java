@@ -4,4 +4,4 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 
 
-public record HandlerErreurDTO(int httpCode, String message, LocalDateTime timestamp) { }
+public record HandlerErreurDTO(String message, LocalDateTime timestamp) { }

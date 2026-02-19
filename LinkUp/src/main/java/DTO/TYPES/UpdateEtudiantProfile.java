@@ -1,5 +1,10 @@
 package DTO.TYPES;
 
-public class UpdateEtudiantProfile extends  {
+import java.util.UUID;
 
+public class UpdateEtudiantProfile extends UpdateEtudiantDTO {
+
+    public UpdateEtudiantProfile(UUID etudiantID) {
+        super(etudiantID);
+    }
 }
