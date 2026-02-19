@@ -3,6 +3,7 @@ package projetweb.linkup.Services;
 
 import DTO.ACTIONS.CreateStudentDTO;
 import DTO.ACTIONS.DeleteStudentDTO;
+import DTO.ACTIONS.UpdateEtudiantDTO;
 import DTO.ACTIONS.UpdateStudentDTO;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
@@ -15,6 +16,7 @@ import projetweb.linkup.entity.Etudiant;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class ServiceEtudiant {
@@ -117,39 +119,8 @@ public class ServiceEtudiant {
     }
 
     @Transactional
-    public Optional<Etudiant> updateEtudiant(UpdateStudentDTO dto) {
-
-        if (dto == null) return Optional.empty();
-        if (dto.email() == null || dto.password() == null) return Optional.empty();
-
-        Etudiant e = entityManager.createQuery(
-                        "select e from Etudiant e where e.email = :email",
-                        Etudiant.class
-                )
-                .setParameter("email", dto.email())
-                .getResultStream()
-                .findFirst()
-                .orElse(null);
-
-
-        if (e==null) return Optional.empty();
-
-        if (!passwordEncoder.matches(dto.password(), e.getPasswordhash())) {
-            return Optional.empty();
-        }
-
-        if (dto.firstname() != null) e.setFirstname(dto.firstname());
-        if (dto.lastname() != null) e.setLastname(dto.lastname());
-        if (dto.username() != null) e.setUsername(dto.username());
-        if (dto.ecole() != null) e.setEcole(dto.ecole());
-
-        entityManager.flush();
-
-        return Optional.of(e);
+    public Optional<Etudiant> updateEtudiant() {
 
     }
-
-
-
 
 }
