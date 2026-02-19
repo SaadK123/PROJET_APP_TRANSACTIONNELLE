@@ -16,5 +16,5 @@ public abstract class Utilitary {
     public final String EXCEPTION_MESSAGE_CHAMPS_MANQUANTS = "Tous les champs sont obligatoires";
     public final String EXCEPTION_MESSAGE_CONTRAINTE_UNIQUE = "Une contrainte unique a ete violee";
     public final String EXCEPTION_MESSAGE_UNAUTHORIZED = "Vous n'etes pas autorise a effectuer cette action";
-
+    public final static String EXCEPTION_NO_GROUP_FOUND = "Aucun groupe n'a ete trouver avec cet id";
 }
