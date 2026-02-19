@@ -39,7 +39,7 @@ export default function HomePage() {
         </div>
 
         {/*BODY*/}
-        <div className="row pt-5 pb-4 text-center"><h1 className="h1-WritingHP">Fini le Casse-Tete des Horaires</h1></div>
+        <div className="row pt-5 pb-4 text-center"><h1 className="h1-WritingHP">Fini le Casse-Tête des Horaires</h1></div>
         <div className="row pb-5 text-center"><h5>Trouvez le moment parfait pour vous retrouver entre étudiants instantanément. <br />
          Partagez vos emplois du temps et on vous montre quand tout le monde est libre.</h5></div>
         <div className="row-7 text-center"><button type="button" onClick={gotosignup} className="pt-3 pb-3 ps-5 pe-5 bg-green-500 rounded text-white border border-success"><h4 className="h4-HP">Commencez Gratuitement</h4></button></div>
