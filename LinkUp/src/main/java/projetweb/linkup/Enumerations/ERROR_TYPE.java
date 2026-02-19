@@ -1,6 +1,6 @@
 package projetweb.linkup.Enumerations;
 
-public enum ERROR_TYPES {
+public enum ERROR_TYPE {
 DUPLICATION,
 NON_EXISTANT,
 CONTRAINTE_UNIQUE,
