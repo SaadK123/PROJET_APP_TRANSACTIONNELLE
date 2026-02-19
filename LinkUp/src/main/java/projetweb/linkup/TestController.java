@@ -1,12 +1,11 @@
 package projetweb.linkup;
 
-import DTO.ACTIONS.AuthentificationDTO;
 import DTO.ACTIONS.CreateStudentDTO;
 import DTO.ACTIONS.DeleteStudentDTO;
 import DTO.ACTIONS.UpdateStudentDTO;
 import org.springframework.web.bind.annotation.*;
 import projetweb.linkup.Services.ServiceEtudiant;
-import projetweb.linkup.entity.Etudiant;
+import projetweb.linkup.entities.Etudiant;
 
 @RestController
 public class TestController {

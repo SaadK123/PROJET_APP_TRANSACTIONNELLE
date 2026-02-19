@@ -1,4 +1,4 @@
-package projetweb.linkup.entity;
+package projetweb.linkup.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -38,10 +37,5 @@ public class Group {
     private Set<Etudiant> etudiants;
 
 
-
-
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "horaire_id", nullable = false)
-    private Horaire horaireCommun;
 
 }
