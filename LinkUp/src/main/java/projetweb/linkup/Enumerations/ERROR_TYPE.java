@@ -1,12 +1,16 @@
 package projetweb.linkup.Enumerations;
 
 public enum ERROR_TYPE {
-DUPLICATION,
-NON_EXISTANT,
-CONTRAINTE_UNIQUE,
-AUTH_ECHEC,
-MODIFICATION_GROUPE_NON_AUTORISE,
-CHAMPS_MANQUANTS
+DUPLICATION(409),
+NON_EXISTANT(404),
+CONTRAINTE_UNIQUE(409),
+CHAMPS_MANQUANTS(400);
+
+
+final int http_code;
+ERROR_TYPE(int http_code) {
+  this.http_code = http_code;
+}
 
 
 }
