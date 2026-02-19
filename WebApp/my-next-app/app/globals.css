@@ -35,14 +35,9 @@
   box-shadow: none !important;
 }
 .signup-background {
-  background-image: url("./SignUp/Img/SignUpBackground.png");
-  background-size: cover;
-  background-position: center;
+  background-color: white;
 }
 .signup-form {
   background-color: rgba(255, 255, 255) !important;
   border: none;
-}
-body {
-  background-color: white !important;
 }
