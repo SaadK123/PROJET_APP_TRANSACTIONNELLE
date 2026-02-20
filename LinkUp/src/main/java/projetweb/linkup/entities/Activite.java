@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.resilience.annotation.EnableResilientMethods;
 
 import java.time.LocalTime;
 import java.util.UUID;
@@ -39,8 +40,9 @@ public   class Activite {
    @Column(name = "est_activite_groupe",nullable = false)
     private boolean estActiviteGroupe;
 
-
-   private
+   @OneToOne
+   @JoinColumn(name = "etudiant_id",nullable = false)
+   private Etudiant etudiant;
 
 
 }

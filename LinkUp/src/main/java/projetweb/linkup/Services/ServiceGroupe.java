@@ -27,21 +27,27 @@ public class ServiceGroupe {
        Group group   = tryAccessingGroup(ajouterActiviteDTO.destination());
 
         List<Activite> activites = serviceHoraire.recupererTousLesActivitesDesEtudiants(group.getEtudiants().stream().toList());
-
+        Activite activite = ajouterActiviteDTO.activite();
+        for(var current_activite : activites) {
+            if(activite.getDateDeDebut().isBefore(current_activite.getDateDeFin()) &&
+            activite.getDateDeFin().isAfter(current_activite.getDateDeDebut())) {
+                throw new LinkUpException(ERROR_TYPE.DUPLICATION,Utilitary.creerGroupeDupliquer(current_activite.getEtudiant().getUsername()));
+            }
+        }
     }
 
 
     public Group tryAccessingGroup(UUID destination) {
-        Group group = null;
-        try {
-            group = (Group) entityManager.
-             createQuery("select g from Group g where g.id = :destination", Group.class)
-                   .setParameter("destination",destination.toString());
 
+        try {
+           Group group = (Group) entityManager.
+             createQuery("select g from Group g where g.id = :destination", Group.class)
+                   .setParameter("destination",destination.toString()).getSingleResult();
+            return  group;
         } catch (NoResultException ex) {
-         new LinkUpException(ERROR_TYPE.NON_EXISTANT, Utilitary.EXCEPTION_NO_GROUP_FOUND).throwIt();
+        throw  new LinkUpException(ERROR_TYPE.NON_EXISTANT, Utilitary.EXCEPTION_NO_GROUP_FOUND);
         }
-        return  group;
+
     }
 
 
