@@ -2,7 +2,6 @@ package DTO.TYPES;
 
 import lombok.Getter;
 import projetweb.linkup.Services.ServiceEtudiant;
-import projetweb.linkup.entity.Etudiant;
 
 import java.util.UUID;
 @Getter

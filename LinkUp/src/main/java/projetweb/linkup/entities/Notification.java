@@ -1,4 +1,4 @@
-package projetweb.linkup.entity;
+package projetweb.linkup.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -8,7 +8,7 @@ import lombok.Setter;
 import projetweb.linkup.Enumerations.NotificationType;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -32,6 +32,13 @@ public  class Notification {
     @Column(name = "temps_creation", nullable = false)
     private LocalDateTime tempsCreation;
 
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "notification_receveurs",
+            joinColumns = @JoinColumn(name = "notification_id",nullable = false),
+            inverseJoinColumns = @JoinColumn(name = "etudiant_id",nullable = false)
+    )
+    private List<Etudiant> receuveurs;
     public Notification(String message,NotificationType type) {
         this.type = type;
         this.message = message;
