@@ -1,5 +1,6 @@
 package projetweb.linkup.entity;
 
+import DTO.ACTIONS.Invitation_Reponse;
 import jakarta.persistence.*;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.LocalDateTimeField;
@@ -27,5 +28,7 @@ public class Invitation extends Notification {
         this.envoyeur = envoyeur;
         this.receveur = receveur;
     }
+
+
 
 }
