@@ -8,8 +8,10 @@ import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import projetweb.linkup.Enumerations.ERROR_TYPE;
 import projetweb.linkup.entities.Activite;
+import projetweb.linkup.entities.Etudiant;
 import projetweb.linkup.entities.Group;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -17,6 +19,7 @@ public class ServiceGroupe {
 
 
    private final ServiceHoraire serviceHoraire;
+
     @PersistenceContext
     private EntityManager entityManager;
     public ServiceGroupe(ServiceHoraire serviceHoraire) {
@@ -46,6 +49,16 @@ public class ServiceGroupe {
         throw  new LinkUpException(ERROR_TYPE.NON_EXISTANT, Utilitary.EXCEPTION_UTILISATEUR_NON_TROUVER);
         }
 
+    }
+
+    public List<Group> getALlgroupsFromUser(UUID userID,UUID groupID) {
+      // todo verify if user exist first optimisation
+        List<Group> groups;
+
+        groups = entityManager.createQuery("select g from  Group g  join g.etudiants e where e.id = :userID", Group.class).
+                setParameter("userID",userID).getResultList();
+
+         return groups;
     }
 
 
