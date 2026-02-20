@@ -18,6 +18,7 @@ import projetweb.linkup.entities.Etudiant;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class ServiceEtudiant {
@@ -27,14 +28,12 @@ public class ServiceEtudiant {
     private EntityManager entityManager;
 
     @Transactional
-    public Optional<Etudiant> getEtudiantById(String id) {
-        if (id == null || id.isBlank() || id.length() != 36) return Optional.empty();
+    public Etudiant getEtudiantById(String id) {
         try {
-            Etudiant e = (Etudiant) entityManager.createQuery("select e from Etudiant  e where id = :id")
+         return  (Etudiant) entityManager.createQuery("select e from Etudiant  e where id = :id")
                     .setParameter("id", id).getSingleResult();
-            return Optional.of(e);
         } catch (NoResultException ex) {
-            return Optional.empty(); // todo error enum
+            throw new LinkUpException(ERROR_TYPE.CHAMPS_MANQUANTS,Utilitary.EXCEPTION_UTILISATEUR_NON_TROUVER);
         }
     }
 
@@ -132,8 +131,21 @@ public class ServiceEtudiant {
     }
 
     @Transactional
-    public Optional<Etudiant> updateEtudiantProfile(UpdateEtudiantProfile updateDTO){
-      if(updateDTO.)
+    public void updateEtudiantProfile(UpdateEtudiantProfile updateDTO){
+      UUID etudiantId = updateDTO.getEtudiantID();
+       Etudiant e =  getEtudiantById(etudiantId.toString());
+       if(updateDTO.getUsername() != null)
+          e.setUsername(updateDTO.getUsername());
+
+
+       if(updateDTO.getLastname() != null)
+           e.setLastname(updateDTO.getLastname());
+
+
+
+
+
+       entityManager.persist(e);
     }
 
 

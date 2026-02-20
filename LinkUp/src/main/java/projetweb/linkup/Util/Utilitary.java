@@ -18,4 +18,5 @@ public abstract class Utilitary {
     public final static String EXCEPTION_MESSAGE_CONTRAINTE_UNIQUE = "Une contrainte unique a ete violee";
     public final static String EXCEPTION_MESSAGE_UNAUTHORIZED = "Vous n'etes pas autorise a effectuer cette action";
     public final static String EXCEPTION_CHAMPS_MANQUANTS = "Tous les champs sont obligatoires";
+    public final static String EXCEPTION_UTILISATEUR_NON_TROUVER = "cet utilisateur est introuvable";
 }
