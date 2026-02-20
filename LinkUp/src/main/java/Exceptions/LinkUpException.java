@@ -21,4 +21,7 @@ public  class LinkUpException extends RuntimeException {
         throw this;
     }
 
+    public ERROR_TYPE getError() {
+        return error;
+    }
 }

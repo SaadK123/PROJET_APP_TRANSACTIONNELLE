@@ -2,10 +2,12 @@ package projetweb.linkup;
 
 import DTO.ACTIONS.CreateStudentDTO;
 import DTO.ACTIONS.DeleteStudentDTO;
-import DTO.ACTIONS.UpdateStudentDTO;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 import projetweb.linkup.Services.ServiceEtudiant;
 import projetweb.linkup.entities.Etudiant;
+
+import java.util.Optional;
 
 @RestController
 public class TestController {
@@ -23,17 +25,18 @@ public class TestController {
         }
 
         @PostMapping("/api/createUser")
-        public Etudiant createUser(@RequestBody CreateStudentDTO dto) {
+        public Etudiant createUser(@RequestBody  CreateStudentDTO dto) {
                return serviceEtudiant.createEtudiant(dto).orElseThrow();
         }
         @DeleteMapping("/api/deleteUser")
         public Etudiant deleteUser(@RequestBody DeleteStudentDTO dto) {
                 return serviceEtudiant.deleteEtudiant(dto).orElseThrow();
         }
-        @PutMapping("/api/updateUser")
+     /*   @PutMapping("/api/updateUser")
         public Etudiant updateUser(@RequestBody UpdateStudentDTO dto) {
                 return serviceEtudiant.updateEtudiant(dto).orElseThrow();
         }
+        */
 
 
 

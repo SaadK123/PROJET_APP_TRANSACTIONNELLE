@@ -3,14 +3,17 @@ package projetweb.linkup.Services;
 
 import DTO.ACTIONS.CreateStudentDTO;
 import DTO.ACTIONS.DeleteStudentDTO;
-import DTO.ACTIONS.UpdateStudentDTO;
+import DTO.ACTIONS.UpdateEtudiantDTO;
+import Exceptions.LinkUpException;
+import Util.Utilitary;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import projetweb.linkup.entities.Etudiant;
+import projetweb.linkup.Enumerations.ERROR_TYPE;
+import projetweb.linkup.entity.Etudiant;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -71,7 +74,7 @@ public class ServiceEtudiant {
 
     @Transactional
     public Optional<Etudiant> createEtudiant(CreateStudentDTO dto) {
-        if (dto == null) return Optional.empty();
+        if (dto == null) new LinkUpException(ERROR_TYPE.CHAMPS_MANQUANTS, Utilitary.EXCEPTION_CHAMPS_MANQUANTS).throwIt();
         Etudiant e = new Etudiant();
 
         e.setEmail(dto.email());
@@ -82,10 +85,24 @@ public class ServiceEtudiant {
         e.setEcole(dto.ecole());
         e.setLastdate(LocalDate.now());
 
+ try {
 
-        entityManager.persist(e);
 
-        entityManager.flush();
+   entityManager.createQuery("insert into Etudiant (email,firstname,lastname,username,passwordhash,ecole,lastdate)" +
+           " values (:email,:firstname,:lastname,:username,:passwordhash,:ecole,:lastdate)")
+           .setParameter("email", e.getEmail()).setParameter("firstname", e.getFirstname()).setParameter("lastname", e.getLastname());
+     entityManager.persist(e);
+
+     entityManager.flush();
+ }catch (Exception ex) {
+
+     switch (ex.getMessage()) {
+         case "UK_EMAIL" -> new LinkUpException(ERROR_TYPE.CONTRAINTE_UNIQUE, Utilitary.EXCEPTION_MESSAGE_DUPLICATION_EMAIL).throwIt();
+         case "UK_USERNAME" -> new LinkUpException(ERROR_TYPE.CONTRAINTE_UNIQUE, Utilitary.EXCEPTION_MESSAGE_DUPLICATION_USERNAME).throwIt();
+         default ->  new LinkUpException(ERROR_TYPE.CONTRAINTE_UNIQUE, Utilitary.EXCEPTION_MESSAGE_DUPLICATION_USERNAME).throwIt();
+     }
+ }
+
 
         return Optional.of(e);
     }
@@ -96,18 +113,16 @@ public class ServiceEtudiant {
         if (dto.email() == null || dto.password() == null) return Optional.empty();
 
         Etudiant e = entityManager.createQuery(
-                        "select e from Etudiant e where e.email = :email",
+                        "select e from Etudiant e where e.email = :email and e.passwordhash = :password",
                         Etudiant.class
                 )
-                .setParameter("email", dto.email())
-                .getResultStream()
-                .findFirst()
-                .orElse(null);
+                .setParameter("email", dto.email()).setParameter("password", passwordEncoder.encode(dto.password())).getResultList().get(0);
 
-        if (e == null) return Optional.empty();
+
+        if (e == null) new LinkUpException(ERROR_TYPE.NON_EXISTANT, Utilitary.EXCEPTION_MESSAGE_NON_EXISTANT).throwIt();
 
         if (!passwordEncoder.matches(dto.password(), e.getPasswordhash())) {
-            return Optional.empty();
+            new LinkUpException(ERROR_TYPE.NON_EXISTANT, Utilitary.EXCEPTION_MESSAGE_IDENTIFIANTS_INVALIDES).throwIt();
         }
 
         entityManager.remove(e);
@@ -116,9 +131,10 @@ public class ServiceEtudiant {
         return Optional.of(e);
     }
 
-    @Transactional
+    /*@Transactional
     public Optional<Etudiant> updateEtudiant(){
 
     }
+     */
 
 }
