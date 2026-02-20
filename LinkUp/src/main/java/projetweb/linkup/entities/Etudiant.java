@@ -1,10 +1,9 @@
-package projetweb.linkup.entity;
+package projetweb.linkup.entities;
 
 
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.UUID;
 
 import lombok.AllArgsConstructor;
@@ -62,10 +61,6 @@ public class Etudiant  {
     @JoinColumn(name = "horaire_id")
     private Horaire horaire;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "etudiant_id")
-
-    private List<Notification> notifications;
 
 }
 

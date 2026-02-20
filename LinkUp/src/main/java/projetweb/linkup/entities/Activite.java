@@ -1,12 +1,11 @@
-package projetweb.linkup.entity;
+package projetweb.linkup.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.boot.context.properties.bind.DefaultValue;
-import projetweb.linkup.entity.Jour;
+import org.springframework.resilience.annotation.EnableResilientMethods;
 
 import java.time.LocalTime;
 import java.util.UUID;
@@ -17,7 +16,8 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Activite {
+public   class Activite {
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -26,7 +26,7 @@ public class Activite {
     private boolean estRepete = false;
 
     @Column(nullable = false)
-    private String description = "";
+    private String description;
 
     @Column(nullable = false)
     private LocalTime dateDeDebut;
@@ -37,6 +37,12 @@ public class Activite {
     @Column(nullable = false)
     private String titre;
 
+   @Column(name = "est_activite_groupe",nullable = false)
+    private boolean estActiviteGroupe;
 
-    // todo ajouter un timestamp
+   @OneToOne
+   @JoinColumn(name = "etudiant_id",nullable = false)
+   private Etudiant etudiant;
+
+
 }

@@ -5,7 +5,7 @@ import DTO.ACTIONS.DeleteStudentDTO;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 import projetweb.linkup.Services.ServiceEtudiant;
-import projetweb.linkup.entity.Etudiant;
+import projetweb.linkup.entities.Etudiant;
 
 import java.util.Optional;
 
