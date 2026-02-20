@@ -3,7 +3,6 @@ package projetweb.linkup.Services;
 
 import DTO.ACTIONS.CreateStudentDTO;
 import DTO.ACTIONS.DeleteStudentDTO;
-import DTO.ACTIONS.UpdateEtudiantDTO;
 import Exceptions.LinkUpException;
 import Util.Utilitary;
 import jakarta.persistence.EntityManager;
@@ -18,7 +17,6 @@ import projetweb.linkup.entity.Etudiant;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class ServiceEtudiant {
