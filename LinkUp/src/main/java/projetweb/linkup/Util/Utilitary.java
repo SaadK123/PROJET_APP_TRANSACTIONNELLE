@@ -19,4 +19,10 @@ public abstract class Utilitary {
     public final static String EXCEPTION_MESSAGE_UNAUTHORIZED = "Vous n'etes pas autorise a effectuer cette action";
     public final static String EXCEPTION_CHAMPS_MANQUANTS = "Tous les champs sont obligatoires";
     public final static String EXCEPTION_UTILISATEUR_NON_TROUVER = "cet utilisateur est introuvable";
+    public final static String EXCEPTION_ACTIVITE_GROUPE_OVERLAP = "l'activite que vous essayer de saisir est overlapper avec une activite de ";
+
+
+    public static String CreerGroupeActiviteDupliquer(String utilisateur_username) {
+        return EXCEPTION_ACTIVITE_GROUPE_OVERLAP + utilisateur_username;
+    }
 }

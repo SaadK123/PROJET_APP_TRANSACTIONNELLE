@@ -16,13 +16,11 @@ public class ServiceHoraire {
         return etudiant.getHoraire().getActivites();
     }
 
-    public List<Activite> recupererTousLesActivitesDesEtudiants(List<Etudiant> etudiants) {
+    public List<Activite> recupererTousLesActivitesDuneListeDetudiants(List<Etudiant> etudiants) {
        final List<Activite> activitesDetousLesEtudiants = new ArrayList<>();
 
         for(Etudiant e : etudiants) {
-            for(Activite activite : e.getHoraire().getActivites())
-                activitesDetousLesEtudiants.add(activite);
-
+            activitesDetousLesEtudiants.addAll(e.getHoraire().getActivites());
         }
 
         return activitesDetousLesEtudiants;

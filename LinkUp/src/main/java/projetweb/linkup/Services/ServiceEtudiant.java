@@ -98,7 +98,7 @@ public class ServiceEtudiant {
      switch (ex.getMessage()) {
          case "UK_EMAIL" -> new LinkUpException(ERROR_TYPE.CONTRAINTE_UNIQUE, Utilitary.EXCEPTION_MESSAGE_DUPLICATION_EMAIL).throwIt();
          case "UK_USERNAME" -> new LinkUpException(ERROR_TYPE.CONTRAINTE_UNIQUE, Utilitary.EXCEPTION_MESSAGE_DUPLICATION_USERNAME).throwIt();
-         default ->  new LinkUpException(ERROR_TYPE.CONTRAINTE_UNIQUE, Utilitary.EXCEPTION_MESSAGE_DUPLICATION_USERNAME).throwIt();
+         default ->  throw ex;
      }
  }
 
