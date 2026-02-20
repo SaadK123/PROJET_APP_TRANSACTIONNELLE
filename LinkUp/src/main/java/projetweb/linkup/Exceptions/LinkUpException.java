@@ -1,4 +1,4 @@
-package Exceptions;
+package projetweb.linkup.Exceptions;
 
 
 import lombok.Getter;

@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.resilience.annotation.EnableResilientMethods;
 
 import java.time.LocalTime;
 import java.util.UUID;

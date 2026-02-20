@@ -1,10 +1,11 @@
 package projetweb.linkup.Services;
 
 
-import DTO.ACTIONS.CreateStudentDTO;
-import DTO.ACTIONS.DeleteStudentDTO;
-import Exceptions.LinkUpException;
-import Util.Utilitary;
+import projetweb.linkup.DTO.ACTIONS.CreateStudentDTO;
+import projetweb.linkup.DTO.ACTIONS.DeleteStudentDTO;
+import projetweb.linkup.DTO.TYPES.UpdateEtudiantProfile;
+import projetweb.linkup.Exceptions.LinkUpException;
+import projetweb.linkup.Util.Utilitary;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
@@ -12,7 +13,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import projetweb.linkup.Enumerations.ERROR_TYPE;
-import projetweb.linkup.entity.Etudiant;
+import projetweb.linkup.entities.Etudiant;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -130,10 +131,10 @@ public class ServiceEtudiant {
         return Optional.of(e);
     }
 
-    /*@Transactional
-    public Optional<Etudiant> updateEtudiant(){
-
+    @Transactional
+    public Optional<Etudiant> updateEtudiantProfile(UpdateEtudiantProfile updateDTO){
+      if(updateDTO.)
     }
-     */
+
 
 }

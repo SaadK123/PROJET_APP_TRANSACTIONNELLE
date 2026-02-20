@@ -1,4 +1,4 @@
-package DTO.ACTIONS;
+package projetweb.linkup.DTO.ACTIONS;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;

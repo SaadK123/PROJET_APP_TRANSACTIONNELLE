@@ -2,7 +2,6 @@ package projetweb.linkup.Services;
 
 import projetweb.linkup.entities.Activite;
 import projetweb.linkup.entities.Etudiant;
-import projetweb.linkup.entities.Horaire;
 
 import java.util.ArrayList;
 import java.util.List;

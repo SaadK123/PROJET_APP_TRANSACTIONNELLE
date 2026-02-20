@@ -1,4 +1,4 @@
-package Util;
+package projetweb.linkup.Util;
 
 import jdk.jshell.execution.Util;
 

@@ -1,6 +1,7 @@
-package DTO.TYPES;
+package projetweb.linkup.DTO.TYPES;
 
 import lombok.Getter;
+import projetweb.linkup.Enumerations.ERROR_TYPE;
 import projetweb.linkup.Services.ServiceEtudiant;
 
 import java.util.UUID;
@@ -17,7 +18,5 @@ public abstract class UpdateEtudiantDTO {
       this.etudiantID = etudiantID;
    }
 
-   public void EstConforme(ServiceEtudiant etudiant) {
-      
-   }
+
 }

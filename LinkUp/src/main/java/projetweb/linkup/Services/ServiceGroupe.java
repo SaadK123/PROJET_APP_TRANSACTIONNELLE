@@ -1,8 +1,8 @@
 package projetweb.linkup.Services;
 
-import DTO.ACTIONS.AjouterActiviteDTO;
-import Exceptions.LinkUpException;
-import Util.Utilitary;
+import projetweb.linkup.DTO.ACTIONS.AjouterActiviteDTO;
+import projetweb.linkup.Exceptions.LinkUpException;
+import projetweb.linkup.Util.Utilitary;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
@@ -10,7 +10,6 @@ import projetweb.linkup.Enumerations.ERROR_TYPE;
 import projetweb.linkup.entities.Activite;
 import projetweb.linkup.entities.Group;
 
-import javax.naming.LinkException;
 import java.util.List;
 import java.util.UUID;
 

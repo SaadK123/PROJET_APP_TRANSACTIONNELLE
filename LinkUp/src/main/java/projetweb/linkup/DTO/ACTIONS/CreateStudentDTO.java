@@ -1,4 +1,4 @@
-package DTO.ACTIONS;
+package projetweb.linkup.DTO.ACTIONS;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

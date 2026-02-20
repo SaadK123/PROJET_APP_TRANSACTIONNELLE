@@ -1,4 +1,4 @@
-package DTO.ACTIONS;
+package projetweb.linkup.DTO.ACTIONS;
 
 import projetweb.linkup.entities.Invitation;
 

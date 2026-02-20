@@ -1,14 +1,14 @@
-package DTO.TYPES;
+package projetweb.linkup.DTO.TYPES;
 
 import lombok.Getter;
 
 import java.util.UUID;
 @Getter
-public class UpdateEtudiantPasswordDTO extends UpdateEtudiantDTO {
+public class UpdateEtudiantPassword extends UpdateEtudiantDTO {
     private final String oldPassword;
     private final String newPassword;
 
-    public UpdateEtudiantPasswordDTO(
+    public UpdateEtudiantPassword(
             UUID etudiantID
             ,String oldPassword
             ,String newPassword)
@@ -18,7 +18,5 @@ public class UpdateEtudiantPasswordDTO extends UpdateEtudiantDTO {
         this.oldPassword = oldPassword;
         this.newPassword = newPassword;
     }
-
-
 
 }

@@ -1,10 +1,8 @@
 package projetweb.linkup;
 
-import DTO.ACTIONS.HandlerErreurDTO;
-import Exceptions.LinkUpException;
-import jakarta.servlet.http.HttpServletRequest;
+import projetweb.linkup.DTO.ACTIONS.HandlerErreurDTO;
+import projetweb.linkup.Exceptions.LinkUpException;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import projetweb.linkup.Enumerations.ERROR_TYPE;

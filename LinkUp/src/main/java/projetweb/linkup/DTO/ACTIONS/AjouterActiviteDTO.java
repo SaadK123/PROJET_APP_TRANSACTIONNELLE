@@ -1,6 +1,5 @@
-package DTO.ACTIONS;
+package projetweb.linkup.DTO.ACTIONS;
 
-import jakarta.websocket.OnMessage;
 import projetweb.linkup.entities.Activite;
 
 import java.util.UUID;
