@@ -1,107 +1,169 @@
+"use client";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router";
 export default function SignUpTestPage() {
+  const [username, setUsername] = useState<string>("");
+  const [name, setName] = useState<string>("");
+  const [firstName, setFirstName] = useState<string>("");
+  const [uni, setUni] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [conditions, setConditions] = useState<Boolean>(false);
+
+  function handleSubmit() {
+    if (!conditions) {
+      alert("Accepter les conditions d'utilisation");
+      return;
+    }
+    console.log({ username, name, firstName, uni, password });
+  }
+
   return (
     <>
-      {/* Head */}
-      <div className="container-fluid">
-        <div className="col-7 m-4">
-          <h2>Créer un compte</h2>
+      <div className="signup-background">
+        {/* Head */}
+        <div className="container-fluid">
+          <div className="col-7 m-4">
+            <h2>Créer un compte</h2>
 
-          <label>
-            Rejoins des milliers d'étudiants qui organisent mieux leur temps
-          </label>
-        </div>
+            <label>
+              Rejoins des milliers d'étudiants qui organisent mieux leur temps
+            </label>
+          </div>
 
-        <div>
-          <form className="border rounded signup-form p-5 col-7 mx-auto">
-            {/* Nom utilisateur */}
-            <div className="mb-3">
-              <label>Nom d'utilisateur</label>
-              <input className="form-control " type="text" />
-            </div>
-            {/* Nom */}
-            <div className="row mb-3">
-              <div className="col-7">
-                <label>Nom</label>
-                <input type="text" className="form-control " />
+          <div>
+            <form className="border rounded signup-form p-5 col-7 mx-auto">
+              {/* Nom utilisateur */}
+              <div className="mb-3">
+                <label>Nom d'utilisateur</label>
+                <input
+                  onChange={(e) => {
+                    setUsername(e.currentTarget.value);
+                  }}
+                  className="form-control "
+                  type="text"
+                />
               </div>
-              <div className="col-5">
-                <label>Prénom</label>
-                <input type="text" className="form-control " />
+              {/* Nom - Prénom */}
+              <div className="row mb-3">
+                <div className="col-7">
+                  <label>Nom</label>
+                  <input
+                    onChange={(e) => {
+                      setName(e.currentTarget.value);
+                    }}
+                    type="text"
+                    className="form-control "
+                  />
+                </div>
+                <div className="col-5">
+                  <label>Prénom</label>
+                  <input
+                    onChange={(e) => {
+                      setFirstName(e.currentTarget.value);
+                    }}
+                    type="text"
+                    className="form-control "
+                  />
+                </div>
               </div>
-            </div>
-            {/* Université / Cégep */}
-            <div className="mb-3">
-              <label htmlFor="school">Université/Cégep</label>
-              <select className="form-select " name="school" id="school">
-                <option value="">Choisir une université ou un cégèp</option>
-                {/* Cégeps */}
-                <option value="bois_de_boulogne">
-                  Collège Bois-de-Boulogne
-                </option>
-                <option value="vanier">Collège Vanier</option>
-                <option value="montmorency">Cégep de Montmorency</option>
-                <option value="sainte_foy">Cégep de Sainte-Foy</option>
-                <option value="limoilou">Cégep Limoilou</option>
-                <option value="temiscouata">Cégep de Témiscouata</option>
-                {/* Universités */}
-                <option value="mcgill">Université McGill</option>
-                <option value="uqam">
-                  Université du Québec à Montréal (UQAM)
-                </option>
-                <option value="laval">Université Laval</option>
-                <option value="montreal">Université de Montréal</option>
-                <option value="concordia">Université Concordia</option>
-                <option value="sherbrooke">Université de Sherbrooke</option>
-                <option value="trois_rivieres">
-                  Université du Québec à Trois-Rivières (UQTR)
-                </option>
-                <option value="outaouais">
-                  Université du Québec en Outaouais (UQO)
-                </option>
-                <option value="chicoutimi">
-                  Université du Québec à Chicoutimi (UQAC)
-                </option>
-              </select>
-            </div>
+              {/* Université / Cégep */}
+              <div className="mb-3">
+                <label htmlFor="school">Université/Cégep</label>
+                <select
+                  onChange={(e) => {
+                    setUni(e.currentTarget.value);
+                  }}
+                  className="form-select "
+                  name="school"
+                  id="school"
+                >
+                  <option value="">Choisir une université ou un cégèp</option>
+                  {/* Cégeps */}
+                  <option value="bois_de_boulogne">
+                    Collège Bois-de-Boulogne
+                  </option>
+                  <option value="vanier">Collège Vanier</option>
+                  <option value="montmorency">Cégep de Montmorency</option>
+                  <option value="sainte_foy">Cégep de Sainte-Foy</option>
+                  <option value="limoilou">Cégep Limoilou</option>
+                  <option value="temiscouata">Cégep de Témiscouata</option>
+                  {/* Universités */}
+                  <option value="mcgill">Université McGill</option>
+                  <option value="uqam">
+                    Université du Québec à Montréal (UQAM)
+                  </option>
+                  <option value="laval">Université Laval</option>
+                  <option value="montreal">Université de Montréal</option>
+                  <option value="concordia">Université Concordia</option>
+                  <option value="sherbrooke">Université de Sherbrooke</option>
+                  <option value="trois_rivieres">
+                    Université du Québec à Trois-Rivières (UQTR)
+                  </option>
+                  <option value="outaouais">
+                    Université du Québec en Outaouais (UQO)
+                  </option>
+                  <option value="chicoutimi">
+                    Université du Québec à Chicoutimi (UQAC)
+                  </option>
+                </select>
+              </div>
 
-            <div className="mb-3 ">
-              <label>Email Étudiant</label>
-              <input type="text" className="form-control "></input>
-            </div>
-            {/* Mot de passe */}
-            <div className="mb-5">
-              <label>Mot de passe</label>
-              <input type="text" className="form-control "></input>
-              <input
-                type="checkbox"
-                className="form-check-input "
-                id="condition"
-              ></input>
-              <label className="form-check-label ms-2 " htmlFor="condition">
-                J'accepte les{" "}
-                <span>
-                  <a href="??">condition d'utilisation</a>{" "}
-                </span>
-                et la{" "}
-                <span>
-                  <a href="??">politique de confidentialité</a>
-                </span>
-              </label>
-            </div>
-            <div className="d-grid mb-4">
-              <button className="btn btn-createAcc btn-lg " type="submit">
-                Créer mon compte
-              </button>
-            </div>
-            <div className="col-7 mx-auto text-center">
-              <label>
-                Tu as déjà un compte?{" "}
-                <span>
-                  <a href="??">Connecte-toi</a>
-                </span>
-              </label>
-            </div>
-          </form>
+              {/* Email */}
+              <div className="mb-3 ">
+                <label>Email Étudiant</label>
+                <input
+                  onChange={(e) => setEmail(e.currentTarget.value)}
+                  type="text"
+                  className="form-control "
+                ></input>
+              </div>
+              {/* Mot de passe */}
+              <div className="mb-5">
+                <label>Mot de passe</label>
+                <input
+                  onChange={(e) => {
+                    setPassword(e.currentTarget.value);
+                  }}
+                  type="password"
+                  className="form-control "
+                ></input>
+                <input
+                  onChange={(e) => setConditions(!conditions)}
+                  type="checkbox"
+                  className="form-check-input "
+                  id="condition"
+                ></input>
+                <label className="form-check-label ms-2 " htmlFor="condition">
+                  J'accepte les{" "}
+                  <span>
+                    <a href="??">conditions d'utilisation</a>{" "}
+                  </span>
+                  et la{" "}
+                  <span>
+                    <a href="??">politique de confidentialité</a>
+                  </span>
+                </label>
+              </div>
+              <div className="d-grid mb-4">
+                <button
+                  onClick={handleSubmit}
+                  className="btn btn-createAcc btn-lg "
+                  type="submit"
+                >
+                  Créer mon compte
+                </button>
+              </div>
+              <div className="col-7 mx-auto text-center">
+                <label>
+                  Tu as déjà un compte?{" "}
+                  <span>
+                    <a href="??">Connecte-toi</a>
+                  </span>
+                </label>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
     </>
