@@ -25,6 +25,10 @@ public class Group {
     @ManyToOne
     @JoinColumn(name = "chef_id", nullable = false)
     private Etudiant chef;
+    
+    @Column(name = "nom_du_groupe",nullable = false)
+    private String nomGroupe;
+
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
