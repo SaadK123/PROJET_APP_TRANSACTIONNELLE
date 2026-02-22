@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -37,8 +39,12 @@ public class Group {
             inverseJoinColumns = @JoinColumn(name = "etudiant_id")
     )
     // id etudiant ; etudiant
-    private Set<Etudiant> etudiants;
+    private Set<Etudiant> etudiants = new HashSet<>(); // pour trie auto
 
-
+    public Group(Etudiant chef,String nomGroupe) {
+        setChef(chef);
+        etudiants.add(chef);
+        setNomGroupe(nomGroupe);
+    }
 
 }

@@ -1,6 +1,8 @@
 package projetweb.linkup.Services;
 
+import jakarta.transaction.Transactional;
 import projetweb.linkup.DTO.ACTIONS.AjouterActiviteDTO;
+import projetweb.linkup.DTO.ACTIONS.CreateGroupDTO;
 import projetweb.linkup.Exceptions.LinkUpException;
 import projetweb.linkup.Util.Utilitary;
 import jakarta.persistence.EntityManager;
@@ -26,8 +28,10 @@ public class ServiceGroupe {
         this.serviceHoraire = serviceHoraire;
         this.serviceEtudiant = serviceEtudiant;
     }
+
+    @Transactional
     public void ajouterUneActivite(AjouterActiviteDTO ajouterActiviteDTO) {
-       Group group   = getGroupById(ajouterActiviteDTO.destination());
+       Group group   = getGroupById(ajouterActiviteDTO.destination().toString());
 
         List<Activite> activites = serviceHoraire.recupererTousLesActivitesDuneListeDetudiants(group.getEtudiants().stream().toList());
         Activite activite = ajouterActiviteDTO.activite();
@@ -39,7 +43,7 @@ public class ServiceGroupe {
         }
     }
 
-
+   @Transactional
     public Group getGroupById(String groupId) {
 
         try {
@@ -52,7 +56,8 @@ public class ServiceGroupe {
 
     }
 
-    public List<Group> getALlgroupsFromUser(UUID userID,UUID groupID) {
+    @Transactional
+public List<Group> getALlgroupsFromUser(UUID userID,UUID groupID) {
 
 
         List<Group> groups;
@@ -62,7 +67,20 @@ public class ServiceGroupe {
 
          return groups;
     }
-    public Group createGroup()
+
+    @Transactional
+    public Group createGroup(CreateGroupDTO group) {
+        
+
+        Etudiant e =  serviceEtudiant.getEtudiantById(group.chefID());
+
+        Group g = new Group(e,group.nomGroup());
+
+        entityManager.persist(g);
+        entityManager.flush();
+
+        return g;
+    }
 
 
 
