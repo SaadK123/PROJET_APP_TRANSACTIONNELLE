@@ -8,6 +8,7 @@ export default function HomePage() {
    const gotoHomePage = () =>{
     router.push("/HomePage")
   };
+  const gotoLogIn = () =>{ router.push("/SignIn")};
 
   return (
     <div className="homepage-background min-h-screen bg-cover bg-center">
@@ -33,7 +34,7 @@ export default function HomePage() {
           {/*Login/Create*/}
 
           <div className="col-2 p-3 text-center ">
-            <button className="ps-3 pe-3 mt-3" type="button">Connection</button>
+            <button onClick={gotoLogIn} className="ps-3 pe-3 mt-3" type="button">Connection</button>
             <button onClick={gotosignup} className="ps-2 pe-2 rounded bg-green-500 text-white"type="button">Inscription</button>
           </div>
         </div>

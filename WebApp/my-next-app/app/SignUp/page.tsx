@@ -1,7 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router";
+import { useRouter } from "next/navigation";
 export default function SignUpTestPage() {
+  
   const [username, setUsername] = useState<string>("");
   const [name, setName] = useState<string>("");
   const [firstName, setFirstName] = useState<string>("");
@@ -9,6 +10,13 @@ export default function SignUpTestPage() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [conditions, setConditions] = useState<Boolean>(false);
+  const router = useRouter();
+  const gotoHomePage = () =>{
+    router.push("/HomePage")
+  };
+  const gotoLogIn = () =>{
+     router.push("/SignIn")
+    };
 
   function handleSubmit() {
     if (!conditions) {
@@ -23,6 +31,26 @@ export default function SignUpTestPage() {
       <div className="signup-background">
         {/* Head */}
         <div className="container-fluid">
+          <div className="row bg-white">
+
+          {/*LOGO*/}
+          <div className="col-1">
+            <button onClick={gotoHomePage}><img className="homepage-logo p-2" src="./Img/LogoLinkUp.png" alt="Logo"/></button>
+          </div>
+
+          {/*Middle Buttons*/}
+
+          <div className="col-9 p-3 pe-5  text-end">
+            <button className=" ps-2 pe-2 mt-3 text-dark rounded bg-gray-300" type="button">Produit</button>
+            <button className=" ps-2 pe-2 ms-2 me-2 text-dark rounded bg-gray-300" type="button">Forfait</button>
+            <button className=" ps-2 pe-2 me-2 text-dark rounded bg-gray-300" type="button">Contact</button>
+          </div>
+          {/*Login*/}
+          <div className="col-2 p-3 text-center ">
+            <button onClick={gotoLogIn} className="ps-3 pe-3 mt-3" type="button">Connection</button>
+          </div>
+        </div>
+        {/*Body*/}
           <div className="col-7 m-4">
             <h2>Créer un compte</h2>
 
@@ -158,7 +186,7 @@ export default function SignUpTestPage() {
                 <label>
                   Tu as déjà un compte?{" "}
                   <span>
-                    <a href="??">Connecte-toi</a>
+                    <a href="./SignIn">Connecte-toi</a>
                   </span>
                 </label>
               </div>
