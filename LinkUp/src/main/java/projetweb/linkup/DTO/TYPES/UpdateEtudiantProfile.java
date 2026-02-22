@@ -9,18 +9,19 @@ import java.util.UUID;
 
 public class UpdateEtudiantProfile extends UpdateEtudiantDTO {
 
-    private String username;
+    private final  String username;
 
 
-    private String lastname;
+    private final String lastname;
 
-    private String firstname;
+    private final String firstname;
 
-    private String password;
-    public UpdateEtudiantProfile(UUID etudiantID,String username,String lastname,String password) {
+    private final String ecole;
+    public UpdateEtudiantProfile(UUID etudiantID,String username,String lastname,String ecole,String firstname) {
         super(etudiantID);
         this.username = username;
         this.lastname = lastname;
-        this.password = password;
+        this.firstname = firstname;
+        this.ecole = ecole;
     }
 }

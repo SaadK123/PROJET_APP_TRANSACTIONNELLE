@@ -141,7 +141,7 @@ public class ServiceEtudiant {
        if(updateDTO.getLastname() != null)
            e.setLastname(updateDTO.getLastname());
 
-
+       if(updateDTO.get)
 
 
 

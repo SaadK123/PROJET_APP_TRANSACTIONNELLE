@@ -19,11 +19,12 @@ public class ServiceGroupe {
 
 
    private final ServiceHoraire serviceHoraire;
-
+   private final ServiceEtudiant serviceEtudiant;
     @PersistenceContext
     private EntityManager entityManager;
-    public ServiceGroupe(ServiceHoraire serviceHoraire) {
+    public ServiceGroupe(ServiceHoraire serviceHoraire, ServiceEtudiant serviceEtudiant) {
         this.serviceHoraire = serviceHoraire;
+        this.serviceEtudiant = serviceEtudiant;
     }
     public void ajouterUneActivite(AjouterActiviteDTO ajouterActiviteDTO) {
        Group group   = getGroupById(ajouterActiviteDTO.destination());
@@ -39,7 +40,7 @@ public class ServiceGroupe {
     }
 
 
-    public Group getGroupById(UUID groupId) {
+    public Group getGroupById(String groupId) {
 
         try {
             return  entityManager.
@@ -52,7 +53,8 @@ public class ServiceGroupe {
     }
 
     public List<Group> getALlgroupsFromUser(UUID userID,UUID groupID) {
-      // todo verify if user exist first optimisation
+
+
         List<Group> groups;
 
         groups = entityManager.createQuery("select g from  Group g  join g.etudiants e where e.id = :userID", Group.class).
@@ -60,6 +62,7 @@ public class ServiceGroupe {
 
          return groups;
     }
+    public Group createGroup(UUID user,1)
 
 
 
