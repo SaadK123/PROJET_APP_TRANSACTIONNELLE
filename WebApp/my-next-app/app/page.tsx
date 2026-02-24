@@ -1,6 +1,6 @@
 "use client";
 import { useRouter } from "next/navigation";
-
+import HomePage from "./HomePage/page";
 
 export default function NavigationButtons() {
   const router = useRouter();
@@ -15,8 +15,7 @@ export default function NavigationButtons() {
 
   return (
     <> 
-      <button onClick={gotoHomePage}>HomePage</button>
-      <button onClick={gotoSignUp}>Go to Sign Up</button>
+      <HomePage></HomePage>
     </>
   );
 }
