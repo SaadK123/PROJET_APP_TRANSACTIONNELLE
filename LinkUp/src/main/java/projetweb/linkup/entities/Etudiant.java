@@ -1,6 +1,7 @@
 package projetweb.linkup.entities;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -56,7 +57,7 @@ public class Etudiant  {
     @Column(name= "ecole", nullable = false)
     private String ecole;
 
-
+    @JsonIgnore
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "horaire_id")
     private Horaire horaire;

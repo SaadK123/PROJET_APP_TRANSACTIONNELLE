@@ -1,6 +1,7 @@
 package projetweb.linkup.Services;
 
 import jakarta.transaction.Transactional;
+import org.springframework.stereotype.Service;
 import projetweb.linkup.DTO.ACTIONS.AjouterActiviteDTO;
 import projetweb.linkup.DTO.ACTIONS.CreateGroupDTO;
 import projetweb.linkup.Exceptions.LinkUpException;
@@ -16,7 +17,7 @@ import projetweb.linkup.entities.Group;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
+@Service
 public class ServiceGroupe {
 
 

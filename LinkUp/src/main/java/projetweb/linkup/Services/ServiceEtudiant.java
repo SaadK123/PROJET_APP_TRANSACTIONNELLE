@@ -29,13 +29,16 @@ public class ServiceEtudiant {
 
     @Transactional
     public Etudiant getEtudiantById(String id) {
+
         try {
-         return  (Etudiant) entityManager.createQuery("select e from Etudiant  e where id = :id")
-                    .setParameter("id", id).getSingleResult();
-        } catch (NoResultException ex) {
-            throw new LinkUpException(ERROR_TYPE.CHAMPS_MANQUANTS,Utilitary.EXCEPTION_UTILISATEUR_NON_TROUVER);
+            UUID uuid = UUID.fromString(id);
+         return   entityManager.createQuery("select e from Etudiant  e where e.id = :uuid",Etudiant.class)
+                    .setParameter("uuid", uuid).getSingleResult();
+        } catch (Exception e) {
+            throw new LinkUpException(ERROR_TYPE.CHAMPS_MANQUANTS,e.getMessage());
         }
     }
+
 
     @Transactional
     public Optional<Etudiant> getEtudiantByUsername(String username) {
@@ -140,10 +143,6 @@ public class ServiceEtudiant {
 
        if(updateDTO.getLastname() != null)
            e.setLastname(updateDTO.getLastname());
-
-       if(updateDTO.get)
-
-
 
        entityManager.persist(e);
     }
