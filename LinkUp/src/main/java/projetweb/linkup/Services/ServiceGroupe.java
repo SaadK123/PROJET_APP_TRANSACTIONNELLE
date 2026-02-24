@@ -58,7 +58,7 @@ public class ServiceGroupe {
     }
 
     @Transactional
-public List<Group> getALlgroupsFromUser(UUID userID,UUID groupID) {
+public List<Group> getALlgroupsFromUser(UUID userID) {
 
 
         List<Group> groups;
@@ -76,7 +76,7 @@ public List<Group> getALlgroupsFromUser(UUID userID,UUID groupID) {
         Etudiant e =  serviceEtudiant.getEtudiantById(group.chefID());
 
         Group g = new Group(e,group.nomGroup());
-
+        g.getEtudiants().add(e);
         entityManager.persist(g);
         entityManager.flush();
 
