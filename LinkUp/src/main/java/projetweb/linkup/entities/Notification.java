@@ -40,7 +40,7 @@ public  class Notification {
     )
     private List<Etudiant> receveurs;
     @Column(name = "est_vu")
-    private boolean est_vu;
+    private boolean estVu;
     public Notification(String message,NotificationType type) {
         this.type = type;
         this.message = message;

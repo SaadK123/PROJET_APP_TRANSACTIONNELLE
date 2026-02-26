@@ -3,6 +3,7 @@ package projetweb.linkup.Services;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
 import projetweb.linkup.Enumerations.ERROR_TYPE;
 import projetweb.linkup.Exceptions.LinkUpException;
 import projetweb.linkup.Util.Utilitary;
@@ -39,5 +40,29 @@ public class ServiceNotification {
 
         return notifications;
     }
+
+    @Transactional
+    public void setToEstVu (String idNotification) {
+        UUID id = UUID.fromString(idNotification);
+        Notification notification = entityManager.find(Notification.class, id);
+        if(notification == null) {
+            throw new LinkUpException(ERROR_TYPE.NON_EXISTANT, Utilitary.EXCEPTION_MESSAGE_NON_EXISTANT);
+
+        }
+        notification.setEstVu(true);
+        entityManager.persist(notification);
+    }
+
+    @Transactional
+    public void deleteNotification(String idNotification) {
+        UUID id = UUID.fromString(idNotification);
+        Notification notification = entityManager.find(Notification.class, id);
+        if(notification == null) {
+            throw new LinkUpException(ERROR_TYPE.NON_EXISTANT, Utilitary.EXCEPTION_MESSAGE_NON_EXISTANT);
+
+        }
+        entityManager.remove(notification);
+    }
+
 
 }
