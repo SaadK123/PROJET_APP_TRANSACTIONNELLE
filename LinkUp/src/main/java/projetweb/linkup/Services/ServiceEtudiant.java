@@ -3,6 +3,7 @@ package projetweb.linkup.Services;
 
 import projetweb.linkup.DTO.ACTIONS.CreateStudentDTO;
 import projetweb.linkup.DTO.ACTIONS.DeleteStudentDTO;
+import projetweb.linkup.DTO.TYPES.UpdateEtudiantPassword;
 import projetweb.linkup.DTO.TYPES.UpdateEtudiantProfile;
 import projetweb.linkup.Exceptions.LinkUpException;
 import projetweb.linkup.Util.Utilitary;
@@ -55,7 +56,7 @@ public class ServiceEtudiant {
     }
 
     @Transactional
-    public Optional<List<Etudiant>> getEtudiantsByFirstName(String name, boolean isfirstname) {
+    public Optional<List<Etudiant>> getEtudiantByFirstName(String name, boolean isfirstname) {
         if (name == null || name.isBlank()) return Optional.empty();
         name = name.toLowerCase();
         List<Etudiant> etudiants = isfirstname ?
@@ -144,7 +145,28 @@ public class ServiceEtudiant {
        if(updateDTO.getLastname() != null)
            e.setLastname(updateDTO.getLastname());
 
-       entityManager.persist(e);
+
+    }
+
+    @Transactional
+    public void updateEtudiantPassword(UpdateEtudiantPassword updateEtudiantPassword){
+        UUID etudiantId = updateEtudiantPassword.getEtudiantID();
+        Etudiant e =  getEtudiantById(etudiantId.toString());
+
+        if( updateEtudiantPassword.getNewPassword() != null && passwordEncoder.matches(updateEtudiantPassword.getOldPassword(),e.getPasswordhash()))
+            e.setPasswordhash(passwordEncoder.encode(updateEtudiantPassword.getNewPassword()));
+
+        else{
+            new LinkUpException(ERROR_TYPE.NON_EXISTANT, Utilitary.EXCEPTION_MESSAGE_IDENTIFIANTS_INVALIDES).throwIt();
+        }
+
+    }
+
+
+
+    @Transactional
+    public boolean doesStudentExist(String id) {
+        return getEtudiantById(id) != null;
     }
 
 

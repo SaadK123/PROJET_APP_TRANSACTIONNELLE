@@ -38,7 +38,9 @@ public  class Notification {
             joinColumns = @JoinColumn(name = "notification_id",nullable = false),
             inverseJoinColumns = @JoinColumn(name = "etudiant_id",nullable = false)
     )
-    private List<Etudiant> receuveurs;
+    private List<Etudiant> receveurs;
+    @Column(name = "est_vu")
+    private boolean estVu;
     public Notification(String message,NotificationType type) {
         this.type = type;
         this.message = message;
