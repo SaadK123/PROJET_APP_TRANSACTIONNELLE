@@ -31,7 +31,7 @@ public class ServiceGroupe {
     }
 
     @Transactional
-    public void ajouterUneActivite(AjouterActiviteDTO ajouterActiviteDTO) {
+    public void addActivite(AjouterActiviteDTO ajouterActiviteDTO) {
        Group group   = getGroupById(ajouterActiviteDTO.destination().toString());
 
         List<Activite> activites = serviceHoraire.recupererTousLesActivitesDuneListeDetudiants(group.getEtudiants().stream().toList());

@@ -10,6 +10,7 @@ import projetweb.linkup.Enumerations.ERROR_TYPE;
 @Setter
 public  class LinkUpException extends RuntimeException {
 
+    @Getter
     private final ERROR_TYPE error;
     private final String message;
     public LinkUpException(ERROR_TYPE error,String message) {
@@ -21,7 +22,4 @@ public  class LinkUpException extends RuntimeException {
         throw this;
     }
 
-    public ERROR_TYPE getError() {
-        return error;
-    }
 }

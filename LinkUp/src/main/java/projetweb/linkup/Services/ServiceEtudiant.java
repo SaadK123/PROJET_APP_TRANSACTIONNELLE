@@ -148,4 +148,10 @@ public class ServiceEtudiant {
     }
 
 
+    @Transactional
+    public boolean doesStudentExist(String id) {
+        return getEtudiantById(id) != null;
+    }
+
+
 }
