@@ -75,7 +75,7 @@ public class ServiceEtudiant {
     }
 
     @Transactional
-    public Optional<Etudiant> createEtudiant(CreateStudentDTO dto) {
+    public Etudiant createEtudiant(CreateStudentDTO dto) {
         if (dto == null) new LinkUpException(ERROR_TYPE.CHAMPS_MANQUANTS, Utilitary.EXCEPTION_CHAMPS_MANQUANTS).throwIt();
         Etudiant e = new Etudiant();
 
@@ -106,7 +106,7 @@ public class ServiceEtudiant {
  }
 
 
-        return Optional.of(e);
+        return e;
     }
 
     @Transactional
