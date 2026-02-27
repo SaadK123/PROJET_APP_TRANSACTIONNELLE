@@ -20,6 +20,12 @@
   margin-bottom: 0%;
 }
 
+.hp-Border-Blue{
+  --bs-border-opacity: 1;
+  border-style: dashed !important;
+  border-color: rgba(74, 175, 237)!important;
+}
+
 /* SignUp */
 
 .btn-createAcc {
