@@ -21,11 +21,15 @@
 }
 
 .hp-Border-Blue{
-  --bs-border-opacity: 1;
+  --bs-border-opacity: 1 !important;
   border-style: dashed !important;
   border-color: rgba(74, 175, 237)!important;
 }
-
+.hp-Border-Purple{
+    --bs-border-opacity: 1 !important;
+  border-style: dashed !important;
+  border-color: rgba(187, 73, 249)!important;
+}
 /* SignUp */
 
 .btn-createAcc {
