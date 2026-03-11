@@ -61,16 +61,22 @@ public class ServiceHoraire {
 
     @Transactional
     public SucessDTO addActivite(AjouterActiviteDTO ajouterActiviteDTO) {
-         List<Activite> activites = 
+
+        String destination =  ajouterActiviteDTO.destination();
+         List<Activite> activites = ajouterActiviteDTO.isforGroup() ? recupererTousLesActivitesDunGroupe(destination)
+                 :recupererLesActivitesDunHoraire(destination);
+
         Activite activite = ajouterActiviteDTO.activite();
         
         for(var currentActivite : activites) {
-            if(activite.getDateDeDebut().isBefore(current_activite.getDateDeFin()) &&
-                    activite.getDateDeFin().isAfter(current_activite.getDateDeDebut())) {
-
+            if(activite.getDateDeDebut().isBefore(currentActivite.getDateDeFin()) &&
+                    activite.getDateDeFin().isAfter(currentActivite.getDateDeDebut())) {
+             
             }
 
         }
+
+
     }
 
 

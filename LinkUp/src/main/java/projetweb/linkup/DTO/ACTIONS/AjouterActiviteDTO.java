@@ -14,6 +14,6 @@ import java.util.UUID;
  *
  * @param destination
  */
-public record AjouterActiviteDTO(UUID ajouteur_id, Activite activite, UUID destination) {
+public record AjouterActiviteDTO(String ajouteur_id, Activite activite, String destination,boolean isforGroup) {
 
 }
