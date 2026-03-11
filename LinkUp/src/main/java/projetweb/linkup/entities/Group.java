@@ -1,15 +1,9 @@
 package projetweb.linkup.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Getter
@@ -41,10 +35,16 @@ public class Group {
     // id etudiant ; etudiant
     private Set<Etudiant> etudiants = new HashSet<>(); // pour trie auto
 
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "horaire_id",unique = true)
+    Horaire horaire;
     public Group(Etudiant chef,String nomGroupe) {
         setChef(chef);
         etudiants.add(chef);
         setNomGroupe(nomGroupe);
     }
+
+
 
 }

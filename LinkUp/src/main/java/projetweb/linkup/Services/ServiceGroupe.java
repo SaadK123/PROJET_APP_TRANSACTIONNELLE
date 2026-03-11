@@ -32,17 +32,32 @@ public class ServiceGroupe {
 
     @Transactional
     public void addActivite(AjouterActiviteDTO ajouterActiviteDTO) {
-       Group group   = getGroupById(ajouterActiviteDTO.destination().toString());
-
-        List<Activite> activites = serviceHoraire.recupererTousLesActivitesDuneListeDetudiants(group.getEtudiants().stream().toList());
+        List<String> allhoraires = getAllHorairesIdsFromGroup(ajouterActiviteDTO.destination().toString());
+        List<Activite> activites = serviceHoraire.recupererLesActivitesDePlusieursHoraire(allhoraires.toArray(new String[0]));
         Activite activite = ajouterActiviteDTO.activite();
         for(var current_activite : activites) {
             if(activite.getDateDeDebut().isBefore(current_activite.getDateDeFin()) &&
             activite.getDateDeFin().isAfter(current_activite.getDateDeDebut())) {
                 throw new LinkUpException(ERROR_TYPE.DUPLICATION,Utilitary.CreerGroupeActiviteDupliquer(current_activite.getEtudiant().getUsername()));
             }
+            
         }
     }
+
+@Transactional
+    public List<String> getAllHorairesIdsFromGroup(String groupId) {
+        Group group = getGroupById(groupId);
+        List<String> horairesIds = new ArrayList<>();
+        horairesIds.add(group.getHoraire().getId()); // horaire du groupe
+
+        for(Etudiant e : group.getEtudiants()) {
+            horairesIds.add(e.getHoraire().getId());
+        }
+        return horairesIds;
+    }
+
+
+
 
    @Transactional
     public Group getGroupById(String groupId) {
@@ -59,7 +74,6 @@ public class ServiceGroupe {
 
     @Transactional
 public List<Group> getALlgroupsFromUser(UUID userID) {
-
 
         List<Group> groups;
 

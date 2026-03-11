@@ -22,4 +22,8 @@ public class Horaire {
     @JoinColumn(name = "horaire_id",nullable = false)
     private List<Activite> activites = new ArrayList<>();
 
+
+    public String getId() {
+        return id.toString();
+    }
 }

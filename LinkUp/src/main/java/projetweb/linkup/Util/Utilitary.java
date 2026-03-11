@@ -2,6 +2,8 @@ package projetweb.linkup.Util;
 
 import jdk.jshell.execution.Util;
 
+import java.util.List;
+
 public abstract class Utilitary {
     private Utilitary() {}
 
@@ -25,4 +27,7 @@ public abstract class Utilitary {
     public static String CreerGroupeActiviteDupliquer(String utilisateur_username) {
         return EXCEPTION_ACTIVITE_GROUPE_OVERLAP + utilisateur_username;
     }
+
+
+
 }

@@ -113,20 +113,12 @@ public class ServiceEtudiant {
     @Transactional
     public Optional<Etudiant> deleteEtudiant(DeleteStudentDTO dto) {
         if (dto == null) return Optional.empty();
-        if (dto.email() == null || dto.password() == null) return Optional.empty();
-
-        Etudiant e = entityManager.createQuery(
-                        "select e from Etudiant e where e.email = :email and e.passwordhash = :password",
-                        Etudiant.class
-                )
-                .setParameter("email", dto.email()).setParameter("password", passwordEncoder.encode(dto.password())).getResultList().get(0);
-
-
-        if (e == null) new LinkUpException(ERROR_TYPE.NON_EXISTANT, Utilitary.EXCEPTION_MESSAGE_NON_EXISTANT).throwIt();
-
-        if (!passwordEncoder.matches(dto.password(), e.getPasswordhash())) {
-            new LinkUpException(ERROR_TYPE.NON_EXISTANT, Utilitary.EXCEPTION_MESSAGE_IDENTIFIANTS_INVALIDES).throwIt();
+        if (dto.email() == null || dto.password() == null) {
+            throw new LinkUpException(ERROR_TYPE.CHAMPS_MANQUANTS,Utilitary.EXCEPTION_CHAMPS_MANQUANTS);
         }
+
+        String passwordHash =  passwordEncoder.encode(dto.password());
+        Etudiant e = getEtudiantByEmailAndPassword(dto.email(),passwordHash);
 
         entityManager.remove(e);
         entityManager.flush();
@@ -134,6 +126,21 @@ public class ServiceEtudiant {
         return Optional.of(e);
     }
 
+
+
+    @Transactional
+
+    Etudiant getEtudiantByEmailAndPassword(String email,String passwordHash) {
+        try {
+
+            return (Etudiant) entityManager.createQuery("select e from Etudiant  e where e.passwordhash = :passwordHash " +
+                            "and e.email = :email",
+                            Etudiant.class)
+                    .setParameter("passwordHash",passwordHash).setParameter("email",email);
+        } catch (Exception e) {
+         throw new LinkUpException(ERROR_TYPE.NON_EXISTANT,Utilitary.EXCEPTION_MESSAGE_NON_EXISTANT);
+        }
+    }
     @Transactional
     public void updateEtudiantProfile(UpdateEtudiantProfile updateDTO){
       UUID etudiantId = updateDTO.getEtudiantID();

@@ -8,7 +8,7 @@ import projetweb.linkup.entities.Horaire;
 public class TestHoraire {
     Horaire horaire = null;
 
-    @Autowired
+
     ServiceHoraire service;
 
     @BeforeEach
