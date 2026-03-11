@@ -2,7 +2,6 @@ package projetweb.linkup.Services;
 
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
-import projetweb.linkup.DTO.ACTIONS.AjouterActiviteDTO;
 import projetweb.linkup.DTO.ACTIONS.CreateGroupDTO;
 import projetweb.linkup.Exceptions.LinkUpException;
 import projetweb.linkup.Util.Utilitary;
@@ -10,7 +9,6 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import projetweb.linkup.Enumerations.ERROR_TYPE;
-import projetweb.linkup.entities.Activite;
 import projetweb.linkup.entities.Etudiant;
 import projetweb.linkup.entities.Group;
 
@@ -21,40 +19,19 @@ import java.util.UUID;
 public class ServiceGroupe {
 
 
-   private final ServiceHoraire serviceHoraire;
+
    private final ServiceEtudiant serviceEtudiant;
     @PersistenceContext
     private EntityManager entityManager;
-    public ServiceGroupe(ServiceHoraire serviceHoraire, ServiceEtudiant serviceEtudiant) {
-        this.serviceHoraire = serviceHoraire;
+    public ServiceGroupe( ServiceEtudiant serviceEtudiant) {
+
         this.serviceEtudiant = serviceEtudiant;
     }
 
-    @Transactional
-    public void addActivite(AjouterActiviteDTO ajouterActiviteDTO) {
-        List<String> allhoraires = getAllHorairesIdsFromGroup(ajouterActiviteDTO.destination().toString());
-        List<Activite> activites = serviceHoraire.recupererLesActivitesDePlusieursHoraire(allhoraires.toArray(new String[0]));
-        Activite activite = ajouterActiviteDTO.activite();
-        for(var current_activite : activites) {
-            if(activite.getDateDeDebut().isBefore(current_activite.getDateDeFin()) &&
-            activite.getDateDeFin().isAfter(current_activite.getDateDeDebut())) {
-                throw new LinkUpException(ERROR_TYPE.DUPLICATION,Utilitary.CreerGroupeActiviteDupliquer(current_activite.getEtudiant().getUsername()));
-            }
-            
-        }
-    }
 
-@Transactional
-    public List<String> getAllHorairesIdsFromGroup(String groupId) {
-        Group group = getGroupById(groupId);
-        List<String> horairesIds = new ArrayList<>();
-        horairesIds.add(group.getHoraire().getId()); // horaire du groupe
 
-        for(Etudiant e : group.getEtudiants()) {
-            horairesIds.add(e.getHoraire().getId());
-        }
-        return horairesIds;
-    }
+
+
 
 
 
@@ -72,16 +49,7 @@ public class ServiceGroupe {
 
     }
 
-    @Transactional
-public List<Group> getALlgroupsFromUser(UUID userID) {
 
-        List<Group> groups;
-
-        groups = entityManager.createQuery("select g from  Group g  join g.etudiants e where e.id = :userID", Group.class).
-                setParameter("userID",userID).getResultList();
-
-         return groups;
-    }
 
     @Transactional
     public Group createGroup(CreateGroupDTO group) {
