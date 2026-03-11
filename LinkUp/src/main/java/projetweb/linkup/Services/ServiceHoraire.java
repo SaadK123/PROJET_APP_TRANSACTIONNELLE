@@ -5,8 +5,10 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+import projetweb.linkup.DTO.ACTIONS.AjouterActiviteDTO;
 import projetweb.linkup.Enumerations.ERROR_TYPE;
 import projetweb.linkup.Exceptions.LinkUpException;
+import projetweb.linkup.Util.Utilitary;
 import projetweb.linkup.entities.Activite;
 import projetweb.linkup.entities.Etudiant;
 import projetweb.linkup.entities.Horaire;
@@ -19,11 +21,11 @@ import java.util.UUID;
 public class ServiceHoraire {
 
 
-
+    ServiceGroupe serviceGroupe;
     @PersistenceContext
     EntityManager entityManager;
-    public ServiceHoraire() {
-
+    public ServiceHoraire(ServiceGroupe serviceGroupe) {
+      this.serviceGroupe = serviceGroupe;
     }
 
 
@@ -49,6 +51,26 @@ public class ServiceHoraire {
             allActivities.addAll(activites);
         }
         return allActivities;
+    }
+
+
+
+    @Transactional
+
+    public
+
+    @Transactional
+    public  addActivite(AjouterActiviteDTO ajouterActiviteDTO) {
+        List<String> allhoraires = getAllHorairesIdsFromGroup(ajouterActiviteDTO.destination().toString());
+        List<Activite> activites = serviceHoraire.recupererLesActivitesDePlusieursHoraire(allhoraires.toArray(new String[0]));
+        Activite activite = ajouterActiviteDTO.activite();
+        for(var current_activite : activites) {
+            if(activite.getDateDeDebut().isBefore(current_activite.getDateDeFin()) &&
+                    activite.getDateDeFin().isAfter(current_activite.getDateDeDebut())) {
+                throw new LinkUpException(ERROR_TYPE.DUPLICATION, Utilitary.CreerGroupeActiviteDupliquer(current_activite.getEtudiant().getUsername()));
+            }
+
+        }
     }
 
 

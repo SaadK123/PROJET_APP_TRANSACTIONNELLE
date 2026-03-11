@@ -15,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import projetweb.linkup.Enumerations.ERROR_TYPE;
 import projetweb.linkup.entities.Etudiant;
+import projetweb.linkup.entities.Group;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -170,11 +171,12 @@ public class ServiceEtudiant {
     }
 
 
-
     @Transactional
-    public boolean doesStudentExist(String id) {
-        return getEtudiantById(id) != null;
+    public List<Group> getAllgroupsFromUser(UUID userID) {
+        return entityManager.createQuery("select g from  Group g  join g.etudiants e where e.id = :userID", Group.class).
+                setParameter("userID",userID).getResultList();
     }
+
 
 
 }
