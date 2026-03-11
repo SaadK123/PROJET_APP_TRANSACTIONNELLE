@@ -30,6 +30,23 @@
   border-style: dashed !important;
   border-color: rgba(187, 73, 249)!important;
 }
+.hp-Border-Green{
+    --bs-border-opacity: 1 !important;
+  border-style: dashed !important;
+  border-color: rgba(31, 166, 44)!important;
+}
+.hp-schedule-Blue{
+  --tw-text-opacity: 1!important;
+color: rgba(74, 175, 237, var(--tw-text-opacity)) !important;
+}
+.hp-friends-Purple{
+  --tw-text-opacity: 1!important;
+color: rgba(187, 73, 249, var(--tw-text-opacity)) !important;
+}
+.hp-time-Green{
+--tw-text-opacity: 1!important;
+color: rgba(31, 166, 44, var(--tw-text-opacity)) !important;
+}
 /* SignUp */
 
 .btn-createAcc {
