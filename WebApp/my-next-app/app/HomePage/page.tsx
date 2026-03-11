@@ -54,7 +54,7 @@ export default function HomePage() {
             {/*Votre Horaire*/}
             <div className="row">
                <div className="col hp-Border-Blue rounded border border-4 ">
-                  <div className="col pe-3 pt-2 bg-white hp-schedule-Blue text-start"><h5>Votre Horaire</h5>
+                  <div className="col  pt-2 bg-white hp-schedule-Blue text-start"><h5>Votre Horaire</h5>
                     <div className=" p-5 mt-4 rounded bg-blue-200"></div>
                     <div className="p-4 mt-3 mb-3 rounded bg-blue-200"></div>
                     <div className="p-3 mb-4 rounded bg-blue-200 "></div>
@@ -64,7 +64,7 @@ export default function HomePage() {
               <div className="col ps-5 pe-5">
                 <div className="row">
                    <div className="col hp-Border-Purple rounded border border-4 ">
-                    <div className="col pe-3 pt-2 pb-4 bg-white hp-friends-Purple text-start"><h5>Amis</h5>
+                    <div className="col pt-2 pb-4 bg-white hp-friends-Purple text-start"><h5>Amis</h5>
                     {/*Friends rows*/}
                       <div className="row p-5 ps-3 pb-2 pe-3 "> 
                         <div className="col-3 "><div className="rounded-circle bg-blue-200">ㅤ</div></div>
@@ -84,7 +84,7 @@ export default function HomePage() {
               </div>
                   {/*Free Time*/}
               <div className="col hp-Border-Green rounded border border-4 ">
-                  <div className="col pe-3 pt-2 bg-white hp-time-Green text-start"><h5>Temps Libre</h5>
+                  <div className="col pt-2 bg-white hp-time-Green text-start"><h5>Temps Libre</h5>
                     <div className=" p-4 mt-5 rounded bg-green-200 hp-time-Green text-center"><h5>Lundi 18h-22h</h5></div>
                     <div className="p-4 mt-4 rounded bg-green-200 hp-time-Green text-center"><h5>Jeudi 19h - 23h</h5></div>
                   </div>
