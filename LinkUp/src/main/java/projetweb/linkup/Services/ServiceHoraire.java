@@ -54,16 +54,14 @@ public class ServiceHoraire {
       List<Activite> activites = new ArrayList<>(group.getHoraire().getActivites());
 
       for(var etudiant : group.getEtudiants()) {
-          List<Activite> activitesEtudiant =  etudiant.getHoraire().getActivites();
-          for(var activite : activitesEtudiant) {
-              activites.add(activite);
-          }
+          activites.addAll(etudiant.getHoraire().getActivites());
       }
+      return activites;
     }
 
     @Transactional
     public SucessDTO addActivite(AjouterActiviteDTO ajouterActiviteDTO) {
-
+         List<Activite> activites = 
         Activite activite = ajouterActiviteDTO.activite();
         
         for(var currentActivite : activites) {
