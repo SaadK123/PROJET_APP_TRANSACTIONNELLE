@@ -6,11 +6,13 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import projetweb.linkup.DTO.ACTIONS.AjouterActiviteDTO;
+import projetweb.linkup.DTO.ACTIONS.SucessDTO;
 import projetweb.linkup.Enumerations.ERROR_TYPE;
 import projetweb.linkup.Exceptions.LinkUpException;
 import projetweb.linkup.Util.Utilitary;
 import projetweb.linkup.entities.Activite;
 import projetweb.linkup.entities.Etudiant;
+import projetweb.linkup.entities.Group;
 import projetweb.linkup.entities.Horaire;
 
 import java.util.ArrayList;
@@ -21,11 +23,11 @@ import java.util.UUID;
 public class ServiceHoraire {
 
 
-    ServiceGroupe serviceGroupe;
+     ServiceGroupe serviceGroupe;
     @PersistenceContext
     EntityManager entityManager;
     public ServiceHoraire(ServiceGroupe serviceGroupe) {
-      this.serviceGroupe = serviceGroupe;
+     this.serviceGroupe = serviceGroupe;
     }
 
 
@@ -44,30 +46,30 @@ public class ServiceHoraire {
            return getHoraireFromId(UUID.fromString(horaire_id)).getActivites();
     }
 
-    @Transactional public List<Activite> recupererLesActivitesDePlusieursHoraire(String... horaires_id) {
-        List<Activite> allActivities = new ArrayList<>();
-        for(String s : horaires_id) {
-          List<Activite> activites  = recupererLesActivitesDunHoraire(s);
-            allActivities.addAll(activites);
-        }
-        return allActivities;
+
+
+
+    public List<Activite> recupererTousLesActivitesDunGroupe(String groupeId) {
+      Group group = serviceGroupe.getGroupById(groupeId);
+      List<Activite> activites = new ArrayList<>(group.getHoraire().getActivites());
+
+      for(var etudiant : group.getEtudiants()) {
+          List<Activite> activitesEtudiant =  etudiant.getHoraire().getActivites();
+          for(var activite : activitesEtudiant) {
+              activites.add(activite);
+          }
+      }
     }
 
-
-
     @Transactional
+    public SucessDTO addActivite(AjouterActiviteDTO ajouterActiviteDTO) {
 
-    public
-
-    @Transactional
-    public  addActivite(AjouterActiviteDTO ajouterActiviteDTO) {
-        List<String> allhoraires = getAllHorairesIdsFromGroup(ajouterActiviteDTO.destination().toString());
-        List<Activite> activites = serviceHoraire.recupererLesActivitesDePlusieursHoraire(allhoraires.toArray(new String[0]));
         Activite activite = ajouterActiviteDTO.activite();
-        for(var current_activite : activites) {
+        
+        for(var currentActivite : activites) {
             if(activite.getDateDeDebut().isBefore(current_activite.getDateDeFin()) &&
                     activite.getDateDeFin().isAfter(current_activite.getDateDeDebut())) {
-                throw new LinkUpException(ERROR_TYPE.DUPLICATION, Utilitary.CreerGroupeActiviteDupliquer(current_activite.getEtudiant().getUsername()));
+
             }
 
         }
