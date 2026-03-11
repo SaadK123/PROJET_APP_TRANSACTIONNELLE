@@ -59,9 +59,17 @@ export default function HomePage() {
                 <div className="row">
                    <div className="col hp-Border-Purple rounded border border-4 ">
                     <div className="col pe-3 pt-2 bg-white text-purple-400 text-start"><h5>Amis</h5>
-                    <div className="bg-blue p-5 rounded">
+                    <div className="row p-5 "> 
+                       <div className="col">
+                        <div className="col"><button type="button" className="bg-blue-200 btn-circle">Blue</button></div>
+                        <div className="p-1 mb-4 rounded bg-blue-200">
+
+                        </div>
+                        </div>
  
                     </div>
+                    
+
                     </div>
                     </div>
                     </div>
