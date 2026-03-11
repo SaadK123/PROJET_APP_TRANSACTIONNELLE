@@ -67,15 +67,15 @@ export default function HomePage() {
                     <div className="col pt-2 pb-4 bg-white hp-friends-Purple text-start"><h5>Amis</h5>
                     {/*Friends rows*/}
                       <div className="row p-5 ps-3 pb-2 pe-3 "> 
-                        <div className="col-3 "><div className="rounded-circle bg-blue-200">ㅤ</div></div>
+                        <div className="col-2 "><div className="rounded-circle bg-blue-200">ㅤ</div></div>
                         <div className="col-8 ms-4 bg-blue-200 rounded">ㅤ</div>
                       </div>
                       <div className="row p-5 ps-3 pb-2 pt-4 pe-3"> 
-                        <div className="col-3"><div className="rounded-circle bg-purple-200">ㅤ</div></div>
+                        <div className="col-2"><div className="rounded-circle bg-purple-200">ㅤ</div></div>
                         <div className="col-8 ms-4 bg-purple-200 rounded">ㅤ</div>
                       </div>
                       <div className="row p-5 ps-3 pb-5 pt-4 pe-3"> 
-                        <div className="col-3"><div className="rounded-circle bg-green-200">ㅤ</div></div>
+                        <div className="col-2"><div className="rounded-circle bg-green-200">ㅤ</div></div>
                         <div className="col-8 ms-4 bg-green-200 rounded">ㅤ</div>
                       </div>
                     </div>
