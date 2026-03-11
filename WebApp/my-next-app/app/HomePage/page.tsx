@@ -44,36 +44,43 @@ export default function HomePage() {
         <div className="row pb-5 text-center"><h5>Trouvez le moment parfait pour vous retrouver entre étudiants instantanément. <br />
          Partagez vos emplois du temps et on vous montre quand tout le monde est libre.</h5></div>
         <div className="row-7 text-center"><button type="button" onClick={gotosignup} className="pt-3 pb-3 ps-5 pe-5 bg-green-500 rounded text-white border border-success"><h4 className="h4-HP">Commencez Gratuitement</h4></button></div>
-
+          {/*Examples*/}
         <div className="row p-5 m-5 bg-white" >
           <div className="col">
+            {/*Votre Horaire*/}
             <div className="row">
                <div className="col hp-Border-Blue rounded border border-4 ">
-                <div className="col pe-3 pt-2 bg-white text-blue-400 text-start"><h5>Votre Horaire</h5>
-                  <div className=" p-5 mt-4 rounded bg-blue-200"></div>
-                  <div className="p-4 mt-3 mb-3 rounded bg-blue-200"></div>
-                  <div className="p-3 mb-4 rounded bg-blue-200 "></div>
+                  <div className="col pe-3 pt-2 bg-white text-blue-400 text-start"><h5>Votre Horaire</h5>
+                    <div className=" p-5 mt-4 rounded bg-blue-200"></div>
+                    <div className="p-4 mt-3 mb-3 rounded bg-blue-200"></div>
+                    <div className="p-3 mb-4 rounded bg-blue-200 "></div>
+                  </div>
                 </div>
-                </div>
-              <div className="col">
+                {/*Friends*/}
+              <div className="col ps-5 pe-5">
                 <div className="row">
                    <div className="col hp-Border-Purple rounded border border-4 ">
-                    <div className="col pe-3 pt-2 bg-white text-purple-400 text-start"><h5>Amis</h5>
-                    <div className="row p-5 "> 
-                       <div className="col">
-                        <div className="col"><button type="button" className="bg-blue-200 btn-circle">Blue</button></div>
-                        <div className="p-1 mb-4 rounded bg-blue-200">
-
-                        </div>
-                        </div>
- 
+                    <div className="col pe-3 pt-2 pb-4 bg-white text-purple-400 text-start"><h5>Amis</h5>
+                    {/*Friends rows*/}
+                    <div className="row p-5 pb-2 "> 
+                        <div className="col-2"><div className="rounded-circle bg-blue-200">ㅤ</div></div>
+                        <div className="col-8 ms-5 bg-blue-200 rounded">ㅤ</div>
+                    </div>
+                    <div className="row p-5 pb-2 pt-4"> 
+                        <div className="col-2"><div className="rounded-circle bg-purple-200">ㅤ</div></div>
+                        <div className="col-8 ms-5 bg-purple-200 rounded">ㅤ</div>
+                    </div>
+                    <div className="row p-5 pb-5 pt-4 "> 
+                        <div className="col-2"><div className="rounded-circle bg-green-200">ㅤ</div></div>
+                        <div className="col-8 ms-5 bg-green-200 rounded">ㅤ</div>
                     </div>
                     
 
                     </div>
                     </div>
                     </div>
-                    </div>
+                </div>
+
               <div className="col p-5  bg-green-300">sdsad</div>
             </div>
           
