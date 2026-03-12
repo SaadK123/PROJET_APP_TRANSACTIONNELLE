@@ -4,12 +4,10 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
-import projetweb.linkup.DTO.ACTIONS.AjouterActiviteDTOEtudiant;
+import projetweb.linkup.DTO.ACTIONS.RequeteActiviteGroupeDTO;
 import projetweb.linkup.DTO.ACTIONS.SucessDTO;
 import projetweb.linkup.Enumerations.ERROR_TYPE;
 import projetweb.linkup.Exceptions.LinkUpException;
-import projetweb.linkup.Util.Utilitary;
-import projetweb.linkup.entities.Activite;
 import projetweb.linkup.entities.Horaire;
 
 import java.time.LocalDateTime;
@@ -38,27 +36,29 @@ public class ServiceHoraire {
         }
     }
     @Transactional
-    public SucessDTO addActivite(AjouterActiviteDTOEtudiant ajouterActiviteDTO) {
-
-        String destination =  ajouterActiviteDTO.horaireEtudiant();
-        Horaire horaire =  getHoraireFromId(destination);
-
-        Activite activite = ajouterActiviteDTO.activite();
-        
+    public boolean estOverlapper(LocalDateTime debut,LocalDateTime fin,Horaire horaire) {
         for(var currentActivite : horaire.getActivites()) {
-            if(activite.getDateDeDebut().isBefore(currentActivite.getDateDeFin()) &&
-                    activite.getDateDeFin().isAfter(currentActivite.getDateDeDebut())) {
-             return new SucessDTO(false, Utilitary.EXCEPTION_OVERLAP);
+            if(debut.isBefore(currentActivite.getDateDeFin()) &&
+                    fin.isAfter(currentActivite.getDateDeDebut())) {
+            return true;
             }
         }
-
-        horaire.getActivites().add(ajouterActiviteDTO.activite());
-        return new SucessDTO(true, "l'activite a ete ajouter");
+        return false;
     }
 
     @Transactional
 
-    public SucessDTO findActivite() {
+    public SucessDTO findActivite(RequeteActiviteGroupeDTO  activiteGroupeDTO) {
+        LocalDateTime tempsDebut = activiteGroupeDTO.jourDebut();
+        LocalDateTime tempsFinMax = activiteGroupeDTO.jourFin();
+        Horaire horaire =  getHoraireFromId(activiteGroupeDTO.horaireId());
+
+        while(!tempsDebut.isAfter(tempsFinMax)) {
+            LocalDateTime tempsFinActivite = LocalDateTime.from(tempsDebut).plusMinutes(10);
+            if(!estOverlapper(tempsDebut,tempsFinActivite,horaire)) {
+
+            }
+        }
     }
 
 

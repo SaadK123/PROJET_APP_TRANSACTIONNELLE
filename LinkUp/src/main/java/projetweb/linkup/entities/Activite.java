@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.UUID;
 
@@ -27,11 +29,12 @@ public   class Activite {
     @Column(nullable = false)
     private String description;
 
-    @Column(nullable = false)
-    private LocalTime dateDeDebut;
 
     @Column(nullable = false)
-    private LocalTime dateDeFin;
+    private LocalDateTime dateDeDebut;
+
+    @Column(nullable = false)
+    private LocalDateTime dateDeFin;
 
     @Column(nullable = false)
     private String titre;
