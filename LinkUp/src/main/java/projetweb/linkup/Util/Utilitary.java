@@ -23,10 +23,8 @@ public abstract class Utilitary {
     public final static String EXCEPTION_UTILISATEUR_NON_TROUVER = "cet utilisateur est introuvable";
     public final static String EXCEPTION_ACTIVITE_GROUPE_OVERLAP = "l'activite que vous essayer de saisir est overlapper avec une activite de ";
     public final static String EXCEPTION_OVERLAP = "activite est overlap par une autre";
-
-    public static String CreerGroupeActiviteDupliquer(String utilisateur_username) {
-        return EXCEPTION_ACTIVITE_GROUPE_OVERLAP + utilisateur_username;
-    }
+    public final static String MESSAGE_ETUDIANT_ENLEVER = "L'etudiant a été enlevé avec succes";
+    public final static String MESSAGE_ETUDIANT_MODIFICATION = "Le changement a été effectue avec succès";
 
 
 

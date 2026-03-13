@@ -3,6 +3,7 @@ package projetweb.linkup.Services;
 
 import projetweb.linkup.DTO.ACTIONS.CreateStudentDTO;
 import projetweb.linkup.DTO.ACTIONS.DeleteStudentDTO;
+import projetweb.linkup.DTO.ACTIONS.SucessDTO;
 import projetweb.linkup.DTO.TYPES.UpdateEtudiantPassword;
 import projetweb.linkup.DTO.TYPES.UpdateEtudiantProfile;
 import projetweb.linkup.Exceptions.LinkUpException;
@@ -77,9 +78,12 @@ public class ServiceEtudiant {
     }
 
     @Transactional
+
+    @SuppressWarnings("NullPointerException")
     public Etudiant createEtudiant(CreateStudentDTO dto) {
-        if (dto == null) new LinkUpException(ERROR_TYPE.CHAMPS_MANQUANTS, Utilitary.EXCEPTION_CHAMPS_MANQUANTS).throwIt();
+        if (dto == null) throw new LinkUpException(ERROR_TYPE.CHAMPS_MANQUANTS, Utilitary.EXCEPTION_CHAMPS_MANQUANTS);
         Etudiant e = new Etudiant();
+
 
         e.setEmail(dto.email());
         e.setFirstname(dto.firstname());
@@ -101,8 +105,8 @@ public class ServiceEtudiant {
  }catch (Exception ex) {
 
      switch (ex.getMessage()) {
-         case "UK_EMAIL" -> new LinkUpException(ERROR_TYPE.CONTRAINTE_UNIQUE, Utilitary.EXCEPTION_MESSAGE_DUPLICATION_EMAIL).throwIt();
-         case "UK_USERNAME" -> new LinkUpException(ERROR_TYPE.CONTRAINTE_UNIQUE, Utilitary.EXCEPTION_MESSAGE_DUPLICATION_USERNAME).throwIt();
+         case "UK_EMAIL" -> throw new LinkUpException(ERROR_TYPE.CONTRAINTE_UNIQUE, Utilitary.EXCEPTION_MESSAGE_DUPLICATION_EMAIL);
+         case "UK_USERNAME" -> throw new LinkUpException(ERROR_TYPE.CONTRAINTE_UNIQUE, Utilitary.EXCEPTION_MESSAGE_DUPLICATION_USERNAME);
          default ->  throw ex;
      }
  }
@@ -112,11 +116,9 @@ public class ServiceEtudiant {
     }
 
     @Transactional
-    public Optional<Etudiant> deleteEtudiant(DeleteStudentDTO dto) {
-        if (dto == null) return Optional.empty();
-        if (dto.email() == null || dto.password() == null) {
-            throw new LinkUpException(ERROR_TYPE.CHAMPS_MANQUANTS,Utilitary.EXCEPTION_CHAMPS_MANQUANTS);
-        }
+    public SucessDTO deleteEtudiant(DeleteStudentDTO dto) {
+
+
 
         String passwordHash =  passwordEncoder.encode(dto.password());
         Etudiant e = getEtudiantByEmailAndPassword(dto.email(),passwordHash);
@@ -124,7 +126,7 @@ public class ServiceEtudiant {
         entityManager.remove(e);
         entityManager.flush();
 
-        return Optional.of(e);
+      return new SucessDTO(true,Utilitary.MESSAGE_ETUDIANT_ENLEVER);
     }
 
 
@@ -157,7 +159,7 @@ public class ServiceEtudiant {
     }
 
     @Transactional
-    public void updateEtudiantPassword(UpdateEtudiantPassword updateEtudiantPassword){
+    public SucessDTO updateEtudiantPassword(UpdateEtudiantPassword updateEtudiantPassword){
         UUID etudiantId = updateEtudiantPassword.getEtudiantID();
         Etudiant e =  getEtudiantById(etudiantId.toString());
 
@@ -165,9 +167,9 @@ public class ServiceEtudiant {
             e.setPasswordhash(passwordEncoder.encode(updateEtudiantPassword.getNewPassword()));
 
         else{
-            new LinkUpException(ERROR_TYPE.NON_EXISTANT, Utilitary.EXCEPTION_MESSAGE_IDENTIFIANTS_INVALIDES).throwIt();
+           throw new LinkUpException(ERROR_TYPE.NON_EXISTANT, Utilitary.EXCEPTION_MESSAGE_IDENTIFIANTS_INVALIDES);
         }
-
+       return new SucessDTO(true,Utilitary.MESSAGE_ETUDIANT_MODIFICATION);
     }
 
 

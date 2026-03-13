@@ -47,20 +47,26 @@ public class ServiceHoraire {
     }
 
     @Transactional
-
-    public SucessDTO findActivite(RequeteActiviteGroupeDTO  activiteGroupeDTO) {
+    public SucessDTO trouverActivite(RequeteActiviteGroupeDTO activiteGroupeDTO) {
         LocalDateTime tempsDebut = activiteGroupeDTO.jourDebut();
         LocalDateTime tempsFinMax = activiteGroupeDTO.jourFin();
-        Horaire horaire =  getHoraireFromId(activiteGroupeDTO.horaireId());
+        Horaire horaire = getHoraireFromId(activiteGroupeDTO.horaireId());
 
-        while(!tempsDebut.isAfter(tempsFinMax)) {
-            LocalDateTime tempsFinActivite = LocalDateTime.from(tempsDebut).plusMinutes(10);
-            if(!estOverlapper(tempsDebut,tempsFinActivite,horaire)) {
+        while (true) {
+            LocalDateTime tempsFinActivite =
+                    tempsDebut.plusMinutes(activiteGroupeDTO.dureeEnMinute());
 
+            if (tempsFinActivite.isAfter(tempsFinMax)) {
+                return new SucessDTO(false,);
             }
+
+            if (!estOverlapper(tempsDebut, tempsFinActivite, horaire)) {
+                // todo return le slot trouvé
+            }
+
+            tempsDebut = tempsDebut.plusMinutes(10);
         }
     }
-
 
 
 }

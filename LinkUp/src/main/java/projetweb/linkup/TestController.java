@@ -28,11 +28,11 @@ public class TestController {
 
         @PostMapping("/api/createUser")
         public Etudiant createUser(@RequestBody  CreateStudentDTO dto) {
-               return serviceEtudiant.createEtudiant(dto).orElseThrow();
+               return serviceEtudiant.createEtudiant(dto);
         }
         @DeleteMapping("/api/deleteUser")
         public Etudiant deleteUser(@RequestBody DeleteStudentDTO dto) {
-                return serviceEtudiant.deleteEtudiant(dto).orElseThrow();
+                return serviceEtudiant.deleteEtudiant(dto);
         }
 
         @GetMapping("/api/getEtudiant")
