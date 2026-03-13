@@ -3,6 +3,7 @@ package projetweb.linkup.Services;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import projetweb.linkup.DTO.ACTIONS.CreateGroupDTO;
+import projetweb.linkup.DTO.ACTIONS.SucessDTO;
 import projetweb.linkup.Exceptions.LinkUpException;
 import projetweb.linkup.Util.Utilitary;
 import jakarta.persistence.EntityManager;
@@ -27,15 +28,6 @@ public class ServiceGroupe {
 
         this.serviceEtudiant = serviceEtudiant;
     }
-
-
-
-
-
-
-
-
-
    @Transactional
     public Group getGroupById(String groupId) {
 
@@ -49,6 +41,11 @@ public class ServiceGroupe {
 
     }
 
+    @Transactional
+    public SucessDTO sendRequestToAnEtudiant(String username) {
+     Etudiant e = serviceEtudiant.getEtudiantByUsername(username);
+
+    }
 
 
     @Transactional
