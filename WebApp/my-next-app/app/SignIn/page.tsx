@@ -1,22 +1,64 @@
 "use client";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 export default function HomePage() {
   const router = useRouter();
   const gotosignup = () => {
     router.push("/SignUp");
   };
-   const gotoHomePage = () =>{
-    router.push("/HomePage")
+  const gotoHomePage = () => {
+    router.push("/HomePage");
   };
-  
+  const gotoLogIn = () =>{
+     router.push("/SignIn")
+    };
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  function isValidEmail(email: string) {
+    if (!email.includes("@")) {
+      return false;
+    }
+
+    if (!email.includes(".")) {
+      return false;
+    }
+
+    const atPosition = email.indexOf("@");
+    const dotPosition = email.lastIndexOf(".");
+
+    if (dotPosition < atPosition) {
+      return false;
+    }
+
+    return true;
+  }
+
+  function handleSubmit() {
+    if (!email) {
+      alert("Veuillez entrer un email");
+      return;
+    }
+
+    if (!isValidEmail(email)) {
+      alert("Email invalide");
+      return;
+    }
+
+    if (!password) {
+      alert("Veuillez entrer un mot de passe");
+      return;
+    }
+
+    console.log({ email, password });
+  }
 
   return (
     <div>
       <div className="container-fluid ">
-
         {/*HEADER*/}
 
-        <div className="row bg-white">
+       <div className="row bg-white">
 
           {/*LOGO*/}
           <div className="col-1">
@@ -34,13 +76,54 @@ export default function HomePage() {
           {/*Login/Create*/}
 
           <div className="col-2 p-3 text-center ">
-            <button onClick={gotosignup} className="ps-2 pe-2 mt-3 rounded bg-green-500 text-white"type="button">Inscription</button>
+            <button onClick={gotoLogIn} className="ps-3 pe-3 mt-3" type="button">Connection</button>
+            <button onClick={gotosignup} className="ps-2 pe-2 rounded bg-green-500 text-white"type="button">Inscription</button>
           </div>
         </div>
 
-        {/*BODY*/}
-        <h1>JCOLE DRAKE </h1>
+        {/*Body*/}
+        <div className="col-7 m-4">
+          <h2>Connecte toi!</h2>
         </div>
+
+        {/* Email */}
+        <div className="mb-3 ">
+          <label>Email étudiant</label>
+          <input
+            onChange={(e) => setEmail(e.currentTarget.value)}
+            type="text"
+            className="form-control "
+          ></input>
+        </div>
+        {/* Mot de passe */}
+        <div className="mb-5">
+          <label>Mot de passe</label>
+          <input
+            onChange={(e) => {
+              setPassword(e.currentTarget.value);
+            }}
+            type="password"
+            className="form-control "
+          ></input>
+        </div>
+        <div className="d-grid mb-4">
+          <button
+            onClick={handleSubmit}
+            className="btn btn-createAcc btn-lg "
+            type="submit"
+          >
+            Connection
+          </button>
+        </div>
+        <div className="col-7 mx-auto text-center">
+          <label>
+            Pas de compte?{" "}
+            <span>
+              <a href="./SignUp">Inscris-toi</a>
+            </span>
+          </label>
+        </div>
+      </div>
     </div>
   );
 }
