@@ -22,8 +22,8 @@ public class Invitation extends Notification {
 
 
 
-    public Invitation(Group group, Etudiant  envoyeur, NotificationType type) {
-        super(type.getMessage(),type);
+    public Invitation(Group group, Etudiant  envoyeur, NotificationType type,String titre,String message) {
+        super(message, titre, type);
         this.group = group;
         this.envoyeur = envoyeur;
     }

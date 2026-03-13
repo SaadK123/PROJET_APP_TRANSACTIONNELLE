@@ -49,7 +49,7 @@ public class TestController {
 
         @GetMapping("api/getGroup")
 
-        public List<Group> getAllGroupFromEtudiant(@RequestParam String id) {
+        public List<Group> getAllGroupsFromEtudiant(@RequestParam String id) {
                return serviceGroupe.getAllgroupsFromUser(id);
         }
 

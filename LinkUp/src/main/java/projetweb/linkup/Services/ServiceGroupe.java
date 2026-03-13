@@ -13,6 +13,7 @@ import jakarta.persistence.PersistenceContext;
 import projetweb.linkup.Enumerations.ERROR_TYPE;
 import projetweb.linkup.entities.Etudiant;
 import projetweb.linkup.entities.Group;
+import projetweb.linkup.entities.Invitation;
 
 import java.util.List;
 
@@ -45,18 +46,18 @@ public class ServiceGroupe {
 
     @Transactional
     public SucessDTO sendRequestToAnEtudiant(RequestInvitationDTO requestInvitationDTO) {
-        Group group =  getGroupById(requestInvitationDTO.getGroupId());
+        Group group = getGroupById(requestInvitationDTO.getGroupId());
         Etudiant e = serviceEtudiant.getEtudiantByUsername(requestInvitationDTO.getEtudiantUsername());
-        if(!group.getChef().getUsername().equals(requestInvitationDTO.getEnvoyeur())) {
+        if (!group.getChef().getUsername().equals(requestInvitationDTO.getEnvoyeur())) {
             // todo throw here
         }
-        return serviceNotification.addNotificationToStudent(e,requestInvitationDTO.getMessage(),
-                requestInvitationDTO.getType().getMessage());
+        Invitation invitation = new Invitation(group, e, requestInvitationDTO.getType(), requestInvitationDTO.get)
+        return serviceNotification.addNotificationToStudent(invitation);
+
     }
 
-
     @Transactional
-    public SucessDTO quitterGroup() {
+    public SucessDTO quitterGroupe() {
 
     }
 

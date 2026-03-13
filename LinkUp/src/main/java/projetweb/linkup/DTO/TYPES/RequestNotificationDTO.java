@@ -10,5 +10,5 @@ public class RequestNotificationDTO {
     private final String etudiantUsername;
     private final String message;
     private final NotificationType type;
-
+    private final String titre;
 }

@@ -36,10 +36,11 @@ public  class Notification {
     private String titre;
     @Column(name = "est_vu")
     private boolean estVu;
-    public Notification(String message,NotificationType type) {
+    public Notification(String message,String titre,NotificationType type) {
         this.type = type;
         this.message = message;
         this.tempsCreation = LocalDateTime.now();
+        this.titre = titre;
     }
 
 

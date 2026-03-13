@@ -7,9 +7,11 @@ import org.springframework.stereotype.Service;
 import projetweb.linkup.DTO.TYPES.RequestNotificationDTO;
 import projetweb.linkup.DTO.ACTIONS.SucessDTO;
 import projetweb.linkup.Enumerations.ERROR_TYPE;
+import projetweb.linkup.Enumerations.NotificationType;
 import projetweb.linkup.Exceptions.LinkUpException;
 import projetweb.linkup.Util.Utilitary;
 import projetweb.linkup.entities.Etudiant;
+import projetweb.linkup.entities.Invitation;
 import projetweb.linkup.entities.Notification;
 
 import java.util.List;
@@ -62,10 +64,9 @@ public class ServiceNotification {
 
 
     @Transactional
-    public SucessDTO addNotificationToStudent(Etudiant e,String message,String titre) {
+    public SucessDTO addNotificationToStudent(Invitation invitation,Etudiant receveur) {
 
-        Notification notification = new Notification(message,titre);
-        e.getNotifications().add(notification);
+       receveur.getNotifications().add(invitation);
 
         return new SucessDTO(true,"Notification ajoutée");
     }
