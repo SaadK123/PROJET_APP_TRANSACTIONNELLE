@@ -18,8 +18,6 @@ public  class LinkUpException extends RuntimeException {
         this.message = message;
     }
 
-    public void throwIt() {
-        throw this;
-    }
+
 
 }
