@@ -47,12 +47,14 @@ public class ServiceGroupe {
     @Transactional
     public SucessDTO sendRequestToAnEtudiant(RequestInvitationDTO requestInvitationDTO) {
         Group group = getGroupById(requestInvitationDTO.getGroupId());
-        Etudiant e = serviceEtudiant.getEtudiantByUsername(requestInvitationDTO.getEtudiantUsername());
+        Etudiant receveur = serviceEtudiant.getEtudiantByUsername(requestInvitationDTO.getEtudiantUsername());
+        Etudiant envoyeur =  serviceEtudiant.getEtudiantById(requestInvitationDTO.getEnvoyeur());
         if (!group.getChef().getUsername().equals(requestInvitationDTO.getEnvoyeur())) {
             // todo throw here
         }
-        Invitation invitation = new Invitation(group, e, requestInvitationDTO.getType(), requestInvitationDTO.get)
-        return serviceNotification.addNotificationToStudent(invitation);
+        Invitation invitation = new Invitation(group,envoyeur,
+                requestInvitationDTO.getType(), requestInvitationDTO.getTitre(),requestInvitationDTO.getMessage());
+        return serviceNotification.addNotificationToStudent(invitation,receveur);
 
     }
 

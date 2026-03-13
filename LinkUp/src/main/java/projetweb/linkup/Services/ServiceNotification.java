@@ -32,6 +32,8 @@ public class ServiceNotification {
      try {
          return serviceEtudiant.getEtudiantById(idEtudiant).getNotifications();
      }catch (Exception e) {
+
+
          throw new LinkUpException(ERROR_TYPE.NON_EXISTANT, Utilitary.EXCEPTION_MESSAGE_NON_EXISTANT);
      }
        
@@ -51,7 +53,7 @@ public class ServiceNotification {
     }
 
     @Transactional
-    public void deleteNotification(String idNotification) {
+        public void deleteNotification(String idNotification) {
         UUID id = UUID.fromString(idNotification);
         Notification notification = entityManager.find(Notification.class, id);
         if(notification == null) {
