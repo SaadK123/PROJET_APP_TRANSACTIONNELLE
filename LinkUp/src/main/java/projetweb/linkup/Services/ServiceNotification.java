@@ -3,7 +3,7 @@ package projetweb.linkup.Services;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
-import jdk.jshell.execution.Util;
+import projetweb.linkup.DTO.TYPES.RequestNotificationDTO;
 import projetweb.linkup.DTO.ACTIONS.SucessDTO;
 import projetweb.linkup.Enumerations.ERROR_TYPE;
 import projetweb.linkup.Exceptions.LinkUpException;
@@ -27,9 +27,7 @@ public class ServiceNotification {
     public List<Notification> getAllNotificationsFromUser(String idEtudiant) {
 
      try {
-         return entityManager
-                 .createQuery("select n from Notification n join n.receveurs e where e.id = :id", Notification.class)
-                 .setParameter("id",idEtudiant).getResultList();
+         return serviceEtudiant.getEtudiantById(idEtudiant).getNotifications();
      }catch (Exception e) {
          throw new LinkUpException(ERROR_TYPE.NON_EXISTANT, Utilitary.EXCEPTION_MESSAGE_NON_EXISTANT);
      }
@@ -62,8 +60,13 @@ public class ServiceNotification {
 
 
     @Transactional
-    public SucessDTO addNotificationToStudent(String idEtudiant) {
+    public SucessDTO addNotificationToStudent(RequestNotificationDTO request) {
+        Etudiant e = serviceEtudiant.getEtudiantById(request.getIdEtudiant());
 
+        Notification notification = new Notification(request.getMessage(), request.getType());
+        e.getNotifications().add(notification);
+
+        return new SucessDTO(true,"Notification ajoutée");
     }
 
 

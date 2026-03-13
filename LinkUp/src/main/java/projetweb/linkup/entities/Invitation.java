@@ -21,11 +21,11 @@ public class Invitation extends Notification {
     private  Etudiant envoyeur;
 
 
-    public Invitation(Group group, Etudiant  envoyeur, List<Etudiant> receveurs, NotificationType type) {
+
+    public Invitation(Group group, Etudiant  envoyeur, NotificationType type) {
         super(type.getMessage(),type);
         this.group = group;
         this.envoyeur = envoyeur;
-
     }
 
 }

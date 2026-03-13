@@ -32,13 +32,7 @@ public  class Notification {
     @Column(name = "temps_creation", nullable = false)
     private LocalDateTime tempsCreation;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "notification_receveurs",
-            joinColumns = @JoinColumn(name = "notification_id",nullable = false),
-            inverseJoinColumns = @JoinColumn(name = "etudiant_id",nullable = false)
-    )
-    private List<Etudiant> receveurs;
+
     @Column(name = "est_vu")
     private boolean estVu;
     public Notification(String message,NotificationType type) {
