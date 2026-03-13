@@ -44,15 +44,15 @@ public class ServiceEtudiant {
 
 
     @Transactional
-    public Optional<Etudiant> getEtudiantByUsername(String username) {
-        if (username == null || username.isBlank()) return Optional.empty();
+    public Etudiant getEtudiantByUsername(String username) {
+
 
         try {
-            Etudiant e = (Etudiant) entityManager.createQuery("select e from Etudiant e where username = :username")
+           return  (Etudiant) entityManager.createQuery("select e from Etudiant e where username = :username")
                     .setParameter("username", username).getSingleResult();
-            return Optional.of(e);
+
         } catch (NoResultException e) {
-            return Optional.empty(); // todo error enum
+           throw new LinkUpException(ERROR_TYPE.NON_EXISTANT,"etudiant nexsite pas");
         }
 
     }

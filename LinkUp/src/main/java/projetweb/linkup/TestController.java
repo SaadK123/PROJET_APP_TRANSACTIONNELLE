@@ -37,11 +37,11 @@ public class TestController {
                 return "34324";
         }
 
-        @PostMapping("api/createUser")
+        @PostMapping("api/createEtudiant")
         public Etudiant createUser(@RequestBody  CreateStudentDTO dto) {
                return serviceEtudiant.createEtudiant(dto);
         }
-        @DeleteMapping("api/deleteUser")
+        @DeleteMapping("api/deleteEtudiant")
         public SucessDTO deleteUser(@RequestBody DeleteStudentDTO dto) {
                 return serviceEtudiant.deleteEtudiant(dto);
         }
@@ -52,6 +52,9 @@ public class TestController {
         public List<Group> getAllGroupFromEtudiant(@RequestParam String id) {
                return serviceGroupe.getAllgroupsFromUser(id);
         }
+
+
+        @DeleteMapping("")
 
 
         @GetMapping("api/getHoraire")

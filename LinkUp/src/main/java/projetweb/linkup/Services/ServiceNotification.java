@@ -4,6 +4,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import jdk.jshell.execution.Util;
+import projetweb.linkup.DTO.ACTIONS.SucessDTO;
 import projetweb.linkup.Enumerations.ERROR_TYPE;
 import projetweb.linkup.Exceptions.LinkUpException;
 import projetweb.linkup.Util.Utilitary;
@@ -16,8 +17,13 @@ import java.util.UUID;
 public class ServiceNotification {
     @PersistenceContext
     private  EntityManager entityManager;
+    private  final ServiceEtudiant serviceEtudiant;
 
-    
+
+
+    public ServiceNotification(ServiceEtudiant serviceEtudiant) {
+        this.serviceEtudiant = serviceEtudiant;
+    }
     public List<Notification> getAllNotificationsFromUser(String idEtudiant) {
 
      try {
@@ -52,6 +58,12 @@ public class ServiceNotification {
 
         }
         entityManager.remove(notification);
+    }
+
+
+    @Transactional
+    public SucessDTO addNotificationToStudent(String idEtudiant) {
+
     }
 
 
