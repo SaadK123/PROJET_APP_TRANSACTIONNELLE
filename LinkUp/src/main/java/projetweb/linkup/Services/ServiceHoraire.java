@@ -57,11 +57,11 @@ public class ServiceHoraire {
                     tempsDebut.plusMinutes(activiteGroupeDTO.dureeEnMinute());
 
             if (tempsFinActivite.isAfter(tempsFinMax)) {
-                return new SucessDTO(false,);
+                return new SucessDTO(false,"aucune activite trouver");
             }
 
             if (!estOverlapper(tempsDebut, tempsFinActivite, horaire)) {
-                // todo return le slot trouvé
+
             }
 
             tempsDebut = tempsDebut.plusMinutes(10);

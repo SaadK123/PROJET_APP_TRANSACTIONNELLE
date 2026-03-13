@@ -66,6 +66,11 @@ public class ServiceGroupe {
     }
 
 
+    @Transactional
+    public List<Group> getAllgroupsFromUser(String userID) {
+        return entityManager.createQuery("select g from  Group g  join g.etudiants e where e.id = :userID", Group.class).
+                setParameter("userID",userID).getResultList();
+    }
 
 
 }
