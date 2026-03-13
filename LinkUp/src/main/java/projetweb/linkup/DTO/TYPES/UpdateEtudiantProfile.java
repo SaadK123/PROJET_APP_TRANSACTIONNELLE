@@ -17,7 +17,7 @@ public class UpdateEtudiantProfile extends UpdateEtudiantDTO {
     private final String firstname;
 
     private final String ecole;
-    public UpdateEtudiantProfile(UUID etudiantID,String username,String lastname,String ecole,String firstname) {
+    public UpdateEtudiantProfile(String etudiantID,String username,String lastname,String ecole,String firstname) {
         super(etudiantID);
         this.username = username;
         this.lastname = lastname;

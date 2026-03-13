@@ -3,6 +3,7 @@ package projetweb.linkup.Services;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
+import org.springframework.stereotype.Service;
 import projetweb.linkup.DTO.TYPES.RequestNotificationDTO;
 import projetweb.linkup.DTO.ACTIONS.SucessDTO;
 import projetweb.linkup.Enumerations.ERROR_TYPE;
@@ -13,7 +14,7 @@ import projetweb.linkup.entities.Notification;
 
 import java.util.List;
 import java.util.UUID;
-
+@Service
 public class ServiceNotification {
     @PersistenceContext
     private  EntityManager entityManager;
@@ -59,11 +60,11 @@ public class ServiceNotification {
     }
 
 
-    @Transactional
-    public SucessDTO addNotificationToStudent(RequestNotificationDTO request) {
-        Etudiant e = serviceEtudiant.getEtudiantById(request.getIdEtudiant());
 
-        Notification notification = new Notification(request.getMessage(), request.getType());
+    @Transactional
+    public SucessDTO addNotificationToStudent(Etudiant e,String message,String titre) {
+
+        Notification notification = new Notification(message,titre);
         e.getNotifications().add(notification);
 
         return new SucessDTO(true,"Notification ajoutée");

@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import projetweb.linkup.DTO.ACTIONS.CreateGroupDTO;
 import projetweb.linkup.DTO.ACTIONS.SucessDTO;
+import projetweb.linkup.DTO.TYPES.RequestInvitationDTO;
 import projetweb.linkup.Exceptions.LinkUpException;
 import projetweb.linkup.Util.Utilitary;
 import jakarta.persistence.EntityManager;
@@ -13,20 +14,21 @@ import projetweb.linkup.Enumerations.ERROR_TYPE;
 import projetweb.linkup.entities.Etudiant;
 import projetweb.linkup.entities.Group;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
+
 @Service
 public class ServiceGroupe {
 
 
 
    private final ServiceEtudiant serviceEtudiant;
+   private final ServiceNotification serviceNotification;
     @PersistenceContext
     private EntityManager entityManager;
-    public ServiceGroupe( ServiceEtudiant serviceEtudiant) {
+    public ServiceGroupe( ServiceEtudiant serviceEtudiant,ServiceNotification serviceNotification) {
 
         this.serviceEtudiant = serviceEtudiant;
+        this.serviceNotification = serviceNotification;
     }
    @Transactional
     public Group getGroupById(String groupId) {
@@ -42,9 +44,14 @@ public class ServiceGroupe {
     }
 
     @Transactional
-    public SucessDTO sendRequestToAnEtudiant(String username) {
-     Etudiant e = serviceEtudiant.getEtudiantByUsername(username);
-
+    public SucessDTO sendRequestToAnEtudiant(RequestInvitationDTO requestInvitationDTO) {
+        Group group =  getGroupById(requestInvitationDTO.getGroupId());
+        Etudiant e = serviceEtudiant.getEtudiantByUsername(requestInvitationDTO.getEtudiantUsername());
+        if(!group.getChef().getUsername().equals(requestInvitationDTO.getEnvoyeur())) {
+            // todo throw here
+        }
+        return serviceNotification.addNotificationToStudent(e,requestInvitationDTO.getMessage(),
+                requestInvitationDTO.getType().getMessage());
     }
 
 

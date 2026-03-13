@@ -9,7 +9,7 @@ public class UpdateEtudiantPassword extends UpdateEtudiantDTO {
     private final String newPassword;
 
     public UpdateEtudiantPassword(
-            UUID etudiantID
+            String etudiantID
             ,String oldPassword
             ,String newPassword)
     {

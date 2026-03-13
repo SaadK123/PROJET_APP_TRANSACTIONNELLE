@@ -32,7 +32,8 @@ public  class Notification {
     @Column(name = "temps_creation", nullable = false)
     private LocalDateTime tempsCreation;
 
-
+    @Column(name = "titre")
+    private String titre;
     @Column(name = "est_vu")
     private boolean estVu;
     public Notification(String message,NotificationType type) {

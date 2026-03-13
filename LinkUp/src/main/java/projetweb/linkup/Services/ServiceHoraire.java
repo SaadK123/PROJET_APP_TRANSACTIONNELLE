@@ -8,6 +8,7 @@ import projetweb.linkup.DTO.ACTIONS.RequeteActiviteGroupeDTO;
 import projetweb.linkup.DTO.ACTIONS.SucessDTO;
 import projetweb.linkup.Enumerations.ERROR_TYPE;
 import projetweb.linkup.Exceptions.LinkUpException;
+import projetweb.linkup.entities.Activite;
 import projetweb.linkup.entities.Horaire;
 
 import java.time.LocalDateTime;
@@ -38,8 +39,8 @@ public class ServiceHoraire {
     @Transactional
     public boolean estOverlapper(LocalDateTime debut,LocalDateTime fin,Horaire horaire) {
         for(var currentActivite : horaire.getActivites()) {
-            if(debut.isBefore(currentActivite.getDateDeFin()) &&
-                    fin.isAfter(currentActivite.getDateDeDebut())) {
+            if(debut.isBefore(currentActivite.getTempsFin()) &&
+                    fin.isAfter(currentActivite.getTempsDebut())) {
             return true;
             }
         }
@@ -48,8 +49,8 @@ public class ServiceHoraire {
 
     @Transactional
     public SucessDTO trouverActivite(RequeteActiviteGroupeDTO activiteGroupeDTO) {
-        LocalDateTime tempsDebut = activiteGroupeDTO.jourDebut();
-        LocalDateTime tempsFinMax = activiteGroupeDTO.jourFin();
+        LocalDateTime tempsDebut = activiteGroupeDTO.tempsDebut();
+        LocalDateTime tempsFinMax = activiteGroupeDTO.tempsFin();
         Horaire horaire = getHoraireFromId(activiteGroupeDTO.horaireId());
 
         while (true) {
@@ -61,7 +62,8 @@ public class ServiceHoraire {
             }
 
             if (!estOverlapper(tempsDebut, tempsFinActivite, horaire)) {
-
+             horaire.getActivites().add(new Activite(activiteGroupeDTO.description(),
+                     tempsDebut,tempsFinActivite,activiteGroupeDTO.titre()));
             }
 
             tempsDebut = tempsDebut.plusMinutes(10);

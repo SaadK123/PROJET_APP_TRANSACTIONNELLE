@@ -145,23 +145,30 @@ public class ServiceEtudiant {
         }
     }
     @Transactional
-    public void updateEtudiantProfile(UpdateEtudiantProfile updateDTO){
-      UUID etudiantId = updateDTO.getEtudiantID();
-       Etudiant e =  getEtudiantById(etudiantId.toString());
-       if(updateDTO.getUsername() != null)
-          e.setUsername(updateDTO.getUsername());
+    public void updateEtudiantProfile(UpdateEtudiantProfile updateDTO) {
+        Etudiant e = getEtudiantById(updateDTO.getEtudiantID());
 
+        if (updateDTO.getUsername() != null) {
+            e.setUsername(updateDTO.getUsername());
+        }
 
-       if(updateDTO.getLastname() != null)
-           e.setLastname(updateDTO.getLastname());
+        if (updateDTO.getLastname() != null) {
+            e.setLastname(updateDTO.getLastname());
+        }
 
+        if (updateDTO.getFirstname() != null) {
+            e.setFirstname(updateDTO.getFirstname());
+        }
 
+        if (updateDTO.getEcole() != null) {
+            e.setEcole(updateDTO.getEcole());
+        }
     }
 
     @Transactional
     public SucessDTO updateEtudiantPassword(UpdateEtudiantPassword updateEtudiantPassword){
-        UUID etudiantId = updateEtudiantPassword.getEtudiantID();
-        Etudiant e =  getEtudiantById(etudiantId.toString());
+        String etudiantId = updateEtudiantPassword.getEtudiantID();
+        Etudiant e =  getEtudiantById(etudiantId);
 
         if( updateEtudiantPassword.getNewPassword() != null && passwordEncoder.matches(updateEtudiantPassword.getOldPassword(),e.getPasswordhash()))
             e.setPasswordhash(passwordEncoder.encode(updateEtudiantPassword.getNewPassword()));

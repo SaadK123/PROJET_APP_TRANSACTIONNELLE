@@ -10,13 +10,10 @@ import java.util.UUID;
 @Setter
 public abstract class UpdateEtudiantDTO {
 
-   private final UUID etudiantID;
+   private final String etudiantID;
 
 
-   public UpdateEtudiantDTO(UUID etudiantID) {
-      if(etudiantID == null) {
-         //todo throw
-      }
+   public UpdateEtudiantDTO(String etudiantID) {
       this.etudiantID = etudiantID;
    }
 

@@ -8,5 +8,8 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 
-public record RequeteActiviteGroupeDTO(Activite activite, LocalDateTime jourDebut, LocalDateTime jourFin,String horaireId,long dureeEnMinute) {
+public record RequeteActiviteGroupeDTO(
+        String description,String titre,
+        LocalDateTime tempsDebut, LocalDateTime tempsFin,
+        String horaireId,long dureeEnMinute) {
 }

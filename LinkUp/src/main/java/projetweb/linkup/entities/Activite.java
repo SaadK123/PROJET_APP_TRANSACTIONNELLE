@@ -31,20 +31,21 @@ public   class Activite {
 
 
     @Column(nullable = false)
-    private LocalDateTime dateDeDebut;
+    private LocalDateTime tempsDebut;
 
     @Column(nullable = false)
-    private LocalDateTime dateDeFin;
+    private LocalDateTime tempsFin;
 
     @Column(nullable = false)
     private String titre;
 
-   @Column(name = "est_activite_groupe",nullable = false)
-    private boolean estActiviteGroupe;
+   public Activite(String description,LocalDateTime tempsDebut,
+                   LocalDateTime tempsFin,String titre) {
+    this.description = description;
+    this.titre = titre;
+    this.tempsDebut = tempsDebut;
+    this.tempsFin = tempsFin;
 
-   @OneToOne
-   @JoinColumn(name = "etudiant_id",nullable = false)
-   private Etudiant etudiant;
+   }
+   }
 
-
-}
