@@ -54,7 +54,7 @@ public class TestController {
         }
 
 
-        @DeleteMapping("")
+        @PostMapping("api/addInvitationGroup")
 
 
         @GetMapping("api/getHoraire")

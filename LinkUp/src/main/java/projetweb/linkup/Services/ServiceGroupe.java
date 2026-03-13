@@ -56,6 +56,16 @@ public class ServiceGroupe {
 
 
     @Transactional
+    public SucessDTO quitterGroup() {
+
+    }
+
+
+    @Transactional
+    public SucessDTO rejoindreGroupe() {
+        return null; // todo
+    }
+    @Transactional
     public Group createGroup(CreateGroupDTO group) {
         
 
