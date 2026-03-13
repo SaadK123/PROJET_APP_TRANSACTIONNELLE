@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-export default function HomePage() {
+export default function SignIn() {
   const router = useRouter();
   const gotosignup = () => {
     router.push("/SignUp");
@@ -11,6 +11,9 @@ export default function HomePage() {
   };
   const gotoLogIn = () =>{
      router.push("/SignIn")
+    };
+    const gotoDashBoard = () => {
+      router.push("/DashBoard")
     };
 
   const [email, setEmail] = useState("");
@@ -49,6 +52,15 @@ export default function HomePage() {
       alert("Veuillez entrer un mot de passe");
       return;
     }
+    
+    if (email && password){
+      {/*await fetch{
+
+      } */}
+      gotoDashBoard();
+    }
+      
+    
 
     console.log({ email, password });
   }

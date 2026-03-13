@@ -69,7 +69,7 @@ export default function SignUpTestPage() {
             <form className="border rounded signup-form p-5 col-7 mx-auto">
               {/* Nom utilisateur */}
               <div className="mb-3">
-                <label>Nom d'utilisateur</label>
+                <label>Nom d'utilisateur*</label>
                 <input
                   onChange={(e) => {
                     setUsername(e.currentTarget.value);
@@ -81,7 +81,7 @@ export default function SignUpTestPage() {
               {/* Nom - Prénom */}
               <div className="row mb-3">
                 <div className="col-7">
-                  <label>Nom</label>
+                  <label>Nom*</label>
                   <input
                     onChange={(e) => {
                       setName(e.currentTarget.value);
@@ -91,7 +91,7 @@ export default function SignUpTestPage() {
                   />
                 </div>
                 <div className="col-5">
-                  <label>Prénom</label>
+                  <label>Prénom*</label>
                   <input
                     onChange={(e) => {
                       setFirstName(e.currentTarget.value);
@@ -103,7 +103,7 @@ export default function SignUpTestPage() {
               </div>
               {/* Université / Cégep */}
               <div className="mb-3">
-                <label htmlFor="school">Université/Cégep</label>
+                <label htmlFor="school">Université/Cégep*</label>
                 <select
                   onChange={(e) => {
                     setUni(e.currentTarget.value);
@@ -145,7 +145,7 @@ export default function SignUpTestPage() {
 
               {/* Email */}
               <div className="mb-3 ">
-                <label>Email Étudiant</label>
+                <label>Email Étudiant*</label>
                 <input
                   onChange={(e) => setEmail(e.currentTarget.value)}
                   type="text"
@@ -154,7 +154,7 @@ export default function SignUpTestPage() {
               </div>
               {/* Mot de passe */}
               <div className="mb-5">
-                <label>Mot de passe</label>
+                <label>Mot de passe*</label>
                 <input
                   onChange={(e) => {
                     setPassword(e.currentTarget.value);
