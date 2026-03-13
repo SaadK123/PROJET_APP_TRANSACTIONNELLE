@@ -17,6 +17,9 @@ export default function SignUpTestPage() {
   const gotoLogIn = () =>{
      router.push("/SignIn")
     };
+ const gotosignup = () => {
+    router.push("/SignUp");
+  };
 
   function handleSubmit() {
     if (!conditions) {
@@ -45,9 +48,12 @@ export default function SignUpTestPage() {
             <button className=" ps-2 pe-2 ms-2 me-2 text-dark rounded bg-gray-300" type="button">Forfait</button>
             <button className=" ps-2 pe-2 me-2 text-dark rounded bg-gray-300" type="button">Contact</button>
           </div>
-          {/*Login*/}
+
+          {/*Login/Create*/}
+
           <div className="col-2 p-3 text-center ">
             <button onClick={gotoLogIn} className="ps-3 pe-3 mt-3" type="button">Connection</button>
+            <button onClick={gotosignup} className="ps-2 pe-2 rounded bg-green-500 text-white"type="button">Inscription</button>
           </div>
         </div>
         {/*Body*/}
