@@ -2,10 +2,7 @@ package projetweb.linkup.Services;
 
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
-import projetweb.linkup.DTO.ACTIONS.CreateGroupDTO;
-import projetweb.linkup.DTO.ACTIONS.INVITATION_GROUPE_DTO;
-import projetweb.linkup.DTO.ACTIONS.QuitterGroupeDTO;
-import projetweb.linkup.DTO.ACTIONS.SucessDTO;
+import projetweb.linkup.DTO.ACTIONS.*;
 import projetweb.linkup.DTO.TYPES.RequestInvitationDTO;
 import projetweb.linkup.Exceptions.LinkUpException;
 import projetweb.linkup.Util.Utilitary;
@@ -88,6 +85,7 @@ public class ServiceGroupe {
     }
 
 
+
     @Transactional
     public SucessDTO rejoindreGroupe(INVITATION_GROUPE_DTO invitation) {
         Etudiant etudiant = serviceEtudiant.getEtudiantById(invitation.idEtudiant());
@@ -132,6 +130,29 @@ public class ServiceGroupe {
     public List<Group> getAllgroupsFromUser(String userID) {
         return entityManager.createQuery("select g from  Group g  join g.etudiants e where e.id = :userID", Group.class).
                 setParameter("userID",UUID.fromString(userID)).getResultList();
+    }
+
+
+    @Transactional
+    public SucessDTO virerEtudiant(VirerEtudiantDTO virerEtudiantDTO) {
+        String idVireur = virerEtudiantDTO.etudiantQuiVireId();
+        String idVirer = virerEtudiantDTO.etudiantAVirerId();
+
+
+        String groupId =  virerEtudiantDTO.groupid();
+        Etudiant vireur = serviceEtudiant.getEtudiantById(idVireur);
+        Etudiant virer  = serviceEtudiant.getEtudiantById(idVirer);
+
+        Group group = getGroupById(groupId);
+
+        if(!group.getChef().getId().equals(vireur.getId())) {
+            throw new LinkUpException(ERROR_TYPE.ERREUR_METIER_LOGIQUE,Utilitary.MESSAGE_ACTION_DEMANDE_CHEF_INVITATION);
+        }else if(idVirer.equals(idVireur)) {
+                throw new LinkUpException(ERROR_TYPE.ERREUR_METIER_LOGIQUE,"vous ne pouvez pas vous virer vous meme");
+        }
+        group.getEtudiants().remove(virer);
+
+        return new SucessDTO(true,"letudiant a ete virer");
     }
 
 

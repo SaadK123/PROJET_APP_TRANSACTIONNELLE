@@ -124,9 +124,30 @@ public class TestController {
                 return serviceNotification.deleteNotification(idNotification);
         }
 
+
+
         @PostMapping("/groupes/ajouter")
 
         public SucessDTO ajouterEtudiantDansGroupe(@RequestBody INVITATION_GROUPE_DTO invitation) {
                 return serviceGroupe.rejoindreGroupe(invitation);
+        }
+
+
+        @PostMapping("/groupes/virer")
+
+        public SucessDTO virerEtudiantDunGroupe(@RequestBody VirerEtudiantDTO virerEtudiantDTO) {
+                return serviceGroupe.virerEtudiant(virerEtudiantDTO);
+        }
+
+        @PostMapping("/groupes/activites/ajouter")
+
+        public SucessDTO ajouterActivite(@RequestBody RequeteActiviteGroupeDTO requeteActiviteGroupeDTO) {
+                return serviceHoraire.trouverActivite(requeteActiviteGroupeDTO);
+        }
+
+        @PostMapping("/etudiants/activites/ajouter")
+
+        public SucessDTO ajouterActivitePourEtudiant(@RequestBody AjouterActiviteDTOEtudiant ajouterActiviteDTOEtudiant) {
+                return serviceHoraire.ajouterActivitePourEtudiant(ajouterActiviteDTOEtudiant);
         }
 }
