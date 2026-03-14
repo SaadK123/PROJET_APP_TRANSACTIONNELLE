@@ -123,4 +123,10 @@ public class TestController {
         public SucessDTO deleteNotification(@RequestParam String idNotification) {
                 return serviceNotification.deleteNotification(idNotification);
         }
+
+        @PostMapping("/groupes/ajouter")
+
+        public SucessDTO ajouterEtudiantDansGroupe(@RequestBody INVITATION_GROUPE_DTO invitation) {
+                return serviceGroupe.rejoindreGroupe(invitation);
+        }
 }

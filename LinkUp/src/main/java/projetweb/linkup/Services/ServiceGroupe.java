@@ -3,6 +3,7 @@ package projetweb.linkup.Services;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import projetweb.linkup.DTO.ACTIONS.CreateGroupDTO;
+import projetweb.linkup.DTO.ACTIONS.INVITATION_GROUPE_DTO;
 import projetweb.linkup.DTO.ACTIONS.QuitterGroupeDTO;
 import projetweb.linkup.DTO.ACTIONS.SucessDTO;
 import projetweb.linkup.DTO.TYPES.RequestInvitationDTO;
@@ -88,8 +89,13 @@ public class ServiceGroupe {
 
 
     @Transactional
-    public SucessDTO rejoindreGroupe() {
-        return null; // todo
+    public SucessDTO rejoindreGroupe(INVITATION_GROUPE_DTO invitation) {
+        Etudiant etudiant = serviceEtudiant.getEtudiantById(invitation.idEtudiant());
+        Group group = getGroupById(invitation.idGroupe());
+
+        group.getEtudiants().add(etudiant);
+
+        return new SucessDTO(true,"vous avez ete ajouter dans le groupe");
     }
     @Transactional
     public Group createGroup(CreateGroupDTO group) {
