@@ -137,7 +137,7 @@ public class ServiceEtudiant {
   public  Etudiant getEtudiantByEmailAndPassword(String email,String password) {
         try {
             Etudiant etudiant = (Etudiant) entityManager.createQuery("select e from Etudiant  e " +
-                    "where e.email = :email").setParameter("email",email);
+                    "where e.email = :email").setParameter("email",email).getSingleResult();
             if(!passwordEncoder.matches(password, etudiant.getPasswordhash())) {
                 throw new LinkUpException(ERROR_TYPE.NON_EXISTANT,Utilitary.EXCEPTION_MESSAGE_NON_EXISTANT);
             }
