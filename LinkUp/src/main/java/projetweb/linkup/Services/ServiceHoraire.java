@@ -12,6 +12,7 @@ import projetweb.linkup.entities.Activite;
 import projetweb.linkup.entities.Horaire;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Service
 public class ServiceHoraire {
@@ -27,10 +28,10 @@ public class ServiceHoraire {
 
     public Horaire getHoraireFromId(String id) {
         try {
-
+         UUID uuid = UUID.fromString(id);
           return  entityManager
                   .createQuery("select h from Horaire  h where id = :id", Horaire.class)
-                  .setParameter("id",id).getSingleResult();
+                  .setParameter("id",uuid).getSingleResult();
 
         } catch (Exception e) {
           throw new LinkUpException(ERROR_TYPE.NON_EXISTANT,"cet horaire n'existe pas");  // todo

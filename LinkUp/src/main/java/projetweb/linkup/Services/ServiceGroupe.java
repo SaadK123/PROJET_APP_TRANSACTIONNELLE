@@ -17,6 +17,7 @@ import projetweb.linkup.entities.Group;
 import projetweb.linkup.entities.Invitation;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class ServiceGroupe {
@@ -33,9 +34,10 @@ public class ServiceGroupe {
         this.serviceNotification = serviceNotification;
     }
    @Transactional
-    public Group getGroupById(String groupId) {
+    public Group getGroupById(String groupIdString) {
 
         try {
+            UUID groupId = UUID.fromString(groupIdString);
             return  entityManager.
               createQuery("select g from Group g where g.id = :groupId", Group.class)
                     .setParameter("groupId", groupId).getSingleResult();
@@ -106,7 +108,7 @@ public class ServiceGroupe {
   @Transactional
     public SucessDTO supprimerGroupe(String idGroup,Group group) {
 
-        String str = group == null ?  idGroup:group.getId().toString();
+        UUID str = group == null ? UUID.fromString(idGroup):group.getId();
 
         try {
             entityManager.createQuery("delete FROM Group g where g.id = :id")
@@ -123,7 +125,7 @@ public class ServiceGroupe {
     @Transactional
     public List<Group> getAllgroupsFromUser(String userID) {
         return entityManager.createQuery("select g from  Group g  join g.etudiants e where e.id = :userID", Group.class).
-                setParameter("userID",userID).getResultList();
+                setParameter("userID",UUID.fromString(userID)).getResultList();
     }
 
 
