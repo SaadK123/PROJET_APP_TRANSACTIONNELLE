@@ -145,26 +145,46 @@ public class ServiceEtudiant {
         }
     }
     @Transactional
-    public void updateEtudiantProfile(UpdateEtudiantProfile updateDTO) {
+    public SucessDTO updateEtudiantProfile(UpdateEtudiantProfile updateDTO) {
         Etudiant e = getEtudiantById(updateDTO.getEtudiantID());
 
-        if (updateDTO.getUsername() != null) {
-            e.setUsername(updateDTO.getUsername());
-        }
+        try {
+            if (updateDTO.getUsername() != null) {
+                e.setUsername(updateDTO.getUsername());
+            }
 
-        if (updateDTO.getLastname() != null) {
-            e.setLastname(updateDTO.getLastname());
-        }
+            if (updateDTO.getLastname() != null) {
+                e.setLastname(updateDTO.getLastname());
+            }
 
-        if (updateDTO.getFirstname() != null) {
-            e.setFirstname(updateDTO.getFirstname());
-        }
+            if (updateDTO.getFirstname() != null) {
+                e.setFirstname(updateDTO.getFirstname());
+            }
 
-        if (updateDTO.getEcole() != null) {
-            e.setEcole(updateDTO.getEcole());
+            if (updateDTO.getEcole() != null) {
+                e.setEcole(updateDTO.getEcole());
+            }
+
+            entityManager.flush();
+            return new SucessDTO(true, Utilitary.MESSAGE_ETUDIANT_MODIFICATION);
+
+        } catch (Exception ex) {
+            switch (ex.getMessage()) {
+                case "UK_EMAIL" -> throw new LinkUpException(
+                        ERROR_TYPE.CONTRAINTE_UNIQUE,
+                        Utilitary.EXCEPTION_MESSAGE_DUPLICATION_EMAIL
+                );
+                case "UK_USERNAME" -> throw new LinkUpException(
+                        ERROR_TYPE.CONTRAINTE_UNIQUE,
+                        Utilitary.EXCEPTION_MESSAGE_DUPLICATION_USERNAME
+                );
+                default -> throw new LinkUpException(
+                        ERROR_TYPE.ERREUR_INTERNE,
+                        ex.getMessage()
+                );
+            }
         }
     }
-
     @Transactional
     public SucessDTO updateEtudiantPassword(UpdateEtudiantPassword updateEtudiantPassword){
         String etudiantId = updateEtudiantPassword.getEtudiantID();

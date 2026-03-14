@@ -36,6 +36,11 @@ public class Group {
     private Set<Etudiant> etudiants = new HashSet<>(); // pour trie auto
 
 
+
+    public List<Etudiant> getEtudiantsList() {
+        return new ArrayList<>(etudiants);
+    }
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "horaire_id",unique = true)
     Horaire horaire;

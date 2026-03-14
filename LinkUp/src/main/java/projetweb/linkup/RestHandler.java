@@ -31,6 +31,6 @@ public class RestHandler {
                 "server error",
                 LocalDateTime.now()
         );
-        return ResponseEntity.status(ERROR_TYPE.DEFAULT.http_code).body(body);
+        return ResponseEntity.status(ERROR_TYPE.ERREUR_INTERNE.http_code).body(body);
     }
 }

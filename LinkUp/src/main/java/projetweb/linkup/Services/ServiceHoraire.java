@@ -64,10 +64,12 @@ public class ServiceHoraire {
             if (!estOverlapper(tempsDebut, tempsFinActivite, horaire)) {
              horaire.getActivites().add(new Activite(activiteGroupeDTO.description(),
                      tempsDebut,tempsFinActivite,activiteGroupeDTO.titre()));
+             break;
             }
 
             tempsDebut = tempsDebut.plusMinutes(10);
         }
+        return new SucessDTO(true,"une activite a ete trouver");
     }
 
 

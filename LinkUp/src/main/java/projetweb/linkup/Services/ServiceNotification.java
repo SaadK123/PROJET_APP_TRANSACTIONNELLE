@@ -27,6 +27,7 @@ public class ServiceNotification {
     public ServiceNotification(ServiceEtudiant serviceEtudiant) {
         this.serviceEtudiant = serviceEtudiant;
     }
+
     public List<Notification> getAllNotificationsFromUser(String idEtudiant) {
 
      try {
@@ -40,7 +41,7 @@ public class ServiceNotification {
     }
 
     @Transactional
-    public void setToWasSeen(String idNotification) {
+    public SucessDTO setToWasSeen(String idNotification) {
         UUID id = UUID.fromString(idNotification);
         Notification notification = entityManager.find(Notification.class, id);
         if(notification == null) {
@@ -50,10 +51,11 @@ public class ServiceNotification {
 
         notification.setEstVu(true);
         entityManager.persist(notification);
+        return new SucessDTO(true,"");
     }
 
     @Transactional
-        public void deleteNotification(String idNotification) {
+        public SucessDTO deleteNotification(String idNotification) {
         UUID id = UUID.fromString(idNotification);
         Notification notification = entityManager.find(Notification.class, id);
         if(notification == null) {
@@ -61,6 +63,8 @@ public class ServiceNotification {
 
         }
         entityManager.remove(notification);
+
+        return new SucessDTO(true,"La notification a ete retirer");
     }
 
 
@@ -72,6 +76,8 @@ public class ServiceNotification {
 
         return new SucessDTO(true,"Notification ajoutée");
     }
+
+
 
 
 }

@@ -1,10 +1,14 @@
 package projetweb.linkup;
 
+import org.springframework.web.bind.annotation.*;
 import projetweb.linkup.DTO.ACTIONS.CreateGroupDTO;
 import projetweb.linkup.DTO.ACTIONS.CreateStudentDTO;
 import projetweb.linkup.DTO.ACTIONS.DeleteStudentDTO;
-import org.springframework.web.bind.annotation.*;
+import projetweb.linkup.DTO.ACTIONS.QuitterGroupeDTO;
 import projetweb.linkup.DTO.ACTIONS.SucessDTO;
+import projetweb.linkup.DTO.TYPES.RequestInvitationDTO;
+import projetweb.linkup.DTO.TYPES.UpdateEtudiantPassword;
+import projetweb.linkup.DTO.TYPES.UpdateEtudiantProfile;
 import projetweb.linkup.Services.ServiceEtudiant;
 import projetweb.linkup.Services.ServiceGroupe;
 import projetweb.linkup.Services.ServiceHoraire;
@@ -12,70 +16,111 @@ import projetweb.linkup.Services.ServiceNotification;
 import projetweb.linkup.entities.Etudiant;
 import projetweb.linkup.entities.Group;
 import projetweb.linkup.entities.Horaire;
+import projetweb.linkup.entities.Notification;
 
 import java.util.List;
 
 @RestController
+@RequestMapping("/api")
 public class TestController {
 
         private final ServiceEtudiant serviceEtudiant;
         private final ServiceGroupe serviceGroupe;
         private final ServiceHoraire serviceHoraire;
         private final ServiceNotification serviceNotification;
-
-        public TestController(ServiceEtudiant serviceEtudiant, ServiceGroupe serviceGroupe, ServiceHoraire serviceHoraire,ServiceNotification serviceNotification) {
+        public TestController(
+                ServiceEtudiant serviceEtudiant,
+                ServiceGroupe serviceGroupe,
+                ServiceHoraire serviceHoraire, ServiceNotification serviceNotification
+        ) {
                 this.serviceEtudiant = serviceEtudiant;
                 this.serviceGroupe = serviceGroupe;
                 this.serviceHoraire = serviceHoraire;
-                this.serviceNotification = serviceNotification;
-        }
-        @GetMapping("/api/health")
-        public String health() { return "OK"; }
-
-        @GetMapping("/api/healths")
-        public String verifyParam(@RequestParam String s) {
-                return "34324";
+            this.serviceNotification = serviceNotification;
         }
 
-        @PostMapping("api/createEtudiant")
-        public Etudiant createUser(@RequestBody  CreateStudentDTO dto) {
-               return serviceEtudiant.createEtudiant(dto);
+        @GetMapping("/health")
+        public String health() {
+                return "OK";
         }
-        @DeleteMapping("api/deleteEtudiant")
-        public SucessDTO deleteUser(@RequestBody DeleteStudentDTO dto) {
+
+        @PostMapping("/etudiants")
+        public Etudiant createEtudiant(@RequestBody CreateStudentDTO dto) {
+                return serviceEtudiant.createEtudiant(dto);
+        }
+
+        @DeleteMapping("/etudiants")
+        public SucessDTO deleteEtudiant(@RequestBody DeleteStudentDTO dto) {
                 return serviceEtudiant.deleteEtudiant(dto);
         }
 
-
-        @GetMapping("api/getGroup")
-
-        public List<Group> getAllGroupsFromEtudiant(@RequestParam String id) {
-               return serviceGroupe.getAllgroupsFromUser(id);
-        }
-
-
-        @PostMapping("api/addInvitationGroup")
-
-
-        @GetMapping("api/getHoraire")
-        public Horaire getHoraireById(@RequestParam String id) {
-                return serviceHoraire.getHoraireFromId(id);
-        }
-
-
-        @GetMapping("api/getEtudiant")
-        public Etudiant getEtudiant(@RequestParam String id) {
+        @GetMapping("/etudiant")
+        public Etudiant getEtudiantById(@RequestParam String id) {
                 return serviceEtudiant.getEtudiantById(id);
         }
 
-        @PostMapping("api/createGroup")
+        @GetMapping("/etudiant/username")
+        public Etudiant getEtudiantByUsername(@RequestParam String username) {
+                return serviceEtudiant.getEtudiantByUsername(username);
+        }
+
+        @GetMapping("/etudiants/prenom")
+        public List<Etudiant> getEtudiantsByPrenom(@RequestParam String prenom) {
+                return serviceEtudiant.getEtudiantByFirstName(prenom, true).orElse(List.of());
+        }
+
+        @GetMapping("/etudiants/nom")
+        public List<Etudiant> getEtudiantsByNom(@RequestParam String nom) {
+                return serviceEtudiant.getEtudiantByFirstName(nom, false).orElse(List.of());
+        }
+
+        @PutMapping("/etudiants/profil")
+        public SucessDTO updateEtudiantProfile(@RequestBody UpdateEtudiantProfile dto) {
+                return serviceEtudiant.updateEtudiantProfile(dto);
+        }
+
+        @PutMapping("/etudiants/password")
+        public SucessDTO updateEtudiantPassword(@RequestBody UpdateEtudiantPassword dto) {
+                return serviceEtudiant.updateEtudiantPassword(dto);
+        }
+
+        @PostMapping("/groupes")
         public Group createGroup(@RequestBody CreateGroupDTO dto) {
                 return serviceGroupe.createGroup(dto);
         }
 
+        @GetMapping("/groupes")
+        public List<Group> getGroupsFromEtudiant(@RequestParam String idEtudiant) {
+                return serviceGroupe.getAllgroupsFromUser(idEtudiant);
+        }
 
+        @PostMapping("/groupes/invitations")
+        public SucessDTO envoyerInvitationGroupe(@RequestBody RequestInvitationDTO dto) {
+                return serviceGroupe.sendRequestToAnEtudiant(dto);
+        }
 
+        @PostMapping("/groupes/quitter")
+        public SucessDTO quitterGroupe(@RequestBody QuitterGroupeDTO dto) {
+                return serviceGroupe.quitterGroupe(dto);
+        }
 
+        @GetMapping("/horaire")
+        public Horaire getHoraireById(@RequestParam String id) {
+                return serviceHoraire.getHoraireFromId(id);
+        }
 
+        @GetMapping("/notifications")
+        public List<Notification> getAllNotificationsFromEtudiant(@RequestParam String idEtudiant) {
+                return serviceNotification.getAllNotificationsFromUser(idEtudiant);
+        }
 
+        @PutMapping("/notifications/vue")
+        public SucessDTO setNotificationToWasSeen(@RequestParam String idNotification) {
+                return serviceNotification.setToWasSeen(idNotification);
+        }
+
+        @DeleteMapping("/notifications")
+        public SucessDTO deleteNotification(@RequestParam String idNotification) {
+                return serviceNotification.deleteNotification(idNotification);
+        }
 }

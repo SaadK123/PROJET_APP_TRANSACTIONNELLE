@@ -3,6 +3,7 @@ package projetweb.linkup.Services;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import projetweb.linkup.DTO.ACTIONS.CreateGroupDTO;
+import projetweb.linkup.DTO.ACTIONS.QuitterGroupeDTO;
 import projetweb.linkup.DTO.ACTIONS.SucessDTO;
 import projetweb.linkup.DTO.TYPES.RequestInvitationDTO;
 import projetweb.linkup.Exceptions.LinkUpException;
@@ -48,9 +49,10 @@ public class ServiceGroupe {
     public SucessDTO sendRequestToAnEtudiant(RequestInvitationDTO requestInvitationDTO) {
         Group group = getGroupById(requestInvitationDTO.getGroupId());
         Etudiant receveur = serviceEtudiant.getEtudiantByUsername(requestInvitationDTO.getEtudiantUsername());
-        Etudiant envoyeur =  serviceEtudiant.getEtudiantById(requestInvitationDTO.getEnvoyeur());
-        if (!group.getChef().getUsername().equals(requestInvitationDTO.getEnvoyeur())) {
-            // todo throw here
+        Etudiant envoyeur =  serviceEtudiant.getEtudiantById(requestInvitationDTO.getEnvoyeurId());
+        if (!group.getChef().getId().equals(envoyeur.getId())) {
+           throw new LinkUpException(ERROR_TYPE.ERREUR_METIER_LOGIQUE,
+                   Utilitary.MESSAGE_ACTION_DEMANDE_CHEF_INVITATION);
         }
         Invitation invitation = new Invitation(group,envoyeur,
                 requestInvitationDTO.getType(), requestInvitationDTO.getTitre(),requestInvitationDTO.getMessage());
@@ -59,8 +61,27 @@ public class ServiceGroupe {
     }
 
     @Transactional
-    public SucessDTO quitterGroupe() {
+    public SucessDTO quitterGroupe(QuitterGroupeDTO quitterGroupeDTO) {
+        Group group = getGroupById(quitterGroupeDTO.idGroupe());
+        Etudiant etudiant = serviceEtudiant.getEtudiantById(quitterGroupeDTO.idEtudiant());
 
+        group.getEtudiants().remove(etudiant);
+
+        if (group.getEtudiants().isEmpty()) {
+            SucessDTO sucessDTO = supprimerGroupe(null, group);
+            if(sucessDTO.success()) {
+
+            }
+        } else if (estUnChef(group, etudiant)) {
+            group.setChef(group.getEtudiantsList().get(0));
+        }
+
+        return new SucessDTO(true,"vous avez quitter le groupe");
+    }
+
+    @Transactional
+    public boolean estUnChef(Group group,Etudiant etudiant) {
+        return group.getChef().getId().equals(etudiant.getId());
     }
 
 
@@ -81,6 +102,22 @@ public class ServiceGroupe {
 
         return g;
     }
+
+  @Transactional
+    public SucessDTO supprimerGroupe(String idGroup,Group group) {
+
+        String str = group == null ?  idGroup:group.getId().toString();
+
+        try {
+            entityManager.createQuery("delete FROM Group g where g.id = :id")
+                    .setParameter("id",str).executeUpdate();
+            return new SucessDTO(true,"groupe supprimer");
+        } catch (Exception ignored) {
+
+        }
+        return new SucessDTO(false,"groupe non supprimer");
+    }
+
 
 
     @Transactional
