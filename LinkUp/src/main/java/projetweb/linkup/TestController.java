@@ -49,7 +49,7 @@ public class TestController {
         public SucessDTO deleteEtudiant(@RequestBody DeleteStudentDTO dto) {
                 return serviceEtudiant.deleteEtudiant(dto);
         }
-        @GetMapping("/etudiant/auth")
+        @PostMapping("/etudiant/auth")
         public Etudiant getEtudiantByAuth(@RequestBody AuthentificationDTO auth) {
                 return serviceEtudiant.getEtudiantByEmailAndPassword(auth.email(),auth.password());
         }
