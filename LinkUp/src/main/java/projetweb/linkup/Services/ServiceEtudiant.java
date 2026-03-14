@@ -133,7 +133,7 @@ public class ServiceEtudiant {
 
     @Transactional
 
-    Etudiant getEtudiantByEmailAndPassword(String email,String passwordHash) {
+  public  Etudiant getEtudiantByEmailAndPassword(String email,String passwordHash) {
         try {
 
             return (Etudiant) entityManager.createQuery("select e from Etudiant  e where e.passwordhash = :passwordHash " +

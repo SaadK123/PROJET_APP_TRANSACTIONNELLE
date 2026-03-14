@@ -1,11 +1,7 @@
 package projetweb.linkup;
 
 import org.springframework.web.bind.annotation.*;
-import projetweb.linkup.DTO.ACTIONS.CreateGroupDTO;
-import projetweb.linkup.DTO.ACTIONS.CreateStudentDTO;
-import projetweb.linkup.DTO.ACTIONS.DeleteStudentDTO;
-import projetweb.linkup.DTO.ACTIONS.QuitterGroupeDTO;
-import projetweb.linkup.DTO.ACTIONS.SucessDTO;
+import projetweb.linkup.DTO.ACTIONS.*;
 import projetweb.linkup.DTO.TYPES.RequestInvitationDTO;
 import projetweb.linkup.DTO.TYPES.UpdateEtudiantPassword;
 import projetweb.linkup.DTO.TYPES.UpdateEtudiantProfile;
@@ -52,6 +48,10 @@ public class TestController {
         @DeleteMapping("/etudiants")
         public SucessDTO deleteEtudiant(@RequestBody DeleteStudentDTO dto) {
                 return serviceEtudiant.deleteEtudiant(dto);
+        }
+        @GetMapping("/etudiant/auth")
+        public Etudiant getEtudiantByAuth(@RequestBody AuthentificationDTO auth) {
+                return serviceEtudiant.getEtudiantByEmailAndPassword(auth.email(),auth.password());
         }
 
         @GetMapping("/etudiant")
