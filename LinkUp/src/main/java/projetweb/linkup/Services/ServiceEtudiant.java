@@ -7,6 +7,7 @@ import projetweb.linkup.DTO.ACTIONS.SucessDTO;
 import projetweb.linkup.DTO.TYPES.UpdateEtudiantPassword;
 import projetweb.linkup.DTO.TYPES.UpdateEtudiantProfile;
 import projetweb.linkup.Exceptions.LinkUpException;
+import projetweb.linkup.Util.SecuriteConfiguration;
 import projetweb.linkup.Util.Utilitary;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
@@ -133,9 +134,9 @@ public class ServiceEtudiant {
 
     @Transactional
 
-  public  Etudiant getEtudiantByEmailAndPassword(String email,String passwordHash) {
+  public  Etudiant getEtudiantByEmailAndPassword(String email,String password) {
         try {
-
+          String passwordHash = passwordEncoder.encode(password);
             return (Etudiant) entityManager.createQuery("select e from Etudiant  e where e.passwordhash = :passwordHash " +
                             "and e.email = :email",
                             Etudiant.class)
