@@ -15,7 +15,7 @@ import projetweb.linkup.entities.Horaire;
 import projetweb.linkup.entities.Notification;
 
 import java.util.List;
-
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/api")
 public class TestController {
