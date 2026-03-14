@@ -15,7 +15,7 @@ import projetweb.linkup.entities.Horaire;
 import projetweb.linkup.entities.Notification;
 
 import java.util.List;
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = {"http://localhost:3000", "http://127.0.0.1:3000"})
 @RestController
 @RequestMapping("/api")
 public class TestController {
@@ -49,7 +49,7 @@ public class TestController {
         public SucessDTO deleteEtudiant(@RequestBody DeleteStudentDTO dto) {
                 return serviceEtudiant.deleteEtudiant(dto);
         }
-        @GetMapping("/etudiant/auth")
+        @PostMapping("/etudiant/auth")
         public Etudiant getEtudiantByAuth(@RequestBody AuthentificationDTO auth) {
                 return serviceEtudiant.getEtudiantByEmailAndPassword(auth.email(),auth.password());
         }
