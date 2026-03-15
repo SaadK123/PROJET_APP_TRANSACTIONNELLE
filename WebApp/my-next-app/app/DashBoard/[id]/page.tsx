@@ -23,7 +23,9 @@ export default function DashBoard() {
   const [nomNouveauGroupe, setNomNouveauGroupe] = useState("");
   const [chargement, setChargement] = useState(true);
   const [erreur, setErreur] = useState("");
-  const [notificationsOuvertes, setNotificationsOuvertes] = useState(false);
+  const [notificationOuverteId, setNotificationOuverteId] = useState<
+    string | null
+  >(null);
 
   function gotoHomePage() {
     router.push("/HomePage");
@@ -33,8 +35,8 @@ export default function DashBoard() {
     router.push("/SignIn");
   }
 
-  function gotoSignUp() {
-    router.push("/SignUp");
+  function gotoCalendrier() {
+    router.push(`/calendrier/${idEtudiant}`);
   }
 
   async function chargerDonnees() {
@@ -49,7 +51,7 @@ export default function DashBoard() {
       setGroupes(groupesCharges);
     } catch (e) {
       console.error(e);
-      setErreur("Erreur lors du chargement du dashboard");
+      setErreur("Erreur chargement");
     } finally {
       setChargement(false);
     }
@@ -65,29 +67,40 @@ export default function DashBoard() {
       await chargerDonnees();
     } catch (e) {
       console.error(e);
-      setErreur("Erreur lors de la création du groupe");
+      setErreur("Erreur creation groupe");
     }
   }
 
-  async function handleMarquerNotificationCommeVue(notification: Notification) {
-    if (notification.estVu) return;
+  async function handleOuvrirNotification(notification: Notification) {
+    if (notificationOuverteId === notification.id) {
+      setNotificationOuverteId(null);
+      return;
+    }
 
-    try {
-      await marquerNotificationCommeVue(notification.id);
-      await chargerDonnees();
-    } catch (e) {
-      console.error(e);
-      setErreur("Erreur lors de la mise à jour de la notification");
+    setNotificationOuverteId(notification.id);
+
+    if (!notification.estVu) {
+      try {
+        await marquerNotificationCommeVue(notification.id);
+        await chargerDonnees();
+      } catch (e) {
+        console.error(e);
+      }
     }
   }
 
   async function handleSupprimerNotification(notification: Notification) {
     try {
       await supprimerNotification(notification.id);
+
+      if (notificationOuverteId === notification.id) {
+        setNotificationOuverteId(null);
+      }
+
       await chargerDonnees();
     } catch (e) {
       console.error(e);
-      setErreur("Erreur lors de la suppression de la notification");
+      setErreur("Erreur suppression notification");
     }
   }
 
@@ -99,22 +112,26 @@ export default function DashBoard() {
 
   if (chargement) {
     return (
-      <div className="container-fluid">
-        <div className="row">
-          <div className="col-12 p-4">
-            <h2>Chargement...</h2>
+      <div className="homepage-background min-vh-100">
+        <div className="container-fluid">
+          <div className="row bg-white">
+            <div className="col-12 p-4">
+              <h2>Chargement...</h2>
+            </div>
           </div>
         </div>
       </div>
     );
   }
 
-  if (erreur) {
+  if (erreur && !etudiant) {
     return (
-      <div className="container-fluid">
-        <div className="row">
-          <div className="col-12 p-4">
-            <h2>{erreur}</h2>
+      <div className="homepage-background min-vh-100">
+        <div className="container-fluid">
+          <div className="row bg-white">
+            <div className="col-12 p-4">
+              <h2>{erreur}</h2>
+            </div>
           </div>
         </div>
       </div>
@@ -123,10 +140,12 @@ export default function DashBoard() {
 
   if (!etudiant) {
     return (
-      <div className="container-fluid">
-        <div className="row">
-          <div className="col-12 p-4">
-            <h2>Aucun étudiant trouvé</h2>
+      <div className="homepage-background min-vh-100">
+        <div className="container-fluid">
+          <div className="row bg-white">
+            <div className="col-12 p-4">
+              <h2>Aucun étudiant trouvé</h2>
+            </div>
           </div>
         </div>
       </div>
@@ -134,20 +153,12 @@ export default function DashBoard() {
   }
 
   const notifications = etudiant.notifications || [];
-  const notificationsTriees = [...notifications].sort((a, b) => {
-    if (a.estVu === b.estVu) return 0;
-    return a.estVu ? 1 : -1;
-  });
-
-  const nombreNotificationsNonVues = notifications.filter(
-    (notification) => !notification.estVu,
-  ).length;
 
   return (
-    <div>
+    <div className="homepage-background min-vh-100">
       <div className="container-fluid">
-        <div className="row bg-white border-bottom">
-          <div className="col-2 col-md-1">
+        <div className="row bg-white">
+          <div className="col-1">
             <button onClick={gotoHomePage} className="border-0 bg-white">
               <img
                 className="homepage-logo p-2"
@@ -157,86 +168,57 @@ export default function DashBoard() {
             </button>
           </div>
 
-          <div className="col-6 col-md-8 p-3 text-end">
-            <button
-              className="ps-2 pe-2 mt-3 text-dark rounded bg-light border"
-              type="button"
-            >
+          <div className="col-9 p-3 text-end">
+            <button className="ps-2 pe-2 mt-3 me-2" type="button">
               Tableau de bord
             </button>
+
             <button
-              className="ps-2 pe-2 ms-2 me-2 text-dark rounded bg-light border"
-              type="button"
-            >
-              Mes groupes
-            </button>
-            <button
-              className="ps-2 pe-2 me-2 text-dark rounded bg-light border"
+              onClick={gotoCalendrier}
+              className="ps-2 pe-2 mt-3"
               type="button"
             >
               Calendrier
             </button>
           </div>
 
-          <div className="col-4 col-md-3 p-3 text-center">
-            <button
-              onClick={() => setNotificationsOuvertes(true)}
-              className="ps-3 pe-3 mt-3 me-2 position-relative"
-              type="button"
-            >
-              ☰ Notifications
-              {nombreNotificationsNonVues > 0 && (
-                <span
-                  className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-                  style={{ fontSize: "0.7rem" }}
-                >
-                  {nombreNotificationsNonVues}
-                </span>
-              )}
-            </button>
-
+          <div className="col-2 p-3 text-center">
             <button
               onClick={gotoLogIn}
-              className="ps-3 pe-3 mt-3 me-2"
+              className="ps-3 pe-3 mt-3"
               type="button"
             >
               Déconnexion
             </button>
-
-            <button
-              onClick={gotoSignUp}
-              className="ps-2 pe-2 rounded bg-success text-white"
-              type="button"
-            >
-              Inscription
-            </button>
           </div>
         </div>
 
-        <div className="row">
-          <div className="col-12 col-md-4 p-4">
-            <h2>Bienvenue {etudiant.prenom}</h2>
+        <div className="row pt-4 text-center">
+          <h1>Bienvenue {etudiant.prenom}</h1>
+        </div>
+
+        {erreur && (
+          <div className="row pt-3">
+            <div className="col-10 mx-auto">
+              <p>{erreur}</p>
+            </div>
+          </div>
+        )}
+
+        <div className="row p-5 mx-5 mt-4 bg-white">
+          <div className="col-12 col-lg-4 mb-4">
+            <h3>Profil</h3>
 
             <div className="mt-4">
-              <p>
-                <strong>Prénom :</strong> {etudiant.prenom}
-              </p>
-              <p>
-                <strong>Nom :</strong> {etudiant.nom}
-              </p>
-              <p>
-                <strong>Courriel :</strong> {etudiant.courriel}
-              </p>
-              <p>
-                <strong>Nom utilisateur :</strong> {etudiant.nomUtilisateur}
-              </p>
-              <p>
-                <strong>École :</strong> {etudiant.ecole}
-              </p>
+              <p>Prénom : {etudiant.prenom}</p>
+              <p>Nom : {etudiant.nom}</p>
+              <p>Courriel : {etudiant.courriel}</p>
+              <p>Nom utilisateur : {etudiant.nomUtilisateur}</p>
+              <p>École : {etudiant.ecole}</p>
             </div>
 
             <div className="mt-5">
-              <h3>Créer un groupe</h3>
+              <h4>Créer un groupe</h4>
 
               <div className="mb-3">
                 <label>Nom du groupe</label>
@@ -248,161 +230,91 @@ export default function DashBoard() {
                 />
               </div>
 
-              <div className="d-grid">
-                <button
-                  onClick={handleCreerGroupe}
-                  className="btn btn-primary"
-                  type="button"
-                >
-                  Créer le groupe
-                </button>
-              </div>
+              <button
+                onClick={handleCreerGroupe}
+                className="btn btn-primary"
+                type="button"
+              >
+                Ajouter groupe
+              </button>
             </div>
           </div>
 
-          <div className="col-12 col-md-8 p-4">
-            <h2>Mes groupes</h2>
+          <div className="col-12 col-lg-4 mb-4">
+            <h3>Mes groupes</h3>
 
             {groupes.length === 0 ? (
-              <p>Aucun groupe pour le moment.</p>
+              <p className="mt-4">Aucun groupe</p>
             ) : (
-              <div className="row">
+              <div className="mt-4">
                 {groupes.map((groupe) => (
-                  <div className="col-12 col-md-6 mb-3" key={groupe.id}>
-                    <div className="border rounded p-3 bg-white">
-                      <h4>{groupe.nomGroupe}</h4>
-                      <p className="mb-1">
-                        <strong>Chef :</strong>{" "}
-                        {groupe.chef
-                          ? `${groupe.chef.prenom} ${groupe.chef.nom}`
-                          : "Non défini"}
-                      </p>
-                      <p className="mb-0">
-                        <strong>Nombre d'étudiants :</strong>{" "}
-                        {groupe.etudiants ? groupe.etudiants.length : 0}
-                      </p>
-                    </div>
+                  <div key={groupe.id} className="border p-3 mb-3">
+                    <p>{groupe.nomGroupe}</p>
+                    <p>
+                      Chef :{" "}
+                      {groupe.chef
+                        ? `${groupe.chef.prenom} ${groupe.chef.nom}`
+                        : "Non défini"}
+                    </p>
+                    <p>
+                      Étudiants :{" "}
+                      {groupe.etudiants ? groupe.etudiants.length : 0}
+                    </p>
                   </div>
                 ))}
               </div>
             )}
           </div>
-        </div>
-      </div>
 
-      {notificationsOuvertes && (
-        <>
-          <div
-            onClick={() => setNotificationsOuvertes(false)}
-            style={{
-              position: "fixed",
-              top: 0,
-              left: 0,
-              width: "100%",
-              height: "100%",
-              backgroundColor: "rgba(0,0,0,0.35)",
-              zIndex: 1040,
-            }}
-          />
+          <div className="col-12 col-lg-4">
+            <h3>Notifications</h3>
 
-          <div
-            style={{
-              position: "fixed",
-              top: 0,
-              right: 0,
-              width: "380px",
-              maxWidth: "100%",
-              height: "100vh",
-              backgroundColor: "white",
-              zIndex: 1050,
-              borderLeft: "1px solid #ddd",
-              display: "flex",
-              flexDirection: "column",
-            }}
-          >
-            <div className="p-3 border-bottom d-flex justify-content-between align-items-center">
-              <div>
-                <h4 className="mb-1">Notifications</h4>
-                <small className="text-muted">
-                  {notifications.length} notification
-                  {notifications.length > 1 ? "s" : ""}
-                </small>
-              </div>
+            {notifications.length === 0 ? (
+              <p className="mt-4">Aucune notification</p>
+            ) : (
+              <div className="mt-4">
+                {notifications.map((notification) => {
+                  const estOuverte = notificationOuverteId === notification.id;
 
-              <button
-                onClick={() => setNotificationsOuvertes(false)}
-                className="btn btn-sm btn-outline-dark"
-                type="button"
-              >
-                X
-              </button>
-            </div>
-
-            <div
-              className="p-3"
-              style={{
-                overflowY: "auto",
-                flex: 1,
-              }}
-            >
-              {notificationsTriees.length === 0 ? (
-                <p>Aucune notification.</p>
-              ) : (
-                notificationsTriees.map((notification) => (
-                  <div
-                    key={notification.id}
-                    className={`border rounded p-3 mb-3 ${
-                      notification.estVu ? "bg-white" : "bg-light"
-                    }`}
-                  >
-                    <h6 className="mb-2">{notification.titre}</h6>
-
-                    <p className="mb-2">{notification.message}</p>
-
-                    <p className="mb-2">
-                      <small className="text-muted">
-                        {new Date(notification.tempsCreation).toLocaleString(
-                          "fr-CA",
-                        )}
-                      </small>
-                    </p>
-
-                    <p className="mb-3">
-                      <small>
-                        <strong>Type :</strong> {notification.type}
-                      </small>
-                    </p>
-
-                    <div className="d-flex gap-2">
-                      {!notification.estVu && (
-                        <button
-                          onClick={() =>
-                            handleMarquerNotificationCommeVue(notification)
-                          }
-                          className="btn btn-sm btn-outline-primary"
-                          type="button"
-                        >
-                          Marquer comme vue
-                        </button>
-                      )}
-
+                  return (
+                    <div key={notification.id} className="border p-3 mb-3">
                       <button
-                        onClick={() =>
-                          handleSupprimerNotification(notification)
-                        }
-                        className="btn btn-sm btn-outline-danger"
+                        onClick={() => handleOuvrirNotification(notification)}
+                        className="border-0 bg-white text-start w-100 p-0"
                         type="button"
                       >
-                        Supprimer
+                        {notification.titre}
+                        {!notification.estVu ? " (nouveau)" : ""}
                       </button>
+
+                      {estOuverte && (
+                        <div className="mt-3">
+                          <p>{notification.message}</p>
+                          <p>
+                            {new Date(
+                              notification.tempsCreation,
+                            ).toLocaleString("fr-CA")}
+                          </p>
+
+                          <button
+                            onClick={() =>
+                              handleSupprimerNotification(notification)
+                            }
+                            className="btn btn-sm btn-outline-dark"
+                            type="button"
+                          >
+                            Supprimer
+                          </button>
+                        </div>
+                      )}
                     </div>
-                  </div>
-                ))
-              )}
-            </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
-        </>
-      )}
+        </div>
+      </div>
     </div>
   );
 }
