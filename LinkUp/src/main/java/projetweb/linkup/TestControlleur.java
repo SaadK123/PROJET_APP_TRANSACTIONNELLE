@@ -134,4 +134,14 @@ public class TestControlleur {
         public SucessDTO ajouterActivitePourEtudiant(@RequestBody AjouterActiviteDTOEtudiant ajouterActiviteDTOEtudiant) {
                 return serviceHoraire.ajouterActivitePourEtudiant(ajouterActiviteDTOEtudiant);
         }
+
+        @DeleteMapping("/activite/retirer")
+        public SucessDTO retirerActivite(@RequestParam String activiteId) {
+                return serviceHoraire.supprimerActivite(activiteId);
+        }
+
+        @DeleteMapping("/groupe/supprimer")
+        public SucessDTO retirerGroupe(@RequestBody SupprimerGroupeDTO supprimerGroupeDTO) {
+                return serviceGroupe.supprimerGroupe(supprimerGroupeDTO);
+        }
 }

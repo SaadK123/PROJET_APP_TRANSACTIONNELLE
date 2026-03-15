@@ -25,5 +25,13 @@ public class Horaire {
 
     public String getId() {
         return id.toString();
+
+    }
+
+    @PrePersist
+    public void prePersist() {
+        if (activites == null) {
+            activites = new ArrayList<>();
+        }
     }
 }

@@ -16,8 +16,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import projetweb.linkup.Enumerations.ERREUR_TYPE;
 import projetweb.linkup.entities.Etudiant;
+import projetweb.linkup.entities.Horaire;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -72,6 +74,8 @@ public class ServiceEtudiant {
         e.setPrenom(dto.prenom());
         e.setMotDePasseHash(passwordEncoder.encode(dto.motDePasse()));
         e.setNom(dto.nom());
+        e.setHoraire(new Horaire());
+        e.getHoraire().setActivites(new ArrayList<>());
         e.setNomUtilisateur(dto.nomUtilisateur());
         e.setEcole(dto.ecole());
         e.setDernierDate(LocalDate.now());

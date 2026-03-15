@@ -64,7 +64,12 @@ public class Etudiant  {
     @JoinColumn(name = "horaire_id")
     private Horaire horaire = new Horaire();
 
-
+    @PrePersist
+    public void prePersist() {
+        if (horaire == null) {
+            horaire = new Horaire();
+        }
+    }
     @OneToMany
     @JoinColumn(name  = "notification_id")
     private List<Notification> notifications = new ArrayList<>();

@@ -1,5 +1,6 @@
 package projetweb.linkup.Services;
 
+import jakarta.transaction.Synchronization;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import projetweb.linkup.DTO.ACTIONS.*;
@@ -12,8 +13,10 @@ import jakarta.persistence.PersistenceContext;
 import projetweb.linkup.Enumerations.ERREUR_TYPE;
 import projetweb.linkup.entities.Etudiant;
 import projetweb.linkup.entities.Groupe;
+import projetweb.linkup.entities.Horaire;
 import projetweb.linkup.entities.Invitation;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -68,7 +71,7 @@ public class ServiceGroupe {
         groupe.getEtudiants().remove(etudiant);
 
         if (groupe.getEtudiants().isEmpty()) {
-            SucessDTO sucessDTO = supprimerGroupe(null, groupe);
+            SucessDTO sucessDTO = supprimerGroupeInterne(null, groupe);
             if(sucessDTO.success()) {
 
             }
@@ -102,7 +105,8 @@ public class ServiceGroupe {
         Etudiant e =  serviceEtudiant.getEtudiantById(groupe.chefID());
 
         Groupe g = new Groupe(e,groupe.nomGroup());
-
+        g.setHoraire(new Horaire());
+        g.getHoraire().setActivites(new ArrayList<>());
         entityManager.persist(g);
         entityManager.flush();
 
@@ -110,7 +114,7 @@ public class ServiceGroupe {
     }
 
   @Transactional
-    public SucessDTO supprimerGroupe(String idGroupe, Groupe groupe) {
+    public SucessDTO supprimerGroupeInterne(String idGroupe, Groupe groupe) {
 
         UUID str = groupe == null ? UUID.fromString(idGroupe):groupe.getId();
 
@@ -122,6 +126,26 @@ public class ServiceGroupe {
 
         }
         return new SucessDTO(false,"groupe non supprimer");
+    }
+
+    @Transactional public SucessDTO supprimerGroupe(SupprimerGroupeDTO supprimerGroupeDTO) {
+        try {
+            Groupe groupe = getGroupeById(supprimerGroupeDTO.groupeId());
+            Etudiant etudiant = serviceEtudiant.getEtudiantById(supprimerGroupeDTO.chefId());
+           if(!estUnChef(groupe,etudiant)) {
+              throw new LinkUpException(ERREUR_TYPE.ERREUR_METIER_LOGIQUE
+                      ,"peut pas supprimer un groupe si nest pas chef");
+           }
+           entityManager.createQuery("delete from Groupe g where g.id = :id")
+                   .setParameter("id",groupe.getId()).executeUpdate();
+           return new SucessDTO(true,"le groupe a ete supprimer");
+        }catch (LinkUpException e) {
+            throw new LinkUpException(ERREUR_TYPE.ERREUR_METIER_LOGIQUE,e.getMessage());
+        } catch (Exception e) {
+            throw new LinkUpException(ERREUR_TYPE.ERREUR_INTERNE,
+                    "Impossible de supprimer le groupe pour le moment");
+        }
+
     }
 
 
