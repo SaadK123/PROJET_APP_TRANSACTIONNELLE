@@ -36,9 +36,9 @@ export default function CalendrierUtilisateur() {
     router.push("/HomePage");
   }
 
-  function gotoDashBoard() {
-    router.push(`/dashboard/${idEtudiant}`);
-  }
+    const gotoDashBoard = (id:string) => {
+      router.push(`/DashBoard/${id}`)
+    };
 
   async function chargerEtudiant() {
     try {
@@ -180,7 +180,7 @@ export default function CalendrierUtilisateur() {
 
           <div className="col-6 col-md-8 p-3 text-end">
             <button
-              onClick={gotoDashBoard}
+              onClick={()=>gotoDashBoard(etudiant.id)}
               className="ps-2 pe-2 mt-3 text-dark rounded bg-light border me-2"
               type="button"
             >
