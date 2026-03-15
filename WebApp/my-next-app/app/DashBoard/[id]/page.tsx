@@ -13,7 +13,7 @@ import {
 } from "@/app/FetchMethodesNotifications";
 import type { Etudiant, Groupe, Notification } from "@/app/TypesObjets";
 
-export default function DashBoard() {
+export default function dashboard() {
   const params = useParams<{ id: string }>();
   const idEtudiant = params.id;
   const router = useRouter();
