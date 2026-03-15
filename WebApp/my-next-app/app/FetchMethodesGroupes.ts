@@ -109,3 +109,57 @@ export async function quitterGroupe(
   const succes: SucessDTO = data;
   return succes;
 }
+
+
+
+export async function ajouterEtudiantDansGroupe(
+  idGroupe: string,
+  idEtudiant: string
+) {
+  const response = await fetch(URLS.AJOUTER_ETUDIANT_DANS_GROUPE, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      idGroupe,
+      idEtudiant,
+    }),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message);
+  }
+
+  const succes: SucessDTO = data;
+  return succes;
+}
+
+export async function virerEtudiantDunGroupe(
+  etudiantAVirerId: string,
+  etudiantQuiVireId: string,
+  groupid: string
+) {
+  const response = await fetch(URLS.VIRER_ETUDIANT_DUN_GROUPE, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      etudiantAVirerId,
+      etudiantQuiVireId,
+      groupid,
+    }),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message);
+  }
+
+  const succes: SucessDTO = data;
+  return succes;
+}

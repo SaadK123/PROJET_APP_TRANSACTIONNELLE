@@ -21,6 +21,13 @@ export const URLS = {
   GET_HORAIRE_BY_ID: `${URL_BASE_API}/api/horaire`,
 
   GET_NOTIFICATIONS_FROM_ETUDIANT: `${URL_BASE_API}/api/notifications`,
+  AJOUTER_ETUDIANT_DANS_GROUPE: `${URL_BASE_API}/api/groupes/ajouter`,
   SET_NOTIFICATION_TO_WAS_SEEN: `${URL_BASE_API}/api/notifications/vue`,
   DELETE_NOTIFICATION: `${URL_BASE_API}/api/notifications`,
+  VIRER_ETUDIANT_DUN_GROUPE: `${URL_BASE_API}/api/groupes/virer`,
+  AJOUTER_ACTIVITE_GROUPE: `${URL_BASE_API}/api/groupes/activites/ajouter`,
+  ACTIVITE_AJOUTER_ETUDIANT: `${URL_BASE_API}/api/etudiants/activites/ajouter`
 };
+
+
+
