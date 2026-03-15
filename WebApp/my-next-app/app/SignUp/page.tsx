@@ -1,8 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-export default function SignUpTestPage() {
-  
+export default function SignUp() {
   const [username, setUsername] = useState<string>("");
   const [name, setName] = useState<string>("");
   const [firstName, setFirstName] = useState<string>("");
@@ -11,13 +10,13 @@ export default function SignUpTestPage() {
   const [password, setPassword] = useState<string>("");
   const [conditions, setConditions] = useState<Boolean>(false);
   const router = useRouter();
-  const gotoHomePage = () =>{
-    router.push("/HomePage")
+  const gotoHomePage = () => {
+    router.push("/HomePage");
   };
-  const gotoLogIn = () =>{
-     router.push("/SignIn")
-    };
- const gotosignup = () => {
+  const gotoLogIn = () => {
+    router.push("/SignIn");
+  };
+  const gotosignup = () => {
     router.push("/SignUp");
   };
 
@@ -35,28 +34,60 @@ export default function SignUpTestPage() {
         {/* Head */}
         <div className="container-fluid">
           <div className="row bg-white">
+            {/*LOGO*/}
+            <div className="col-1">
+              <button onClick={gotoHomePage}>
+                <img
+                  className="homepage-logo p-2"
+                  src="./Img/LogoLinkUp.png"
+                  alt="Logo"
+                />
+              </button>
+            </div>
 
-          {/*LOGO*/}
-          <div className="col-1">
-            <button onClick={gotoHomePage}><img className="homepage-logo p-2" src="./Img/LogoLinkUp.png" alt="Logo"/></button>
+            {/*Middle Buttons*/}
+
+            <div className="col-9 p-3 pe-5  text-end">
+              <button
+                className=" ps-2 pe-2 mt-3 text-dark rounded bg-gray-300"
+                type="button"
+              >
+                Produit
+              </button>
+              <button
+                className=" ps-2 pe-2 ms-2 me-2 text-dark rounded bg-gray-300"
+                type="button"
+              >
+                Forfait
+              </button>
+              <button
+                className=" ps-2 pe-2 me-2 text-dark rounded bg-gray-300"
+                type="button"
+              >
+                Contact
+              </button>
+            </div>
+
+            {/*Login/Create*/}
+
+            <div className="col-2 p-3 text-center ">
+              <button
+                onClick={gotoLogIn}
+                className="ps-3 pe-3 mt-3"
+                type="button"
+              >
+                Connection
+              </button>
+              <button
+                onClick={gotosignup}
+                className="ps-2 pe-2 rounded bg-green-500 text-white"
+                type="button"
+              >
+                Inscription
+              </button>
+            </div>
           </div>
-
-          {/*Middle Buttons*/}
-
-          <div className="col-9 p-3 pe-5  text-end">
-            <button className=" ps-2 pe-2 mt-3 text-dark rounded bg-gray-300" type="button">Produit</button>
-            <button className=" ps-2 pe-2 ms-2 me-2 text-dark rounded bg-gray-300" type="button">Forfait</button>
-            <button className=" ps-2 pe-2 me-2 text-dark rounded bg-gray-300" type="button">Contact</button>
-          </div>
-
-          {/*Login/Create*/}
-
-          <div className="col-2 p-3 text-center ">
-            <button onClick={gotoLogIn} className="ps-3 pe-3 mt-3" type="button">Connection</button>
-            <button onClick={gotosignup} className="ps-2 pe-2 rounded bg-green-500 text-white"type="button">Inscription</button>
-          </div>
-        </div>
-        {/*Body*/}
+          {/*Body*/}
           <div className="col-7 m-4">
             <h2>Créer un compte</h2>
 
