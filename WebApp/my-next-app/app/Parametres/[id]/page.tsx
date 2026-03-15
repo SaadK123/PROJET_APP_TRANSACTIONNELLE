@@ -31,9 +31,14 @@ export default function Parametres() {
     router.push("/HomePage");
   }
 
-  function gotoDashBoard() {
-    router.push(`/dashboard/${idEtudiant}`);
+   function gotoDashBoard() {
+    router.push(`/DashBoard/${idEtudiant}`);
   }
+  
+    function gotoLogIn() {
+    router.push("/SignIn");
+  }
+
 
   function gotoCalendrier() {
     router.push(`/calendrier/${idEtudiant}`);
@@ -186,14 +191,18 @@ export default function Parametres() {
             >
               Calendrier
             </button>
+          
 
-            <button className="ps-2 pe-2 mt-3" type="button">
-              Paramètres
-            </button>
           </div>
 
           <div className="col-2 p-3 text-center">
-            <p className="mt-3 mb-0">{etudiant.prenom}</p>
+            <button
+              onClick={gotoLogIn}
+              className="ps-3 pe-3 mt-3"
+              type="button"
+            >
+              Déconnexion
+            </button>
           </div>
         </div>
 
@@ -256,7 +265,7 @@ export default function Parametres() {
 
               <button
                 onClick={handleSauvegarderProfil}
-                className="btn btn-primary"
+                className="bg-blue-500 rounded text-white  p-2"
                 type="button"
               >
                 Sauvegarder profil
@@ -286,7 +295,7 @@ export default function Parametres() {
 
               <button
                 onClick={handleChangerMotDePasse}
-                className="btn btn-primary"
+                className="bg-green-500 rounded text-white  p-2"
                 type="button"
               >
                 Changer mot de passe

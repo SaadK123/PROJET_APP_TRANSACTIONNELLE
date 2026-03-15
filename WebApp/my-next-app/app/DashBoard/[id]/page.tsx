@@ -39,6 +39,13 @@ export default function DashBoard() {
     router.push(`/calendrier/${idEtudiant}`);
   }
 
+const gotoGroupCalendar = (idGroupe: string) => {
+  router.push(`/CalendrierGrp/${idEtudiant}/${idGroupe}`);
+};
+function gotoParametre() {
+  router.push(`/Parametres/${idEtudiant}`);
+};
+
   async function chargerDonnees() {
     try {
       setChargement(true);
@@ -175,12 +182,19 @@ export default function DashBoard() {
 
             <button
               onClick={gotoCalendrier}
-              className="ps-2 pe-2 mt-3"
+              className="ps-2 pe-2 mt-3 me-2"
               type="button"
             >
               Calendrier
             </button>
+
+            <button 
+            onClick={gotoParametre}
+            className="ps-2 pe-2 mt-3" type="button">
+              Paramètres
+            </button>
           </div>
+          
 
           <div className="col-2 p-3 text-center">
             <button
@@ -191,6 +205,7 @@ export default function DashBoard() {
               Déconnexion
             </button>
           </div>
+        </div>
         </div>
 
         <div className="row pt-4 text-center">
@@ -250,16 +265,26 @@ export default function DashBoard() {
                 {groupes.map((groupe) => (
                   <div key={groupe.id} className="border p-3 mb-3">
                     <p>{groupe.nomGroupe}</p>
+
                     <p>
                       Chef :{" "}
                       {groupe.chef
                         ? `${groupe.chef.prenom} ${groupe.chef.nom}`
                         : "Non défini"}
                     </p>
+
                     <p>
                       Étudiants :{" "}
                       {groupe.etudiants ? groupe.etudiants.length : 0}
                     </p>
+
+                    <button
+                      onClick={() => gotoGroupCalendar(groupe.id)}
+                      className="btn btn-sm btn-outline-primary mt-2"
+                      type="button"
+                    >
+                      Voir tout
+                    </button>
                   </div>
                 ))}
               </div>
@@ -315,6 +340,5 @@ export default function DashBoard() {
           </div>
         </div>
       </div>
-    </div>
-  );
+          );
 }

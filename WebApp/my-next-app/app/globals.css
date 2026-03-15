@@ -69,9 +69,42 @@ color: rgba(31, 166, 44, var(--tw-text-opacity)) !important;
   border: none;
 }
 
-/* DashBoard */
+/* calendar colors */
 
-.db-account-border{
-    --bs-border-opacity: 1 !important;
-  border-style: dashed !important;
+.fc .fc-button-primary {
+  background-color: #6366F1;
+  border: none;
+}
+
+.fc .fc-button-primary:hover {
+  background-color: #4F46E5;
+}
+
+.fc .fc-daygrid-event {
+  background-color: #6366F1;
+  border: none;
+}
+
+.fc .fc-timegrid-event {
+  background-color: #22C55E;
+  border: none;
+}
+
+.fc-toolbar-title {
+  font-weight: 600;
+}
+.fc .fc-daygrid-day-number {
+  color: black !important;
+  font-weight: 500;
+}
+.fc .fc-col-header-cell-cushion {
+  color: black !important;
+  font-weight: 600;
+}
+
+.fc-event:hover .edit-btn {
+  display: inline-block;
+}
+.fc-event{
+  color: black !important;
 }
