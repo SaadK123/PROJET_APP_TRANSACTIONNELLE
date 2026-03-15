@@ -59,7 +59,6 @@ export type Etudiant = {
   nomUtilisateur: string;
   nom: string;
   prenom: string;
-  motDePasseHash: string;
   ecole: string;
   horaire: Horaire | null;
   notifications: Notification[];
