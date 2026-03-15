@@ -70,7 +70,7 @@ public class Etudiant  {
             horaire = new Horaire();
         }
     }
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name  = "notification_id")
     private List<Notification> notifications = new ArrayList<>();
 
