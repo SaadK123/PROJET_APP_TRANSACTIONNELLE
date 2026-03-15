@@ -122,8 +122,10 @@ public class ServiceEtudiant {
 
   public  Etudiant getEtudiantByCourrielEtMotDePasse(String courriel,String motDePasse) {
         try {
+            ///  on recupere dabors letudiant si cest null sa va jeter une exception
             Etudiant etudiant = (Etudiant) entityManager.createQuery("select e from Etudiant  e " +
                     "where e.courriel = :courriel").setParameter("courriel",courriel).getSingleResult();
+            ///  ensuite ici si cest pas le meme mot de passe sa va jeter une exception
             if(!passwordEncoder.matches(motDePasse, etudiant.getMotDePasseHash())) {
                 throw new LinkUpException(ERREUR_TYPE.NON_EXISTANT,Utilitary.EXCEPTION_MESSAGE_NON_EXISTANT);
             }
@@ -154,6 +156,7 @@ public class ServiceEtudiant {
                 e.setEcole(updateDTO.getEcole());
             }
 
+            ///  ici on change le profil et on persiste la nouvelle entite avec le flush
             entityManager.flush();
             return new SucessDTO(true, Utilitary.MESSAGE_ETUDIANT_MODIFICATION);
 
@@ -178,11 +181,12 @@ public class ServiceEtudiant {
     public SucessDTO miseAJourEtudiantMotDePasse(MiseAJourEtudiantMotDePasse miseAJourEtudiantMotDePasse){
         String etudiantId = miseAJourEtudiantMotDePasse.getEtudiantID();
         Etudiant e =  getEtudiantById(etudiantId);
-
+           ///  si le nouveau mot de passe nest pas null et que lancien mot de passe ecrit equivaut au mot de passe alors on change
         if( miseAJourEtudiantMotDePasse.getNouveauMotDePasse() != null && passwordEncoder.matches(miseAJourEtudiantMotDePasse.getVieuxMotDePasse(),e.getMotDePasseHash()))
             e.setMotDePasseHash(passwordEncoder.encode(miseAJourEtudiantMotDePasse.getNouveauMotDePasse()));
 
         else{
+            ///  sinon on jete une exception avec le fait que les identifiants sont invalide
            throw new LinkUpException(ERREUR_TYPE.NON_EXISTANT, Utilitary.EXCEPTION_MESSAGE_IDENTIFIANTS_INVALIDES);
         }
        return new SucessDTO(true,Utilitary.MESSAGE_ETUDIANT_MODIFICATION);

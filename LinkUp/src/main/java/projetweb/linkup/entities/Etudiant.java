@@ -66,6 +66,7 @@ public class Etudiant  {
     @JoinColumn(name = "horaire_id")
     private Horaire horaire = new Horaire();
 
+    @JsonIgnore
     @PrePersist
     public void prePersist() {
         if (horaire == null) {
