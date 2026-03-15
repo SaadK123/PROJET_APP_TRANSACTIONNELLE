@@ -1,13 +1,12 @@
 package projetweb.linkup.Services;
 
 
-import projetweb.linkup.DTO.ACTIONS.CreateStudentDTO;
-import projetweb.linkup.DTO.ACTIONS.DeleteStudentDTO;
+import projetweb.linkup.DTO.ACTIONS.CreationEtudiantDTO;
+import projetweb.linkup.DTO.ACTIONS.SupprimerEtudiantDTO;
 import projetweb.linkup.DTO.ACTIONS.SucessDTO;
-import projetweb.linkup.DTO.TYPES.UpdateEtudiantPassword;
-import projetweb.linkup.DTO.TYPES.UpdateEtudiantProfile;
+import projetweb.linkup.DTO.TYPES.MiseAJourEtudiantMotDePasse;
+import projetweb.linkup.DTO.TYPES.MiseAJourEtudiantProfil;
 import projetweb.linkup.Exceptions.LinkUpException;
-import projetweb.linkup.Util.SecuriteConfiguration;
 import projetweb.linkup.Util.Utilitary;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
@@ -15,9 +14,8 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import projetweb.linkup.Enumerations.ERROR_TYPE;
+import projetweb.linkup.Enumerations.ERREUR_TYPE;
 import projetweb.linkup.entities.Etudiant;
-import projetweb.linkup.entities.Group;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -39,40 +37,24 @@ public class ServiceEtudiant {
          return   entityManager.createQuery("select e from Etudiant  e where e.id = :uuid",Etudiant.class)
                     .setParameter("uuid", uuid).getSingleResult();
         } catch (Exception e) {
-            throw new LinkUpException(ERROR_TYPE.CHAMPS_MANQUANTS,e.getMessage());
+            throw new LinkUpException(ERREUR_TYPE.CHAMPS_MANQUANTS,e.getMessage());
         }
     }
 
 
     @Transactional
-    public Etudiant getEtudiantByUsername(String username) {
+    public Etudiant getEtudiantByUsername(String nomUtilisateur) {
 
 
         try {
-           return  (Etudiant) entityManager.createQuery("select e from Etudiant e where username = :username")
-                    .setParameter("username", username).getSingleResult();
+           return  (Etudiant) entityManager.createQuery("select e from Etudiant e where nomUtilisateur = :nomUtilisateur")
+                    .setParameter("nomUtilisateur", nomUtilisateur).getSingleResult();
 
         } catch (NoResultException e) {
-           throw new LinkUpException(ERROR_TYPE.NON_EXISTANT,"etudiant nexsite pas");
+           throw new LinkUpException(ERREUR_TYPE.NON_EXISTANT,"etudiant nexsite pas");
         }
 
     }
-
-    @Transactional
-    public Optional<List<Etudiant>> getEtudiantByFirstName(String name, boolean isfirstname) {
-        if (name == null || name.isBlank()) return Optional.empty();
-        name = name.toLowerCase();
-        List<Etudiant> etudiants = isfirstname ?
-                entityManager.createQuery("select e from Etudiant e where lower(e.firstname) = :firstname ", Etudiant.class)
-                        .setParameter("firstname", name).getResultList() :
-                entityManager.createQuery("select e from Etudiant e where lower(e.lastname) = :lastname", Etudiant.class)
-                        .setParameter("lastname", name).getResultList();
-
-
-        return etudiants.isEmpty() ? Optional.empty() : Optional.of(etudiants);
-    }
-
-
     public ServiceEtudiant(PasswordEncoder passwordEncoder) {
 
         this.passwordEncoder = passwordEncoder;
@@ -81,33 +63,33 @@ public class ServiceEtudiant {
     @Transactional
 
     @SuppressWarnings("NullPointerException")
-    public Etudiant createEtudiant(CreateStudentDTO dto) {
-        if (dto == null) throw new LinkUpException(ERROR_TYPE.CHAMPS_MANQUANTS, Utilitary.EXCEPTION_CHAMPS_MANQUANTS);
+    public Etudiant creerEtudiant(CreationEtudiantDTO dto) {
+        if (dto == null) throw new LinkUpException(ERREUR_TYPE.CHAMPS_MANQUANTS, Utilitary.EXCEPTION_CHAMPS_MANQUANTS);
         Etudiant e = new Etudiant();
 
 
-        e.setEmail(dto.email());
-        e.setFirstname(dto.firstname());
-        e.setPasswordhash(passwordEncoder.encode(dto.password()));
-        e.setLastname(dto.lastname());
-        e.setUsername(dto.username());
+        e.setCourriel(dto.courriel());
+        e.setPrenom(dto.prenom());
+        e.setMotDePasseHash(passwordEncoder.encode(dto.motDePasse()));
+        e.setNom(dto.nom());
+        e.setNomUtilisateur(dto.nomUtilisateur());
         e.setEcole(dto.ecole());
-        e.setLastdate(LocalDate.now());
+        e.setDernierDate(LocalDate.now());
 
  try {
 
 
-   entityManager.createQuery("insert into Etudiant (email,firstname,lastname,username,passwordhash,ecole,lastdate)" +
-           " values (:email,:firstname,:lastname,:username,:passwordhash,:ecole,:lastdate)")
-           .setParameter("email", e.getEmail()).setParameter("firstname", e.getFirstname()).setParameter("lastname", e.getLastname());
+   entityManager.createQuery("insert into Etudiant (courriel,prenom,nom,nomUtilisateur,motDePasseHash,ecole,dernierDate)" +
+           " values (:courriel,:prenom,:nom,:nomUtilisateur,:motDePasseHash,:ecole,:dernierDate)")
+           .setParameter("courriel", e.getCourriel()).setParameter("prenom", e.getPrenom()).setParameter("nom", e.getNom());
      entityManager.persist(e);
 
      entityManager.flush();
  }catch (Exception ex) {
 
      switch (ex.getMessage()) {
-         case "UK_EMAIL" -> throw new LinkUpException(ERROR_TYPE.CONTRAINTE_UNIQUE, Utilitary.EXCEPTION_MESSAGE_DUPLICATION_EMAIL);
-         case "UK_USERNAME" -> throw new LinkUpException(ERROR_TYPE.CONTRAINTE_UNIQUE, Utilitary.EXCEPTION_MESSAGE_DUPLICATION_USERNAME);
+         case "UK_EMAIL" -> throw new LinkUpException(ERREUR_TYPE.CONTRAINTE_UNIQUE, Utilitary.EXCEPTION_MESSAGE_DUPLICATION_EMAIL);
+         case "UK_USERNAME" -> throw new LinkUpException(ERREUR_TYPE.CONTRAINTE_UNIQUE, Utilitary.EXCEPTION_MESSAGE_DUPLICATION_USERNAME);
          default ->  throw ex;
      }
  }
@@ -117,12 +99,12 @@ public class ServiceEtudiant {
     }
 
     @Transactional
-    public SucessDTO deleteEtudiant(DeleteStudentDTO dto) {
+    public SucessDTO supprimerEtudiant(SupprimerEtudiantDTO dto) {
 
 
 
-        String passwordHash =  passwordEncoder.encode(dto.password());
-        Etudiant e = getEtudiantByEmailAndPassword(dto.email(),passwordHash);
+        String motDePasseHash =  passwordEncoder.encode(dto.motDePasse());
+        Etudiant e = getEtudiantByCourrielEtMotDePasse(dto.courriel(),motDePasseHash);
 
         entityManager.remove(e);
         entityManager.flush();
@@ -134,34 +116,34 @@ public class ServiceEtudiant {
 
     @Transactional
 
-  public  Etudiant getEtudiantByEmailAndPassword(String email,String password) {
+  public  Etudiant getEtudiantByCourrielEtMotDePasse(String courriel,String motDePasse) {
         try {
             Etudiant etudiant = (Etudiant) entityManager.createQuery("select e from Etudiant  e " +
-                    "where e.email = :email").setParameter("email",email).getSingleResult();
-            if(!passwordEncoder.matches(password, etudiant.getPasswordhash())) {
-                throw new LinkUpException(ERROR_TYPE.NON_EXISTANT,Utilitary.EXCEPTION_MESSAGE_NON_EXISTANT);
+                    "where e.courriel = :courriel").setParameter("courriel",courriel).getSingleResult();
+            if(!passwordEncoder.matches(motDePasse, etudiant.getMotDePasseHash())) {
+                throw new LinkUpException(ERREUR_TYPE.NON_EXISTANT,Utilitary.EXCEPTION_MESSAGE_NON_EXISTANT);
             }
             return etudiant;
         } catch (Exception e) {
-         throw new LinkUpException(ERROR_TYPE.NON_EXISTANT,Utilitary.EXCEPTION_MESSAGE_NON_EXISTANT);
+         throw new LinkUpException(ERREUR_TYPE.NON_EXISTANT,Utilitary.EXCEPTION_MESSAGE_NON_EXISTANT);
         }
 
     }
     @Transactional
-    public SucessDTO updateEtudiantProfile(UpdateEtudiantProfile updateDTO) {
+    public SucessDTO miseAJourEtudiantProfil(MiseAJourEtudiantProfil updateDTO) {
         Etudiant e = getEtudiantById(updateDTO.getEtudiantID());
 
         try {
-            if (updateDTO.getUsername() != null) {
-                e.setUsername(updateDTO.getUsername());
+            if (updateDTO.getNomUtilisateur() != null) {
+                e.setNomUtilisateur(updateDTO.getNomUtilisateur());
             }
 
-            if (updateDTO.getLastname() != null) {
-                e.setLastname(updateDTO.getLastname());
+            if (updateDTO.getNom() != null) {
+                e.setNom(updateDTO.getNom());
             }
 
-            if (updateDTO.getFirstname() != null) {
-                e.setFirstname(updateDTO.getFirstname());
+            if (updateDTO.getPrenom() != null) {
+                e.setPrenom(updateDTO.getPrenom());
             }
 
             if (updateDTO.getEcole() != null) {
@@ -174,30 +156,30 @@ public class ServiceEtudiant {
         } catch (Exception ex) {
             switch (ex.getMessage()) {
                 case "UK_EMAIL" -> throw new LinkUpException(
-                        ERROR_TYPE.CONTRAINTE_UNIQUE,
+                        ERREUR_TYPE.CONTRAINTE_UNIQUE,
                         Utilitary.EXCEPTION_MESSAGE_DUPLICATION_EMAIL
                 );
                 case "UK_USERNAME" -> throw new LinkUpException(
-                        ERROR_TYPE.CONTRAINTE_UNIQUE,
+                        ERREUR_TYPE.CONTRAINTE_UNIQUE,
                         Utilitary.EXCEPTION_MESSAGE_DUPLICATION_USERNAME
                 );
                 default -> throw new LinkUpException(
-                        ERROR_TYPE.ERREUR_INTERNE,
+                        ERREUR_TYPE.ERREUR_INTERNE,
                         ex.getMessage()
                 );
             }
         }
     }
     @Transactional
-    public SucessDTO updateEtudiantPassword(UpdateEtudiantPassword updateEtudiantPassword){
-        String etudiantId = updateEtudiantPassword.getEtudiantID();
+    public SucessDTO miseAJourEtudiantMotDePasse(MiseAJourEtudiantMotDePasse miseAJourEtudiantMotDePasse){
+        String etudiantId = miseAJourEtudiantMotDePasse.getEtudiantID();
         Etudiant e =  getEtudiantById(etudiantId);
 
-        if( updateEtudiantPassword.getNewPassword() != null && passwordEncoder.matches(updateEtudiantPassword.getOldPassword(),e.getPasswordhash()))
-            e.setPasswordhash(passwordEncoder.encode(updateEtudiantPassword.getNewPassword()));
+        if( miseAJourEtudiantMotDePasse.getNouveauMotDePasse() != null && passwordEncoder.matches(miseAJourEtudiantMotDePasse.getVieuxMotDePasse(),e.getMotDePasseHash()))
+            e.setMotDePasseHash(passwordEncoder.encode(miseAJourEtudiantMotDePasse.getNouveauMotDePasse()));
 
         else{
-           throw new LinkUpException(ERROR_TYPE.NON_EXISTANT, Utilitary.EXCEPTION_MESSAGE_IDENTIFIANTS_INVALIDES);
+           throw new LinkUpException(ERREUR_TYPE.NON_EXISTANT, Utilitary.EXCEPTION_MESSAGE_IDENTIFIANTS_INVALIDES);
         }
        return new SucessDTO(true,Utilitary.MESSAGE_ETUDIANT_MODIFICATION);
     }

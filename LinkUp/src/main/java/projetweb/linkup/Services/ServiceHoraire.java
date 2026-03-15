@@ -2,13 +2,12 @@ package projetweb.linkup.Services;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.transaction.TransactionScoped;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import projetweb.linkup.DTO.ACTIONS.AjouterActiviteDTOEtudiant;
 import projetweb.linkup.DTO.ACTIONS.RequeteActiviteGroupeDTO;
 import projetweb.linkup.DTO.ACTIONS.SucessDTO;
-import projetweb.linkup.Enumerations.ERROR_TYPE;
+import projetweb.linkup.Enumerations.ERREUR_TYPE;
 import projetweb.linkup.Exceptions.LinkUpException;
 import projetweb.linkup.entities.Activite;
 import projetweb.linkup.entities.Etudiant;
@@ -39,14 +38,14 @@ public class ServiceHoraire {
                   .setParameter("id",uuid).getSingleResult();
 
         } catch (Exception e) {
-          throw new LinkUpException(ERROR_TYPE.NON_EXISTANT,"cet horaire n'existe pas");  // todo
+          throw new LinkUpException(ERREUR_TYPE.NON_EXISTANT,"cet horaire n'existe pas");  // todo
         }
     }
     @Transactional
     public boolean estOverlapper(LocalDateTime debut,LocalDateTime fin,Horaire horaire) {
-        for(var currentActivite : horaire.getActivites()) {
-            if(debut.isBefore(currentActivite.getTempsFin()) &&
-                    fin.isAfter(currentActivite.getTempsDebut())) {
+        for(var activiteCourant : horaire.getActivites()) {
+            if(debut.isBefore(activiteCourant.getTempsFin()) &&
+                    fin.isAfter(activiteCourant.getTempsDebut())) {
             return true;
             }
         }

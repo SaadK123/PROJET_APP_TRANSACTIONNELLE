@@ -23,8 +23,8 @@ import lombok.Setter;
 name="Etudiants",
 
 uniqueConstraints = {
-        @UniqueConstraint(name = "UK_EMAIL", columnNames = "email"),
-        @UniqueConstraint(name = "UK_USERNAME",columnNames = "username")
+        @UniqueConstraint(name = "UK_EMAIL", columnNames = "courriel"),
+        @UniqueConstraint(name = "UK_USERNAME",columnNames = "nomUtilisateur")
 }
 
 
@@ -37,23 +37,23 @@ public class Etudiant  {
     private UUID id;
 
 
-    @Column(name = "last_date_connected")
-    private LocalDate lastdate;
-    @Column(name = "email", nullable = false,unique = true)
-    private String email;
+    @Column(name = "dernier_date_connecte")
+    private LocalDate dernierDate;
+    @Column(name = "courriel", nullable = false,unique = true)
+    private String courriel;
 
 
-    @Column(name = "username",nullable = false,unique = true)
-    private String username;
+    @Column(name = "nomUtilisateur",nullable = false,unique = true)
+    private String nomUtilisateur;
 
-    @Column(name = "lastname",nullable = false)
-    private String lastname;
+    @Column(name = "nom",nullable = false)
+    private String nom;
 
-    @Column(name = "firstname",nullable = false)
-    private String firstname;
+    @Column(name = "prenom",nullable = false)
+    private String prenom;
 
-    @Column(name="password",nullable = false)
-    private String passwordhash;
+    @Column(name="motDePasse",nullable = false)
+    private String motDePasseHash;
 
     @Column(name= "ecole", nullable = false)
     private String ecole;

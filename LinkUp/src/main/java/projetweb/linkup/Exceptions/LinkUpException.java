@@ -3,7 +3,7 @@ package projetweb.linkup.Exceptions;
 
 import lombok.Getter;
 import lombok.Setter;
-import projetweb.linkup.Enumerations.ERROR_TYPE;
+import projetweb.linkup.Enumerations.ERREUR_TYPE;
 
 
 @Getter
@@ -11,10 +11,10 @@ import projetweb.linkup.Enumerations.ERROR_TYPE;
 public  class LinkUpException extends RuntimeException {
 
     @Getter
-    private final ERROR_TYPE error;
+    private final ERREUR_TYPE erreur;
     private final String message;
-    public LinkUpException(ERROR_TYPE error,String message) {
-        this.error = error;
+    public LinkUpException(ERREUR_TYPE erreur, String message) {
+        this.erreur = erreur;
         this.message = message;
     }
 
