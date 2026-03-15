@@ -91,6 +91,7 @@ export default function CalendrierUtilisateur() {
     setTempsFin(convertirDatePourInput(selectionInfo.endStr));
   }
 
+
   async function handleAjouterActivite() {
     if (!titre.trim() || !description.trim() || !tempsDebut || !tempsFin) {
       setErreur("Remplis tous les champs.");
@@ -208,6 +209,7 @@ export default function CalendrierUtilisateur() {
 
             <div className="bg-white border rounded p-3">
               <FullCalendar
+              
                 plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
                 initialView="dayGridMonth"
                 locale="fr-ca"
