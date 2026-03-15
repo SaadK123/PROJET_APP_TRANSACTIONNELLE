@@ -48,6 +48,7 @@ public class Groupe {
         setChef(chef);
         etudiants.add(chef);
         setNomGroupe(nomGroupe);
+        this.horaire = new Horaire();
     }
 
 
