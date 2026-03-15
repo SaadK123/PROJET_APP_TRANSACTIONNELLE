@@ -95,7 +95,7 @@ public class ServiceHoraire {
     @Transactional public SucessDTO supprimerActivite(String activiteId) {
         try {
             entityManager.createQuery("delete from Activite e  where e.id = :id")
-                    .setParameter("id",UUID.fromString(activiteId));
+                    .setParameter("id",UUID.fromString(activiteId)).executeUpdate();
             return new SucessDTO(true,"lactivite a ete ajouter");
         }catch (Exception e) {
             throw new LinkUpException(ERREUR_TYPE.ERREUR_INTERNE,"impossible dajouter une activite");

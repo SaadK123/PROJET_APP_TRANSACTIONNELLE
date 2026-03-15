@@ -139,4 +139,9 @@ public class TestControlleur {
         public SucessDTO retirerActivite(@RequestParam String activiteId) {
                 return serviceHoraire.supprimerActivite(activiteId);
         }
+
+        @DeleteMapping("/groupe/supprimer")
+        public SucessDTO retirerGroupe(@RequestBody SupprimerGroupeDTO supprimerGroupeDTO) {
+                return serviceGroupe.supprimerGroupe(supprimerGroupeDTO);
+        }
 }
