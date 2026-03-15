@@ -2,15 +2,15 @@ package projetweb.linkup;
 
 import org.springframework.web.bind.annotation.*;
 import projetweb.linkup.DTO.ACTIONS.*;
-import projetweb.linkup.DTO.TYPES.RequestInvitationDTO;
-import projetweb.linkup.DTO.TYPES.UpdateEtudiantPassword;
-import projetweb.linkup.DTO.TYPES.UpdateEtudiantProfile;
+import projetweb.linkup.DTO.TYPES.RequeteInvitationDTO;
+import projetweb.linkup.DTO.TYPES.MiseAJourEtudiantMotDePasse;
+import projetweb.linkup.DTO.TYPES.MiseAJourEtudiantProfil;
 import projetweb.linkup.Services.ServiceEtudiant;
 import projetweb.linkup.Services.ServiceGroupe;
 import projetweb.linkup.Services.ServiceHoraire;
 import projetweb.linkup.Services.ServiceNotification;
 import projetweb.linkup.entities.Etudiant;
-import projetweb.linkup.entities.Group;
+import projetweb.linkup.entities.Groupe;
 import projetweb.linkup.entities.Horaire;
 import projetweb.linkup.entities.Notification;
 
@@ -18,13 +18,13 @@ import java.util.List;
 @CrossOrigin(origins = {"http://localhost:3000", "http://127.0.0.1:3000"})
 @RestController
 @RequestMapping("/api")
-public class TestController {
+public class TestControlleur {
 
         private final ServiceEtudiant serviceEtudiant;
         private final ServiceGroupe serviceGroupe;
         private final ServiceHoraire serviceHoraire;
         private final ServiceNotification serviceNotification;
-        public TestController(
+        public TestControlleur(
                 ServiceEtudiant serviceEtudiant,
                 ServiceGroupe serviceGroupe,
                 ServiceHoraire serviceHoraire, ServiceNotification serviceNotification
@@ -34,24 +34,18 @@ public class TestController {
                 this.serviceHoraire = serviceHoraire;
             this.serviceNotification = serviceNotification;
         }
-
-        @GetMapping("/health")
-        public String health() {
-                return "OK";
-        }
-
         @PostMapping("/etudiants")
-        public Etudiant createEtudiant(@RequestBody CreateStudentDTO dto) {
-                return serviceEtudiant.createEtudiant(dto);
+        public Etudiant createEtudiant(@RequestBody CreationEtudiantDTO dto) {
+                return serviceEtudiant.creerEtudiant(dto);
         }
 
         @DeleteMapping("/etudiants")
-        public SucessDTO deleteEtudiant(@RequestBody DeleteStudentDTO dto) {
-                return serviceEtudiant.deleteEtudiant(dto);
+        public SucessDTO deleteEtudiant(@RequestBody SupprimerEtudiantDTO dto) {
+                return serviceEtudiant.supprimerEtudiant(dto);
         }
         @PostMapping("/etudiant/auth")
         public Etudiant getEtudiantByAuth(@RequestBody AuthentificationDTO auth) {
-                return serviceEtudiant.getEtudiantByEmailAndPassword(auth.email(),auth.password());
+                return serviceEtudiant.getEtudiantByCourrielEtMotDePasse(auth.courriel(),auth.motDePasse());
         }
 
         @GetMapping("/etudiant")
@@ -64,31 +58,29 @@ public class TestController {
                 return serviceEtudiant.getEtudiantByUsername(username);
         }
 
-
-
         @PutMapping("/etudiants/profil")
-        public SucessDTO updateEtudiantProfile(@RequestBody UpdateEtudiantProfile dto) {
-                return serviceEtudiant.updateEtudiantProfile(dto);
+        public SucessDTO updateEtudiantProfile(@RequestBody MiseAJourEtudiantProfil dto) {
+                return serviceEtudiant.miseAJourEtudiantProfil(dto);
         }
 
         @PutMapping("/etudiants/password")
-        public SucessDTO updateEtudiantPassword(@RequestBody UpdateEtudiantPassword dto) {
-                return serviceEtudiant.updateEtudiantPassword(dto);
+        public SucessDTO updateEtudiantPassword(@RequestBody MiseAJourEtudiantMotDePasse dto) {
+                return serviceEtudiant.miseAJourEtudiantMotDePasse(dto);
         }
 
         @PostMapping("/groupes")
-        public Group createGroup(@RequestBody CreateGroupDTO dto) {
-                return serviceGroupe.createGroup(dto);
+        public Groupe createGroup(@RequestBody CreationDeGroupeDTO dto) {
+                return serviceGroupe.creerGroupe(dto);
         }
 
         @GetMapping("/groupes")
-        public List<Group> getGroupsFromEtudiant(@RequestParam String idEtudiant) {
-                return serviceGroupe.getAllgroupsFromUser(idEtudiant);
+        public List<Groupe> getGroupsFromEtudiant(@RequestParam String idEtudiant) {
+                return serviceGroupe.getToutGroupesDeUser(idEtudiant);
         }
 
         @PostMapping("/groupes/invitations")
-        public SucessDTO envoyerInvitationGroupe(@RequestBody RequestInvitationDTO dto) {
-                return serviceGroupe.sendRequestToAnEtudiant(dto);
+        public SucessDTO envoyerInvitationGroupe(@RequestBody RequeteInvitationDTO dto) {
+                return serviceGroupe.envoyerRequeteAEtudiant(dto);
         }
 
         @PostMapping("/groupes/quitter")
@@ -103,7 +95,7 @@ public class TestController {
 
         @GetMapping("/notifications")
         public List<Notification> getAllNotificationsFromEtudiant(@RequestParam String idEtudiant) {
-                return serviceNotification.getAllNotificationsFromUser(idEtudiant);
+                return serviceNotification.getToutNotificationsDeUser(idEtudiant);
         }
 
         @PutMapping("/notifications/vue")

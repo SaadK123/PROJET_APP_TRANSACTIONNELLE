@@ -10,8 +10,8 @@ import java.util.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "Groups")
-public class Group {
+@Table(name = "Groupes")
+public class Groupe {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
 
@@ -28,8 +28,8 @@ public class Group {
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
-            name = "group_etudiants",
-            joinColumns = @JoinColumn(name = "group_id"),
+            name = "groupe_etudiants",
+            joinColumns = @JoinColumn(name = "groupe_id"),
             inverseJoinColumns = @JoinColumn(name = "etudiant_id")
     )
     // id etudiant ; etudiant
@@ -44,7 +44,7 @@ public class Group {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "horaire_id",unique = true)
     Horaire horaire;
-    public Group(Etudiant chef,String nomGroupe) {
+    public Groupe(Etudiant chef, String nomGroupe) {
         setChef(chef);
         etudiants.add(chef);
         setNomGroupe(nomGroupe);

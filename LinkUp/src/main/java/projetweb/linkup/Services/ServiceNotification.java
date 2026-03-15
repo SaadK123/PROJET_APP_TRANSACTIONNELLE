@@ -4,10 +4,8 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
-import projetweb.linkup.DTO.TYPES.RequestNotificationDTO;
 import projetweb.linkup.DTO.ACTIONS.SucessDTO;
-import projetweb.linkup.Enumerations.ERROR_TYPE;
-import projetweb.linkup.Enumerations.NotificationType;
+import projetweb.linkup.Enumerations.ERREUR_TYPE;
 import projetweb.linkup.Exceptions.LinkUpException;
 import projetweb.linkup.Util.Utilitary;
 import projetweb.linkup.entities.Etudiant;
@@ -28,14 +26,14 @@ public class ServiceNotification {
         this.serviceEtudiant = serviceEtudiant;
     }
 
-    public List<Notification> getAllNotificationsFromUser(String idEtudiant) {
+    public List<Notification> getToutNotificationsDeUser(String idEtudiant) {
 
      try {
          return serviceEtudiant.getEtudiantById(idEtudiant).getNotifications();
      }catch (Exception e) {
 
 
-         throw new LinkUpException(ERROR_TYPE.NON_EXISTANT, Utilitary.EXCEPTION_MESSAGE_NON_EXISTANT);
+         throw new LinkUpException(ERREUR_TYPE.NON_EXISTANT, Utilitary.EXCEPTION_MESSAGE_NON_EXISTANT);
      }
        
     }
@@ -45,7 +43,7 @@ public class ServiceNotification {
         UUID id = UUID.fromString(idNotification);
         Notification notification = entityManager.find(Notification.class, id);
         if(notification == null) {
-            throw new LinkUpException(ERROR_TYPE.NON_EXISTANT, Utilitary.EXCEPTION_MESSAGE_NON_EXISTANT);
+            throw new LinkUpException(ERREUR_TYPE.NON_EXISTANT, Utilitary.EXCEPTION_MESSAGE_NON_EXISTANT);
 
         }
 
@@ -59,7 +57,7 @@ public class ServiceNotification {
         UUID id = UUID.fromString(idNotification);
         Notification notification = entityManager.find(Notification.class, id);
         if(notification == null) {
-            throw new LinkUpException(ERROR_TYPE.NON_EXISTANT, Utilitary.EXCEPTION_MESSAGE_NON_EXISTANT);
+            throw new LinkUpException(ERREUR_TYPE.NON_EXISTANT, Utilitary.EXCEPTION_MESSAGE_NON_EXISTANT);
 
         }
         entityManager.remove(notification);

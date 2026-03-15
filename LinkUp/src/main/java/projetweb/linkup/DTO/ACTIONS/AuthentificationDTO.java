@@ -1,3 +1,3 @@
 package projetweb.linkup.DTO.ACTIONS;
 
-public record AuthentificationDTO(String email,String password){}
+public record AuthentificationDTO(String courriel,String motDePasse){}
