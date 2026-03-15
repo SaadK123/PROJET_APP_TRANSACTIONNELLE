@@ -1,11 +1,7 @@
 package projetweb.linkup;
 
 import org.springframework.web.bind.annotation.*;
-import projetweb.linkup.DTO.ACTIONS.CreateGroupDTO;
-import projetweb.linkup.DTO.ACTIONS.CreateStudentDTO;
-import projetweb.linkup.DTO.ACTIONS.DeleteStudentDTO;
-import projetweb.linkup.DTO.ACTIONS.QuitterGroupeDTO;
-import projetweb.linkup.DTO.ACTIONS.SucessDTO;
+import projetweb.linkup.DTO.ACTIONS.*;
 import projetweb.linkup.DTO.TYPES.RequestInvitationDTO;
 import projetweb.linkup.DTO.TYPES.UpdateEtudiantPassword;
 import projetweb.linkup.DTO.TYPES.UpdateEtudiantProfile;
@@ -19,7 +15,7 @@ import projetweb.linkup.entities.Horaire;
 import projetweb.linkup.entities.Notification;
 
 import java.util.List;
-
+@CrossOrigin(origins = {"http://localhost:3000", "http://127.0.0.1:3000"})
 @RestController
 @RequestMapping("/api")
 public class TestController {
@@ -52,6 +48,10 @@ public class TestController {
         @DeleteMapping("/etudiants")
         public SucessDTO deleteEtudiant(@RequestBody DeleteStudentDTO dto) {
                 return serviceEtudiant.deleteEtudiant(dto);
+        }
+        @PostMapping("/etudiant/auth")
+        public Etudiant getEtudiantByAuth(@RequestBody AuthentificationDTO auth) {
+                return serviceEtudiant.getEtudiantByEmailAndPassword(auth.email(),auth.password());
         }
 
         @GetMapping("/etudiant")
@@ -122,5 +122,32 @@ public class TestController {
         @DeleteMapping("/notifications")
         public SucessDTO deleteNotification(@RequestParam String idNotification) {
                 return serviceNotification.deleteNotification(idNotification);
+        }
+
+
+
+        @PostMapping("/groupes/ajouter")
+
+        public SucessDTO ajouterEtudiantDansGroupe(@RequestBody INVITATION_GROUPE_DTO invitation) {
+                return serviceGroupe.rejoindreGroupe(invitation);
+        }
+
+
+        @PostMapping("/groupes/virer")
+
+        public SucessDTO virerEtudiantDunGroupe(@RequestBody VirerEtudiantDTO virerEtudiantDTO) {
+                return serviceGroupe.virerEtudiant(virerEtudiantDTO);
+        }
+
+        @PostMapping("/groupes/activites/ajouter")
+
+        public SucessDTO ajouterActivite(@RequestBody RequeteActiviteGroupeDTO requeteActiviteGroupeDTO) {
+                return serviceHoraire.trouverActivite(requeteActiviteGroupeDTO);
+        }
+
+        @PostMapping("/etudiants/activites/ajouter")
+
+        public SucessDTO ajouterActivitePourEtudiant(@RequestBody AjouterActiviteDTOEtudiant ajouterActiviteDTOEtudiant) {
+                return serviceHoraire.ajouterActivitePourEtudiant(ajouterActiviteDTOEtudiant);
         }
 }

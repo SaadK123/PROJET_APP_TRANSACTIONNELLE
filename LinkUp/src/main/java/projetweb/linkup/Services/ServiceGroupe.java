@@ -2,9 +2,7 @@ package projetweb.linkup.Services;
 
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
-import projetweb.linkup.DTO.ACTIONS.CreateGroupDTO;
-import projetweb.linkup.DTO.ACTIONS.QuitterGroupeDTO;
-import projetweb.linkup.DTO.ACTIONS.SucessDTO;
+import projetweb.linkup.DTO.ACTIONS.*;
 import projetweb.linkup.DTO.TYPES.RequestInvitationDTO;
 import projetweb.linkup.Exceptions.LinkUpException;
 import projetweb.linkup.Util.Utilitary;
@@ -17,6 +15,7 @@ import projetweb.linkup.entities.Group;
 import projetweb.linkup.entities.Invitation;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class ServiceGroupe {
@@ -33,9 +32,10 @@ public class ServiceGroupe {
         this.serviceNotification = serviceNotification;
     }
    @Transactional
-    public Group getGroupById(String groupId) {
+    public Group getGroupById(String groupIdString) {
 
         try {
+            UUID groupId = UUID.fromString(groupIdString);
             return  entityManager.
               createQuery("select g from Group g where g.id = :groupId", Group.class)
                     .setParameter("groupId", groupId).getSingleResult();
@@ -85,9 +85,15 @@ public class ServiceGroupe {
     }
 
 
+
     @Transactional
-    public SucessDTO rejoindreGroupe() {
-        return null; // todo
+    public SucessDTO rejoindreGroupe(INVITATION_GROUPE_DTO invitation) {
+        Etudiant etudiant = serviceEtudiant.getEtudiantById(invitation.idEtudiant());
+        Group group = getGroupById(invitation.idGroupe());
+
+        group.getEtudiants().add(etudiant);
+
+        return new SucessDTO(true,"vous avez ete ajouter dans le groupe");
     }
     @Transactional
     public Group createGroup(CreateGroupDTO group) {
@@ -106,7 +112,7 @@ public class ServiceGroupe {
   @Transactional
     public SucessDTO supprimerGroupe(String idGroup,Group group) {
 
-        String str = group == null ?  idGroup:group.getId().toString();
+        UUID str = group == null ? UUID.fromString(idGroup):group.getId();
 
         try {
             entityManager.createQuery("delete FROM Group g where g.id = :id")
@@ -123,7 +129,30 @@ public class ServiceGroupe {
     @Transactional
     public List<Group> getAllgroupsFromUser(String userID) {
         return entityManager.createQuery("select g from  Group g  join g.etudiants e where e.id = :userID", Group.class).
-                setParameter("userID",userID).getResultList();
+                setParameter("userID",UUID.fromString(userID)).getResultList();
+    }
+
+
+    @Transactional
+    public SucessDTO virerEtudiant(VirerEtudiantDTO virerEtudiantDTO) {
+        String idVireur = virerEtudiantDTO.etudiantQuiVireId();
+        String idVirer = virerEtudiantDTO.etudiantAVirerId();
+
+
+        String groupId =  virerEtudiantDTO.groupid();
+        Etudiant vireur = serviceEtudiant.getEtudiantById(idVireur);
+        Etudiant virer  = serviceEtudiant.getEtudiantById(idVirer);
+
+        Group group = getGroupById(groupId);
+
+        if(!group.getChef().getId().equals(vireur.getId())) {
+            throw new LinkUpException(ERROR_TYPE.ERREUR_METIER_LOGIQUE,Utilitary.MESSAGE_ACTION_DEMANDE_CHEF_INVITATION);
+        }else if(idVirer.equals(idVireur)) {
+                throw new LinkUpException(ERROR_TYPE.ERREUR_METIER_LOGIQUE,"vous ne pouvez pas vous virer vous meme");
+        }
+        group.getEtudiants().remove(virer);
+
+        return new SucessDTO(true,"letudiant a ete virer");
     }
 
 

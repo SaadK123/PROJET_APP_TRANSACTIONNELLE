@@ -7,6 +7,7 @@ import projetweb.linkup.DTO.ACTIONS.SucessDTO;
 import projetweb.linkup.DTO.TYPES.UpdateEtudiantPassword;
 import projetweb.linkup.DTO.TYPES.UpdateEtudiantProfile;
 import projetweb.linkup.Exceptions.LinkUpException;
+import projetweb.linkup.Util.SecuriteConfiguration;
 import projetweb.linkup.Util.Utilitary;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
@@ -133,16 +134,18 @@ public class ServiceEtudiant {
 
     @Transactional
 
-    Etudiant getEtudiantByEmailAndPassword(String email,String passwordHash) {
+  public  Etudiant getEtudiantByEmailAndPassword(String email,String password) {
         try {
-
-            return (Etudiant) entityManager.createQuery("select e from Etudiant  e where e.passwordhash = :passwordHash " +
-                            "and e.email = :email",
-                            Etudiant.class)
-                    .setParameter("passwordHash",passwordHash).setParameter("email",email);
+            Etudiant etudiant = (Etudiant) entityManager.createQuery("select e from Etudiant  e " +
+                    "where e.email = :email").setParameter("email",email).getSingleResult();
+            if(!passwordEncoder.matches(password, etudiant.getPasswordhash())) {
+                throw new LinkUpException(ERROR_TYPE.NON_EXISTANT,Utilitary.EXCEPTION_MESSAGE_NON_EXISTANT);
+            }
+            return etudiant;
         } catch (Exception e) {
          throw new LinkUpException(ERROR_TYPE.NON_EXISTANT,Utilitary.EXCEPTION_MESSAGE_NON_EXISTANT);
         }
+
     }
     @Transactional
     public SucessDTO updateEtudiantProfile(UpdateEtudiantProfile updateDTO) {

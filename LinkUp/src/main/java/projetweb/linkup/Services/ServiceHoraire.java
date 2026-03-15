@@ -2,35 +2,41 @@ package projetweb.linkup.Services;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.TransactionScoped;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+import projetweb.linkup.DTO.ACTIONS.AjouterActiviteDTOEtudiant;
 import projetweb.linkup.DTO.ACTIONS.RequeteActiviteGroupeDTO;
 import projetweb.linkup.DTO.ACTIONS.SucessDTO;
 import projetweb.linkup.Enumerations.ERROR_TYPE;
 import projetweb.linkup.Exceptions.LinkUpException;
 import projetweb.linkup.entities.Activite;
+import projetweb.linkup.entities.Etudiant;
 import projetweb.linkup.entities.Horaire;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Service
 public class ServiceHoraire {
 
 
-     ServiceGroupe serviceGroupe;
+    private final ServiceEtudiant serviceEtudiant;
+    ServiceGroupe serviceGroupe;
     @PersistenceContext
     EntityManager entityManager;
-    public ServiceHoraire(ServiceGroupe serviceGroupe) {
+    public ServiceHoraire(ServiceGroupe serviceGroupe, ServiceEtudiant serviceEtudiant) {
      this.serviceGroupe = serviceGroupe;
+        this.serviceEtudiant = serviceEtudiant;
     }
 
 
     public Horaire getHoraireFromId(String id) {
         try {
-
+         UUID uuid = UUID.fromString(id);
           return  entityManager
                   .createQuery("select h from Horaire  h where id = :id", Horaire.class)
-                  .setParameter("id",id).getSingleResult();
+                  .setParameter("id",uuid).getSingleResult();
 
         } catch (Exception e) {
           throw new LinkUpException(ERROR_TYPE.NON_EXISTANT,"cet horaire n'existe pas");  // todo
@@ -70,6 +76,19 @@ public class ServiceHoraire {
             tempsDebut = tempsDebut.plusMinutes(10);
         }
         return new SucessDTO(true,"une activite a ete trouver");
+    }
+
+    @Transactional
+    public SucessDTO ajouterActivitePourEtudiant(AjouterActiviteDTOEtudiant ajouter) {
+        Etudiant etudiant = serviceEtudiant.getEtudiantById(ajouter.etudiantId());
+
+        try {
+            etudiant.getHoraire().getActivites().add(ajouter.activite());
+
+        } catch (Exception e) {
+              return new SucessDTO(false,"marche pas");
+        }
+        return new SucessDTO(true,"sa marche");
     }
 
 
