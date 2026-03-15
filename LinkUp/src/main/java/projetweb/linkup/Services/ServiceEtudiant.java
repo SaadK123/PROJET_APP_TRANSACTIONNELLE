@@ -47,7 +47,7 @@ public class ServiceEtudiant {
 
 
         try {
-           return  (Etudiant) entityManager.createQuery("select e from Etudiant e where nomUtilisateur = :nomUtilisateur")
+           return  (Etudiant) entityManager.createQuery("select e from Etudiant e where e.nomUtilisateur = :nomUtilisateur")
                     .setParameter("nomUtilisateur", nomUtilisateur).getSingleResult();
 
         } catch (NoResultException e) {
