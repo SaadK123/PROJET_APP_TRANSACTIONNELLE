@@ -41,7 +41,7 @@ public class Groupe {
         return new ArrayList<>(etudiants);
     }
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JoinColumn(name = "horaire_id",unique = true)
     Horaire horaire;
     public Groupe(Etudiant chef, String nomGroupe) {
