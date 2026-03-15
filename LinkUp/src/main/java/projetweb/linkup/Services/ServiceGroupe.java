@@ -12,8 +12,10 @@ import jakarta.persistence.PersistenceContext;
 import projetweb.linkup.Enumerations.ERREUR_TYPE;
 import projetweb.linkup.entities.Etudiant;
 import projetweb.linkup.entities.Groupe;
+import projetweb.linkup.entities.Horaire;
 import projetweb.linkup.entities.Invitation;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -102,7 +104,8 @@ public class ServiceGroupe {
         Etudiant e =  serviceEtudiant.getEtudiantById(groupe.chefID());
 
         Groupe g = new Groupe(e,groupe.nomGroup());
-
+        g.setHoraire(new Horaire());
+        g.getHoraire().setActivites(new ArrayList<>());
         entityManager.persist(g);
         entityManager.flush();
 
