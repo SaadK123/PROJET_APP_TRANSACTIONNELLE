@@ -42,7 +42,7 @@ export async function ajouterActivitePourEtudiant(
   titre: string,
   etudiantId: string
 ) {
-  const response = await fetch(URLS.ACTIVITE_AJOUTER_ETUDIANT, {
+  const response = await fetch(URLS.AJOUTER_ACTIVITE_ETUDIANT, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

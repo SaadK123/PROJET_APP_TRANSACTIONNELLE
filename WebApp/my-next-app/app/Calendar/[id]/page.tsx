@@ -7,6 +7,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import { obtenirEtudiantParId } from "@/app/FetchsMethodesEtudiants";
+import { ajouterActivitePourEtudiant } from "@/app/FetchMethodesActivites";
 import type { Etudiant } from "@/app/TypesObjets";
 
 type EvenementCalendrier = {
@@ -105,31 +106,13 @@ export default function CalendrierUtilisateur() {
       setAjoutEnCours(true);
       setErreur("");
 
-      const response = await fetch(
-        "https://linkup-n9cw.onrender.com/api/etudiants/activites/ajouter",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            activite: {
-              estRepete: false,
-              description,
-              tempsDebut,
-              tempsFin,
-              titre,
-            },
-            etudiantId: idEtudiant,
-          }),
-        },
+      await ajouterActivitePourEtudiant(
+        description,
+        tempsDebut,
+        tempsFin,
+        titre,
+        idEtudiant,
       );
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || "Erreur ajout activité");
-      }
 
       setTitre("");
       setDescription("");

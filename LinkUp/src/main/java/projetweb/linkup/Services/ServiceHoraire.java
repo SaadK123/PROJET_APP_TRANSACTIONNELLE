@@ -79,15 +79,14 @@ public class ServiceHoraire {
 
     @Transactional
     public SucessDTO ajouterActivitePourEtudiant(AjouterActiviteDTOEtudiant ajouter) {
-        Etudiant etudiant = serviceEtudiant.getEtudiantById(ajouter.etudiantId());
-
         try {
+            Etudiant etudiant = serviceEtudiant.getEtudiantById(ajouter.etudiantId());
             etudiant.getHoraire().getActivites().add(ajouter.activite());
-
+            return new SucessDTO(true, "sa marche");
         } catch (Exception e) {
-              return new SucessDTO(false,"marche pas");
+            e.printStackTrace();
+            return new SucessDTO(false, e.getClass().getSimpleName() + " : " + e.getMessage());
         }
-        return new SucessDTO(true,"sa marche");
     }
 
 
