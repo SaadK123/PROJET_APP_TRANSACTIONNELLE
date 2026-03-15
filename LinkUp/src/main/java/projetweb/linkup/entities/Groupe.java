@@ -1,5 +1,7 @@
 package projetweb.linkup.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -17,7 +19,7 @@ public class Groupe {
 
     private UUID id;
 
-
+    @JsonIncludeProperties({"nomUtilisateur", "nom", "prenom", "courriel", "ecole"})
     @ManyToOne
     @JoinColumn(name = "chef_id", nullable = false)
     private Etudiant chef;
@@ -25,7 +27,7 @@ public class Groupe {
     @Column(name = "nom_du_groupe",nullable = false)
     private String nomGroupe;
 
-
+    @JsonIncludeProperties({"nomUtilisateur", "nom", "prenom", "courriel", "ecole"})
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "groupe_etudiants",
@@ -36,14 +38,14 @@ public class Groupe {
     private Set<Etudiant> etudiants = new HashSet<>(); // pour trie auto
 
 
-
+    @JsonIgnore
     public List<Etudiant> getEtudiantsList() {
         return new ArrayList<>(etudiants);
     }
 
     @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JoinColumn(name = "horaire_id",unique = true)
-    Horaire horaire;
+    private Horaire horaire;
     public Groupe(Etudiant chef, String nomGroupe) {
         setChef(chef);
         etudiants.add(chef);

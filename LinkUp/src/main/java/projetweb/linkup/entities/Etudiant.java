@@ -53,6 +53,8 @@ public class Etudiant  {
     @Column(name = "prenom",nullable = false)
     private String prenom;
 
+
+    @JsonIgnore
     @Column(name="motDePasse",nullable = false)
     private String motDePasseHash;
 
