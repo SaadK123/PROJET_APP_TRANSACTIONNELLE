@@ -39,6 +39,10 @@ export default function DashBoard() {
     router.push(`/calendrier/${idEtudiant}`);
   }
 
+const gotoGroupCalendar = (idGroupe: string) => {
+  router.push(`/CalendrierGrp/${idEtudiant}/${idGroupe}`);
+};
+
   async function chargerDonnees() {
     try {
       setChargement(true);
@@ -250,16 +254,26 @@ export default function DashBoard() {
                 {groupes.map((groupe) => (
                   <div key={groupe.id} className="border p-3 mb-3">
                     <p>{groupe.nomGroupe}</p>
+
                     <p>
                       Chef :{" "}
                       {groupe.chef
                         ? `${groupe.chef.prenom} ${groupe.chef.nom}`
                         : "Non défini"}
                     </p>
+
                     <p>
                       Étudiants :{" "}
                       {groupe.etudiants ? groupe.etudiants.length : 0}
                     </p>
+
+                    <button
+                      onClick={() => gotoGroupCalendar(groupe.id)}
+                      className="btn btn-sm btn-outline-primary mt-2"
+                      type="button"
+                    >
+                      Voir tout
+                    </button>
                   </div>
                 ))}
               </div>
