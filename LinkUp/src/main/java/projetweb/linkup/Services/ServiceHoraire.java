@@ -44,13 +44,14 @@ public class ServiceHoraire {
     }
     @Transactional
     public boolean estOverlapper(LocalDateTime debut,LocalDateTime fin,Horaire horaire) {
+        ///  ici on verifie si le debut est avant la fin et si la fin est apres le debut
         for(var activiteCourant : horaire.getActivites()) {
             if(debut.isBefore(activiteCourant.getTempsFin()) &&
                     fin.isAfter(activiteCourant.getTempsDebut())) {
-            return true;
+            return true; /// on retourne vrai c'est overlapper
             }
         }
-        return false;
+        return false; /// on retourne faux
     }
 
     @Transactional
@@ -60,19 +61,23 @@ public class ServiceHoraire {
         Horaire horaire = getHoraireFromId(activiteGroupeDTO.horaireId());
 
         while (true) {
+            ///  on demarre la fin de lactivite au temps du debut couranmment + la duree
             LocalDateTime tempsFinActivite =
                     tempsDebut.plusMinutes(activiteGroupeDTO.dureeEnMinute());
 
+
+            ///  si on depasse sans trouver de un temps alors on quitte
             if (tempsFinActivite.isAfter(tempsFinMax)) {
                 return new SucessDTO(false,"aucune activite trouver");
             }
 
+            ///  si on est pas overlapper sur lactivite courante alors on la prend et on sors
             if (!estOverlapper(tempsDebut, tempsFinActivite, horaire)) {
              horaire.getActivites().add(new Activite(activiteGroupeDTO.description(),
                      tempsDebut,tempsFinActivite,activiteGroupeDTO.titre()));
              break;
             }
-
+           ///  10 minutes par delai
             tempsDebut = tempsDebut.plusMinutes(10);
         }
         return new SucessDTO(true,"une activite a ete trouver");
