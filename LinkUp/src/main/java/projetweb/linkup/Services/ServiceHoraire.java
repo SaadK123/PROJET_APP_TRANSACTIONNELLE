@@ -14,6 +14,7 @@ import projetweb.linkup.entities.Etudiant;
 import projetweb.linkup.entities.Horaire;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.UUID;
 
 @Service
@@ -81,7 +82,12 @@ public class ServiceHoraire {
     public SucessDTO ajouterActivitePourEtudiant(AjouterActiviteDTOEtudiant ajouter) {
         try {
             Etudiant etudiant = serviceEtudiant.getEtudiantById(ajouter.etudiantId());
+            if(etudiant.getHoraire() == null) {
+                etudiant.setHoraire(new Horaire());
+                etudiant.getHoraire().setActivites(new ArrayList<>());
+            }
             etudiant.getHoraire().getActivites().add(ajouter.activite());
+
             return new SucessDTO(true, "sa marche");
         } catch (Exception e) {
             e.printStackTrace();
