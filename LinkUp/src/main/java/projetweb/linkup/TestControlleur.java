@@ -18,13 +18,13 @@ import java.util.List;
 @CrossOrigin(origins = {"http://localhost:3000", "http://127.0.0.1:3000"})
 @RestController
 @RequestMapping("/api")
-public class TestController {
+public class TestControlleur {
 
         private final ServiceEtudiant serviceEtudiant;
         private final ServiceGroupe serviceGroupe;
         private final ServiceHoraire serviceHoraire;
         private final ServiceNotification serviceNotification;
-        public TestController(
+        public TestControlleur(
                 ServiceEtudiant serviceEtudiant,
                 ServiceGroupe serviceGroupe,
                 ServiceHoraire serviceHoraire, ServiceNotification serviceNotification
@@ -34,24 +34,18 @@ public class TestController {
                 this.serviceHoraire = serviceHoraire;
             this.serviceNotification = serviceNotification;
         }
-
-        @GetMapping("/health")
-        public String health() {
-                return "OK";
-        }
-
         @PostMapping("/etudiants")
         public Etudiant createEtudiant(@RequestBody CreationEtudiantDTO dto) {
-                return serviceEtudiant.createEtudiant(dto);
+                return serviceEtudiant.creerEtudiant(dto);
         }
 
         @DeleteMapping("/etudiants")
         public SucessDTO deleteEtudiant(@RequestBody SupprimerEtudiantDTO dto) {
-                return serviceEtudiant.deleteEtudiant(dto);
+                return serviceEtudiant.supprimerEtudiant(dto);
         }
         @PostMapping("/etudiant/auth")
         public Etudiant getEtudiantByAuth(@RequestBody AuthentificationDTO auth) {
-                return serviceEtudiant.getEtudiantByEmailAndPassword(auth.courriel(),auth.motDePasse());
+                return serviceEtudiant.getEtudiantByCourrielEtMotDePasse(auth.courriel(),auth.motDePasse());
         }
 
         @GetMapping("/etudiant")
@@ -66,27 +60,27 @@ public class TestController {
 
         @PutMapping("/etudiants/profil")
         public SucessDTO updateEtudiantProfile(@RequestBody MiseAJourEtudiantProfil dto) {
-                return serviceEtudiant.updateEtudiantProfile(dto);
+                return serviceEtudiant.miseAJourEtudiantProfil(dto);
         }
 
         @PutMapping("/etudiants/password")
         public SucessDTO updateEtudiantPassword(@RequestBody MiseAJourEtudiantMotDePasse dto) {
-                return serviceEtudiant.updateEtudiantPassword(dto);
+                return serviceEtudiant.miseAJourEtudiantMotDePasse(dto);
         }
 
         @PostMapping("/groupes")
         public Groupe createGroup(@RequestBody CreationDeGroupeDTO dto) {
-                return serviceGroupe.createGroup(dto);
+                return serviceGroupe.creerGroupe(dto);
         }
 
         @GetMapping("/groupes")
         public List<Groupe> getGroupsFromEtudiant(@RequestParam String idEtudiant) {
-                return serviceGroupe.getAllgroupsFromUser(idEtudiant);
+                return serviceGroupe.getToutGroupesDeUser(idEtudiant);
         }
 
         @PostMapping("/groupes/invitations")
         public SucessDTO envoyerInvitationGroupe(@RequestBody RequeteInvitationDTO dto) {
-                return serviceGroupe.sendRequestToAnEtudiant(dto);
+                return serviceGroupe.envoyerRequeteAEtudiant(dto);
         }
 
         @PostMapping("/groupes/quitter")
@@ -101,7 +95,7 @@ public class TestController {
 
         @GetMapping("/notifications")
         public List<Notification> getAllNotificationsFromEtudiant(@RequestParam String idEtudiant) {
-                return serviceNotification.getAllNotificationsFromUser(idEtudiant);
+                return serviceNotification.getToutNotificationsDeUser(idEtudiant);
         }
 
         @PutMapping("/notifications/vue")

@@ -20,7 +20,7 @@ public class RestHandler {
         );
 
         return ResponseEntity
-                .status(ex.getError().http_code)
+                .status(ex.getErreur().http_code)
                 .body(body);
     }
 
