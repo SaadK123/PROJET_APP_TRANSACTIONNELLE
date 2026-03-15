@@ -18,51 +18,81 @@ export default function SignIn() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  function isValidEmail(email: string) {
-    if (!email.includes("@")) {
-      return false;
+const caracteresSpeciaux = new Set([
+  "!", "@", "#", "$", "%", "^", "&", "*",
+  "(", ")", "_", "-", "+", "=",
+  "[", "]", "{", "}", ";", ":", "'",
+  '"', "\\", "|", ",", ".", "<", ">",
+  "/", "?"
+]);
+
+const chiffres = new Set([
+  "0", "1", "2", "3", "4",
+  "5", "6", "7", "8", "9"
+]);
+
+function estEmailValide(email: string): boolean {
+  const valeur = email.trim();
+
+  if (valeur.length === 0) return false;
+
+  const parties = valeur.split("@");
+
+  if (parties.length !== 2) return false;
+
+  const partieLocale = parties[0];
+  const domaine = parties[1];
+
+  if (partieLocale.length === 0 || domaine.length === 0) return false;
+  if (!domaine.includes(".")) return false;
+
+  return true;
+}
+
+function estMotDePasseValide(motDePasse: string): boolean {
+  if (motDePasse.length < 8 || motDePasse.length > 32) return false;
+
+  let aUneMajuscule = false;
+  let aUnChiffre = false;
+  let aUnCaractereSpecial = false;
+
+  for (const caractere of motDePasse) {
+    if (caractere >= "A" && caractere <= "Z") {
+      aUneMajuscule = true;
     }
 
-    if (!email.includes(".")) {
-      return false;
+    if (chiffres.has(caractere)) {
+      aUnChiffre = true;
     }
 
-    const atPosition = email.indexOf("@");
-    const dotPosition = email.lastIndexOf(".");
-
-    if (dotPosition < atPosition) {
-      return false;
+    if (caracteresSpeciaux.has(caractere)) {
+      aUnCaractereSpecial = true;
     }
-
-    return true;
   }
 
-  function handleSubmit() {
-    if (!email) {
-      alert("Veuillez entrer un email");
+  return aUneMajuscule && aUnChiffre && aUnCaractereSpecial;
+}
+
+
+  async function handleSubmit() {
+    if(estEmailValide(email) && estMotDePasseValide(password)) {
+      const response = await fetch("", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email,
+        password,
+      }),
+    });
+
+    if (!response.ok) {
+      console.log("Erreur lors de la connexion");
       return;
     }
 
-    if (!isValidEmail(email)) {
-      alert("Email invalide");
-      return;
     }
-
-    if (!password) {
-      alert("Veuillez entrer un mot de passe");
-      return;
-    }
-    
-    if (email && password){
-      {/*await fetch{
-
-      } */}
-      gotoDashBoard();
-    }
-      
-    
-
-    console.log({ email, password });
   }
 
   return (

@@ -58,19 +58,7 @@ public class ServiceEtudiant {
 
     }
 
-    @Transactional
-    public Optional<List<Etudiant>> getEtudiantByFirstName(String name, boolean isfirstname) {
-        if (name == null || name.isBlank()) return Optional.empty();
-        name = name.toLowerCase();
-        List<Etudiant> etudiants = isfirstname ?
-                entityManager.createQuery("select e from Etudiant e where lower(e.firstname) = :firstname ", Etudiant.class)
-                        .setParameter("firstname", name).getResultList() :
-                entityManager.createQuery("select e from Etudiant e where lower(e.lastname) = :lastname", Etudiant.class)
-                        .setParameter("lastname", name).getResultList();
 
-
-        return etudiants.isEmpty() ? Optional.empty() : Optional.of(etudiants);
-    }
 
 
     public ServiceEtudiant(PasswordEncoder passwordEncoder) {

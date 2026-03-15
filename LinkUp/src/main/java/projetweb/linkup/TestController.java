@@ -64,15 +64,7 @@ public class TestController {
                 return serviceEtudiant.getEtudiantByUsername(username);
         }
 
-        @GetMapping("/etudiants/prenom")
-        public List<Etudiant> getEtudiantsByPrenom(@RequestParam String prenom) {
-                return serviceEtudiant.getEtudiantByFirstName(prenom, true).orElse(List.of());
-        }
 
-        @GetMapping("/etudiants/nom")
-        public List<Etudiant> getEtudiantsByNom(@RequestParam String nom) {
-                return serviceEtudiant.getEtudiantByFirstName(nom, false).orElse(List.of());
-        }
 
         @PutMapping("/etudiants/profil")
         public SucessDTO updateEtudiantProfile(@RequestBody UpdateEtudiantProfile dto) {
