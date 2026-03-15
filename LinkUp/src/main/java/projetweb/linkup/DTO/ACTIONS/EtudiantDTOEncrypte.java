@@ -1,4 +1,4 @@
 package projetweb.linkup.DTO.ACTIONS;
 
-public class EtudiantDTOEncrypted {
+public class EtudiantDTOEncrypte {
 }

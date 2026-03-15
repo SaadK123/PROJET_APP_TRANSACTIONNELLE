@@ -2,15 +2,15 @@ package projetweb.linkup;
 
 import org.springframework.web.bind.annotation.*;
 import projetweb.linkup.DTO.ACTIONS.*;
-import projetweb.linkup.DTO.TYPES.RequestInvitationDTO;
-import projetweb.linkup.DTO.TYPES.UpdateEtudiantPassword;
-import projetweb.linkup.DTO.TYPES.UpdateEtudiantProfile;
+import projetweb.linkup.DTO.TYPES.RequeteInvitationDTO;
+import projetweb.linkup.DTO.TYPES.MiseAJourEtudiantMotDePasse;
+import projetweb.linkup.DTO.TYPES.MiseAJourEtudiantProfil;
 import projetweb.linkup.Services.ServiceEtudiant;
 import projetweb.linkup.Services.ServiceGroupe;
 import projetweb.linkup.Services.ServiceHoraire;
 import projetweb.linkup.Services.ServiceNotification;
 import projetweb.linkup.entities.Etudiant;
-import projetweb.linkup.entities.Group;
+import projetweb.linkup.entities.Groupe;
 import projetweb.linkup.entities.Horaire;
 import projetweb.linkup.entities.Notification;
 
@@ -41,17 +41,17 @@ public class TestController {
         }
 
         @PostMapping("/etudiants")
-        public Etudiant createEtudiant(@RequestBody CreateStudentDTO dto) {
+        public Etudiant createEtudiant(@RequestBody CreationEtudiantDTO dto) {
                 return serviceEtudiant.createEtudiant(dto);
         }
 
         @DeleteMapping("/etudiants")
-        public SucessDTO deleteEtudiant(@RequestBody DeleteStudentDTO dto) {
+        public SucessDTO deleteEtudiant(@RequestBody SupprimerEtudiantDTO dto) {
                 return serviceEtudiant.deleteEtudiant(dto);
         }
         @PostMapping("/etudiant/auth")
         public Etudiant getEtudiantByAuth(@RequestBody AuthentificationDTO auth) {
-                return serviceEtudiant.getEtudiantByEmailAndPassword(auth.email(),auth.password());
+                return serviceEtudiant.getEtudiantByEmailAndPassword(auth.courriel(),auth.motDePasse());
         }
 
         @GetMapping("/etudiant")
@@ -64,38 +64,28 @@ public class TestController {
                 return serviceEtudiant.getEtudiantByUsername(username);
         }
 
-        @GetMapping("/etudiants/prenom")
-        public List<Etudiant> getEtudiantsByPrenom(@RequestParam String prenom) {
-                return serviceEtudiant.getEtudiantByFirstName(prenom, true).orElse(List.of());
-        }
-
-        @GetMapping("/etudiants/nom")
-        public List<Etudiant> getEtudiantsByNom(@RequestParam String nom) {
-                return serviceEtudiant.getEtudiantByFirstName(nom, false).orElse(List.of());
-        }
-
         @PutMapping("/etudiants/profil")
-        public SucessDTO updateEtudiantProfile(@RequestBody UpdateEtudiantProfile dto) {
+        public SucessDTO updateEtudiantProfile(@RequestBody MiseAJourEtudiantProfil dto) {
                 return serviceEtudiant.updateEtudiantProfile(dto);
         }
 
         @PutMapping("/etudiants/password")
-        public SucessDTO updateEtudiantPassword(@RequestBody UpdateEtudiantPassword dto) {
+        public SucessDTO updateEtudiantPassword(@RequestBody MiseAJourEtudiantMotDePasse dto) {
                 return serviceEtudiant.updateEtudiantPassword(dto);
         }
 
         @PostMapping("/groupes")
-        public Group createGroup(@RequestBody CreateGroupDTO dto) {
+        public Groupe createGroup(@RequestBody CreationDeGroupeDTO dto) {
                 return serviceGroupe.createGroup(dto);
         }
 
         @GetMapping("/groupes")
-        public List<Group> getGroupsFromEtudiant(@RequestParam String idEtudiant) {
+        public List<Groupe> getGroupsFromEtudiant(@RequestParam String idEtudiant) {
                 return serviceGroupe.getAllgroupsFromUser(idEtudiant);
         }
 
         @PostMapping("/groupes/invitations")
-        public SucessDTO envoyerInvitationGroupe(@RequestBody RequestInvitationDTO dto) {
+        public SucessDTO envoyerInvitationGroupe(@RequestBody RequeteInvitationDTO dto) {
                 return serviceGroupe.sendRequestToAnEtudiant(dto);
         }
 
