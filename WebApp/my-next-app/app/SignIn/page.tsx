@@ -1,6 +1,8 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { obtenirEtudiantParAuth, obtenirEtudiantParId } from "../FetchsMethodesEtudiants";
+import { Etudiant } from "../TypesObjets";
 export default function SignIn() {
   const router = useRouter();
   const gotosignup = () => {
@@ -12,12 +14,13 @@ export default function SignIn() {
   const gotoLogIn = () =>{
      router.push("/SignIn")
     };
-    const gotoDashBoard = () => {
-      router.push("/DashBoard")
+    const gotoDashBoard = (id:string) => {
+      router.push(`/DashBoard/${id}`)
     };
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  
 const caracteresSpeciaux = new Set([
   "!", "@", "#", "$", "%", "^", "&", "*",
   "(", ")", "_", "-", "+", "=",
@@ -76,22 +79,9 @@ function estMotDePasseValide(motDePasse: string): boolean {
 
   async function handleSubmit() {
     if(estEmailValide(email) && estMotDePasseValide(password)) {
-      const response = await fetch("", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email,
-        password,
-      }),
-    });
-
-    if (!response.ok) {
-      console.log("Erreur lors de la connexion");
-      return;
-    }
-
+      
+       const etudiant: Etudiant = await obtenirEtudiantParAuth(email,password)
+        gotoDashBoard(etudiant.id);
     }
   }
 
