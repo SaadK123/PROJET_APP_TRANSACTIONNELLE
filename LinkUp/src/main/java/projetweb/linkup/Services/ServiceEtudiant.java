@@ -37,7 +37,7 @@ public class ServiceEtudiant {
          return   entityManager.createQuery("select e from Etudiant  e where e.id = :uuid",Etudiant.class)
                     .setParameter("uuid", uuid).getSingleResult();
         } catch (Exception e) {
-            throw new LinkUpException(ERREUR_TYPE.CHAMPS_MANQUANTS,e.getMessage());
+            throw new LinkUpException(ERREUR_TYPE.CHAMPS_MANQUANTS,"aucune personne trouver");
         }
     }
 

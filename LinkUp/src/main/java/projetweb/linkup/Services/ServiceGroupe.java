@@ -102,7 +102,7 @@ public class ServiceGroupe {
         Etudiant e =  serviceEtudiant.getEtudiantById(groupe.chefID());
 
         Groupe g = new Groupe(e,groupe.nomGroup());
-        g.getEtudiants().add(e);
+
         entityManager.persist(g);
         entityManager.flush();
 
