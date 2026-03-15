@@ -1,9 +1,9 @@
 import { URLS } from "./FichierConfiguration";
 import type { Horaire } from "./TypesObjets";
 
-export async function getHoraireById(id: string) {
+export async function obtenirHoraireParId(id: string) {
   const response = await fetch(
-    `${URLS.GET_HORAIRE_BY_ID}?id=${id}`,
+    `${URLS.OBTENIR_HORAIRE_PAR_ID}?id=${id}`,
     {
       method: "GET",
     }
@@ -18,6 +18,3 @@ export async function getHoraireById(id: string) {
   const horaire: Horaire = data;
   return horaire;
 }
-
-
-

@@ -1,18 +1,23 @@
+// TypesObjets.ts
 
+export type TypeNotification =
+  | "NOUVELLE_GROUPE_INVITATION"
+  | "ALERTE_SYSTEME"
+  | string;
 
-export type TypeNotification = {
-  valeur: string;
+export type InfoTypeNotification = {
+  valeur: TypeNotification;
   message: string;
 };
 
 export const TYPES_NOTIFICATION = {
-  NEW_GROUP_INVITATION: {
-    valeur: "NEW_GROUP_INVITATION",
-    message: "Vous avez reçu une invitation dans le groupe",
+  NOUVELLE_GROUPE_INVITATION: {
+    valeur: "NOUVELLE_GROUPE_INVITATION",
+    message: "Vous avez recu une invitation dans le groupe",
   },
-  SYSTEM_ALERT: {
-    valeur: "SYSTEM_ALERT",
-    message: "Alerte système",
+  ALERTE_SYSTEME: {
+    valeur: "ALERTE_SYSTEME",
+    message: "Alerte systeme",
   },
 } as const;
 
@@ -25,10 +30,13 @@ export type Activite = {
   titre: string;
 };
 
-export type SucessDTO = {
-  sucess:boolean;
-  message:string;
-}
+export type SuccesDTO = {
+  success: boolean;
+  message: string;
+};
+
+
+export type SucessDTO = SuccesDTO;
 
 export type Horaire = {
   id: string;
@@ -46,12 +54,12 @@ export type Notification = {
 
 export type Etudiant = {
   id: string;
-  lastdate: string | null;
-  email: string;
-  username: string;
-  lastname: string;
-  firstname: string;
-  passwordhash: string;
+  dernierDate: string | null;
+  courriel: string;
+  nomUtilisateur: string;
+  nom: string;
+  prenom: string;
+  motDePasseHash: string;
   ecole: string;
   horaire: Horaire | null;
   notifications: Notification[];
@@ -66,7 +74,6 @@ export type Groupe = {
 };
 
 export type Invitation = Notification & {
-  group: Groupe;
-  envoyeur: Etudiant;
+  groupe: Groupe;
+  envoyeur: Etudiant | null;
 };
-

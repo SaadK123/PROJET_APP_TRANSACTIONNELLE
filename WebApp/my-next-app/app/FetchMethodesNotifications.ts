@@ -1,9 +1,9 @@
 import { URLS } from "./FichierConfiguration";
 import type { SucessDTO } from "./TypesObjets";
 
-export async function setNotificationToWasSeen(idNotification: string) {
+export async function marquerNotificationCommeVue(idNotification: string) {
   const response = await fetch(
-    `${URLS.SET_NOTIFICATION_TO_WAS_SEEN}?idNotification=${idNotification}`,
+    `${URLS.MARQUER_NOTIFICATION_COMME_VUE}?idNotification=${idNotification}`,
     {
       method: "PUT",
     }
@@ -19,11 +19,9 @@ export async function setNotificationToWasSeen(idNotification: string) {
   return succes;
 }
 
-
-
-export async function deleteNotification(idNotification: string) {
+export async function supprimerNotification(idNotification: string) {
   const response = await fetch(
-    `${URLS.DELETE_NOTIFICATION}?idNotification=${idNotification}`,
+    `${URLS.SUPPRIMER_NOTIFICATION}?idNotification=${idNotification}`,
     {
       method: "DELETE",
     }

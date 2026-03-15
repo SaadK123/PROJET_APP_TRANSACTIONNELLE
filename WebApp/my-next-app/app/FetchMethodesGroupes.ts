@@ -1,11 +1,11 @@
 import { URLS } from "./FichierConfiguration";
-import type { Groupe,TypeNotification,SucessDTO } from "./TypesObjets";
+import type { Groupe, TypeNotification, SucessDTO } from "./TypesObjets";
 
-export async function createGroup(
+export async function creerGroupe(
   chefID: string,
   nomGroup: string
 ) {
-  const response = await fetch(URLS.CREATE_GROUPE, {
+  const response = await fetch(URLS.CREER_GROUPE, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -26,11 +26,9 @@ export async function createGroup(
   return groupe;
 }
 
-
-
-export async function getGroupsFromEtudiant(idEtudiant: string) {
+export async function obtenirGroupesDeEtudiant(idEtudiant: string) {
   const response = await fetch(
-    `${URLS.GET_GROUPES_FROM_ETUDIANT}?idEtudiant=${idEtudiant}`,
+    `${URLS.OBTENIR_GROUPES_DE_ETUDIANT}?idEtudiant=${idEtudiant}`,
     {
       method: "GET",
     }
@@ -46,11 +44,8 @@ export async function getGroupsFromEtudiant(idEtudiant: string) {
   return groupes;
 }
 
-
-
-
 export async function envoyerInvitationGroupe(
-  etudiantUsername: string,
+  etudiantNomUtilisateur: string,
   message: string,
   type: TypeNotification,
   groupId: string,
@@ -63,9 +58,9 @@ export async function envoyerInvitationGroupe(
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      etudiantUsername,
+      etudiantNomUtilisateur,
       message,
-      type: type.valeur,
+      type,
       groupId,
       titre,
       envoyeurId,
@@ -81,9 +76,6 @@ export async function envoyerInvitationGroupe(
   const succes: SucessDTO = data;
   return succes;
 }
-
-
-
 
 export async function quitterGroupe(
   idGroupe: string,
@@ -110,8 +102,6 @@ export async function quitterGroupe(
   return succes;
 }
 
-
-
 export async function ajouterEtudiantDansGroupe(
   idGroupe: string,
   idEtudiant: string
@@ -137,7 +127,7 @@ export async function ajouterEtudiantDansGroupe(
   return succes;
 }
 
-export async function virerEtudiantDunGroupe(
+export async function virerEtudiantDuGroupe(
   etudiantAVirerId: string,
   etudiantQuiVireId: string,
   groupid: string

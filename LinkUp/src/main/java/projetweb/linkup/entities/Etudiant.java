@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -61,12 +62,12 @@ public class Etudiant  {
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "horaire_id")
-    private Horaire horaire;
+    private Horaire horaire = new Horaire();
 
 
     @OneToMany
     @JoinColumn(name  = "notification_id")
-    private List<Notification> notifications;
+    private List<Notification> notifications = new ArrayList<>();
 
 
 }

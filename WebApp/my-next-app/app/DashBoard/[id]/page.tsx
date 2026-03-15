@@ -2,507 +2,407 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { getEtudiantById } from "@/app/FetchsMethodesEtudiants";
+import { obtenirEtudiantParId } from "@/app/FetchsMethodesEtudiants";
 import {
-  getGroupsFromEtudiant,
-  ajouterEtudiantDansGroupe,
+  obtenirGroupesDeEtudiant,
+  creerGroupe,
 } from "@/app/FetchMethodesGroupes";
 import {
-  setNotificationToWasSeen,
-  deleteNotification,
+  marquerNotificationCommeVue,
+  supprimerNotification,
 } from "@/app/FetchMethodesNotifications";
-import {
-  Etudiant,
-  Groupe,
-  Notification,
-  Invitation,
-  TYPES_NOTIFICATION,
-} from "@/app/TypesObjets";
+import type { Etudiant, Groupe, Notification } from "@/app/TypesObjets";
 
 export default function DashBoard() {
-  const params = useParams<{ idEtudiant: string }>();
-  const idEtudiant = params.idEtudiant;
+  const params = useParams<{ id: string }>();
+  const idEtudiant = params.id;
   const router = useRouter();
 
   const [etudiant, setEtudiant] = useState<Etudiant | null>(null);
   const [groupes, setGroupes] = useState<Groupe[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [nomNouveauGroupe, setNomNouveauGroupe] = useState("");
+  const [chargement, setChargement] = useState(true);
   const [erreur, setErreur] = useState("");
   const [notificationsOuvertes, setNotificationsOuvertes] = useState(false);
 
-  async function chargerPage() {
-    try {
-      setLoading(true);
-      
+  function gotoHomePage() {
+    router.push("/HomePage");
+  }
 
-      const etudiantCharge = await getEtudiantById(idEtudiant);
-      const groupesCharges = await getGroupsFromEtudiant(idEtudiant);
+  function gotoLogIn() {
+    router.push("/SignIn");
+  }
+
+  function gotoSignUp() {
+    router.push("/SignUp");
+  }
+
+  async function chargerDonnees() {
+    try {
+      setChargement(true);
+      setErreur("");
+
+      const etudiantCharge = await obtenirEtudiantParId(idEtudiant);
+      const groupesCharges = await obtenirGroupesDeEtudiant(idEtudiant);
 
       setEtudiant(etudiantCharge);
       setGroupes(groupesCharges);
     } catch (e) {
-      setErreur("Impossible de charger le tableau de bord.");
+      console.error(e);
+      setErreur("Erreur lors du chargement du dashboard");
     } finally {
-      setLoading(false);
+      setChargement(false);
+    }
+  }
+
+  async function handleCreerGroupe() {
+    if (!etudiant) return;
+    if (!nomNouveauGroupe.trim()) return;
+
+    try {
+      await creerGroupe(etudiant.id, nomNouveauGroupe);
+      setNomNouveauGroupe("");
+      await chargerDonnees();
+    } catch (e) {
+      console.error(e);
+      setErreur("Erreur lors de la création du groupe");
+    }
+  }
+
+  async function handleMarquerNotificationCommeVue(notification: Notification) {
+    if (notification.estVu) return;
+
+    try {
+      await marquerNotificationCommeVue(notification.id);
+      await chargerDonnees();
+    } catch (e) {
+      console.error(e);
+      setErreur("Erreur lors de la mise à jour de la notification");
+    }
+  }
+
+  async function handleSupprimerNotification(notification: Notification) {
+    try {
+      await supprimerNotification(notification.id);
+      await chargerDonnees();
+    } catch (e) {
+      console.error(e);
+      setErreur("Erreur lors de la suppression de la notification");
     }
   }
 
   useEffect(() => {
     if (idEtudiant) {
-      chargerPage();
+      chargerDonnees();
     }
   }, [idEtudiant]);
 
-  function retournerAccueil() {
-    router.push("/HomePage");
-  }
-
-  function deconnecter() {
-    router.push("/SignIn");
-  }
-
-  function estInvitation(notification: Notification) {
+  if (chargement) {
     return (
-      notification.type.valeur ===
-      TYPES_NOTIFICATION.NEW_GROUP_INVITATION.valeur
-    );
-  }
-
-  async function marquerCommeVue(notification: Notification) {
-    if (notification.estVu) return;
-
-    try {
-      await setNotificationToWasSeen(notification.id);
-      await chargerPage();
-    } catch (e) {
-      console.error(e);
-    }
-  }
-
-  async function supprimerNotificationSimple(notification: Notification) {
-    try {
-      await deleteNotification(notification.id);
-      await chargerPage();
-    } catch (e) {
-      console.error(e);
-    }
-  }
-
-  async function refuserInvitation(notification: Notification) {
-    try {
-      await deleteNotification(notification.id);
-      await chargerPage();
-    } catch (e) {
-      console.error(e);
-    }
-  }
-
-  async function accepterInvitation(notification: Notification) {
-    if (!etudiant) return;
-
-    try {
-      const invitation = notification as Invitation;
-
-      await ajouterEtudiantDansGroupe(invitation.group.id, etudiant.id);
-      await deleteNotification(notification.id);
-      await chargerPage();
-    } catch (e) {
-      console.error(e);
-    }
-  }
-
-  const notifications = etudiant ? etudiant.notifications : [];
-
-  let nombreNotificationsNonVues = 0;
-  let aNotificationsNonVues = false;
-
-  const notificationsNonVues: Notification[] = [];
-  const notificationsVues: Notification[] = [];
-
-  for (let i = 0; i < notifications.length; i++) {
-    const notification = notifications[i];
-
-    if (notification.estVu) {
-      notificationsVues.push(notification);
-    } else {
-      notificationsNonVues.push(notification);
-      nombreNotificationsNonVues++;
-      aNotificationsNonVues = true;
-    }
-  }
-
-  const notificationsAffichees = notificationsNonVues.concat(notificationsVues);
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-[#f5f7fb]">
-        <div className="text-2xl font-semibold text-gray-700">
-          Chargement...
+      <div className="container-fluid">
+        <div className="row">
+          <div className="col-12 p-4">
+            <h2>Chargement...</h2>
+          </div>
         </div>
       </div>
     );
   }
 
-  if (erreur || !etudiant) {
+  if (erreur) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-[#f5f7fb] gap-4">
-        <div className="text-2xl font-semibold text-red-600">
-          {erreur || "Étudiant introuvable."}
+      <div className="container-fluid">
+        <div className="row">
+          <div className="col-12 p-4">
+            <h2>{erreur}</h2>
+          </div>
         </div>
-
-        <button
-          onClick={deconnecter}
-          className="px-5 py-2 rounded-lg bg-blue-600 text-white font-semibold"
-          type="button"
-        >
-          Retour à la connexion
-        </button>
       </div>
     );
   }
+
+  if (!etudiant) {
+    return (
+      <div className="container-fluid">
+        <div className="row">
+          <div className="col-12 p-4">
+            <h2>Aucun étudiant trouvé</h2>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const notifications = etudiant.notifications || [];
+  const notificationsTriees = [...notifications].sort((a, b) => {
+    if (a.estVu === b.estVu) return 0;
+    return a.estVu ? 1 : -1;
+  });
+
+  const nombreNotificationsNonVues = notifications.filter(
+    (notification) => !notification.estVu,
+  ).length;
 
   return (
-    <div className="min-h-screen bg-[#f5f7fb]">
-      <div className="bg-white border-b border-gray-200 shadow-sm">
-        <div className="max-w-[1500px] mx-auto px-4 py-3 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <button onClick={retournerAccueil} className="shrink-0">
+    <div>
+      <div className="container-fluid">
+        <div className="row bg-white border-bottom">
+          <div className="col-2 col-md-1">
+            <button onClick={gotoHomePage} className="border-0 bg-white">
               <img
-                className="w-16 h-16 object-contain"
+                className="homepage-logo p-2"
                 src="/Img/LogoLinkUp.png"
                 alt="Logo"
               />
             </button>
-
-            <div className="hidden md:flex items-center gap-3">
-              <button
-                className="px-4 py-2 rounded-lg bg-blue-100 text-blue-900 border border-blue-300 font-semibold"
-                type="button"
-              >
-                Tableau de bord
-              </button>
-
-              <button
-                className="px-4 py-2 rounded-lg bg-gray-100 text-gray-800 border border-gray-300 font-semibold cursor-default"
-                type="button"
-              >
-                Mes groupes
-              </button>
-
-              <button
-                className="px-4 py-2 rounded-lg bg-gray-100 text-gray-800 border border-gray-300 font-semibold cursor-default"
-                type="button"
-              >
-                Calendrier
-              </button>
-            </div>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="col-6 col-md-8 p-3 text-end">
             <button
-              onClick={() => setNotificationsOuvertes(true)}
-              className="relative w-12 h-12 rounded-xl border-2 border-gray-300 bg-white flex items-center justify-center shadow-sm hover:bg-gray-50"
+              className="ps-2 pe-2 mt-3 text-dark rounded bg-light border"
               type="button"
             >
-              <span className="text-2xl">☰</span>
+              Tableau de bord
+            </button>
+            <button
+              className="ps-2 pe-2 ms-2 me-2 text-dark rounded bg-light border"
+              type="button"
+            >
+              Mes groupes
+            </button>
+            <button
+              className="ps-2 pe-2 me-2 text-dark rounded bg-light border"
+              type="button"
+            >
+              Calendrier
+            </button>
+          </div>
 
-              {aNotificationsNonVues && (
-                <span className="absolute top-1.5 right-1.5 w-3.5 h-3.5 rounded-full bg-blue-500 border-2 border-white"></span>
+          <div className="col-4 col-md-3 p-3 text-center">
+            <button
+              onClick={() => setNotificationsOuvertes(true)}
+              className="ps-3 pe-3 mt-3 me-2 position-relative"
+              type="button"
+            >
+              ☰ Notifications
+              {nombreNotificationsNonVues > 0 && (
+                <span
+                  className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                  style={{ fontSize: "0.7rem" }}
+                >
+                  {nombreNotificationsNonVues}
+                </span>
               )}
             </button>
 
-            <div className="dropdown">
-              <button
-                className="px-4 py-3 rounded-2xl border-2 border-gray-300 bg-white text-left shadow-sm min-w-[260px]"
-                type="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                <div className="font-bold text-gray-900">
-                  {etudiant.firstname} {etudiant.lastname}
-                </div>
-                <div className="text-sm text-gray-600">{etudiant.ecole}</div>
-                <div className="text-xs text-gray-500">
-                  @{etudiant.username}
-                </div>
-              </button>
+            <button
+              onClick={gotoLogIn}
+              className="ps-3 pe-3 mt-3 me-2"
+              type="button"
+            >
+              Déconnexion
+            </button>
 
-              <ul className="dropdown-menu">
-                <li>
-                  <button
-                    className="dropdown-item"
-                    onClick={deconnecter}
-                    type="button"
-                  >
-                    Déconnecter
-                  </button>
-                </li>
-              </ul>
-            </div>
+            <button
+              onClick={gotoSignUp}
+              className="ps-2 pe-2 rounded bg-success text-white"
+              type="button"
+            >
+              Inscription
+            </button>
           </div>
         </div>
-      </div>
 
-      <div className="max-w-[1500px] mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h1 className="text-4xl font-extrabold text-gray-900">
-            Bonjour {etudiant.firstname}
-          </h1>
-          <p className="text-gray-600 mt-2 text-lg">
-            Voici ton espace personnel LinkUp.
-          </p>
-        </div>
+        <div className="row">
+          <div className="col-12 col-md-4 p-4">
+            <h2>Bienvenue {etudiant.prenom}</h2>
 
-        <div className="grid grid-cols-1 xl:grid-cols-[1.2fr_0.8fr] gap-8">
-          <div>
-            <div className="bg-white rounded-3xl border border-gray-200 shadow-sm p-6">
-              <div className="flex items-center justify-between mb-6 gap-4">
-                <div>
-                  <h2 className="text-2xl font-bold text-gray-900">
-                    Mes groupes
-                  </h2>
-                  <p className="text-gray-600">
-                    {groupes.length} groupe{groupes.length > 1 ? "s" : ""} trouvé
-                    {groupes.length > 1 ? "s" : ""}
-                  </p>
-                </div>
-              </div>
-
-              {groupes.length === 0 ? (
-                <div className="text-gray-500 text-lg py-10">
-                  Aucun groupe pour le moment.
-                </div>
-              ) : (
-                <div className="flex flex-wrap gap-6">
-                  {groupes.map((groupe) => (
-                    <div
-                      key={groupe.id}
-                      className="w-[240px] h-[360px] rounded-[42px] border-[3px] border-black bg-blue-500 text-white shadow-md flex flex-col justify-between p-6 text-left"
-                    >
-                      <div>
-                        <div className="text-sm font-semibold opacity-90 mb-2">
-                          Groupe
-                        </div>
-                        <div className="text-3xl font-extrabold break-words leading-tight">
-                          {groupe.nomGroupe}
-                        </div>
-                      </div>
-
-                      <div className="space-y-2">
-                        <div className="bg-white/20 rounded-2xl px-4 py-3 border border-white/30">
-                          <div className="text-sm opacity-90">
-                            Nombre d’étudiants
-                          </div>
-                          <div className="text-3xl font-extrabold">
-                            {groupe.etudiants ? groupe.etudiants.length : 0}
-                          </div>
-                        </div>
-
-                        <div className="bg-white/20 rounded-2xl px-4 py-3 border border-white/30">
-                          <div className="text-sm opacity-90">Chef</div>
-                          <div className="text-lg font-bold">
-                            {groupe.chef
-                              ? `${groupe.chef.firstname} ${groupe.chef.lastname}`
-                              : "Non défini"}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-
-          <div>
-            <div className="bg-white rounded-3xl border border-gray-200 shadow-sm p-6">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Résumé</h2>
-
-              <div className="grid grid-cols-1 gap-4">
-                <div className="rounded-2xl border border-gray-200 bg-gray-50 p-4">
-                  <div className="text-sm text-gray-500">Nom complet</div>
-                  <div className="text-xl font-bold text-gray-900">
-                    {etudiant.firstname} {etudiant.lastname}
-                  </div>
-                </div>
-
-                <div className="rounded-2xl border border-gray-200 bg-gray-50 p-4">
-                  <div className="text-sm text-gray-500">Courriel</div>
-                  <div className="text-xl font-bold text-gray-900 break-all">
-                    {etudiant.email}
-                  </div>
-                </div>
-
-                <div className="rounded-2xl border border-gray-200 bg-gray-50 p-4">
-                  <div className="text-sm text-gray-500">École</div>
-                  <div className="text-xl font-bold text-gray-900">
-                    {etudiant.ecole}
-                  </div>
-                </div>
-
-                <div className="rounded-2xl border border-gray-200 bg-gray-50 p-4">
-                  <div className="text-sm text-gray-500">
-                    Notifications non vues
-                  </div>
-                  <div className="text-xl font-bold text-gray-900">
-                    {nombreNotificationsNonVues}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div
-        className={`fixed inset-0 bg-black/30 transition-opacity duration-300 z-40 ${
-          notificationsOuvertes
-            ? "opacity-100 pointer-events-auto"
-            : "opacity-0 pointer-events-none"
-        }`}
-        onClick={() => setNotificationsOuvertes(false)}
-      />
-
-      <aside
-        className={`fixed top-0 right-0 h-full w-full sm:w-[430px] bg-white z-50 shadow-2xl border-l border-gray-200 transform transition-transform duration-300 ${
-          notificationsOuvertes ? "translate-x-0" : "translate-x-full"
-        }`}
-      >
-        <div className="h-full flex flex-col">
-          <div className="px-5 py-4 border-b border-gray-200 flex items-center justify-between">
-            <div>
-              <h2 className="text-2xl font-extrabold text-gray-900">
-                Notifications
-              </h2>
-              <p className="text-sm text-gray-500">
-                {notifications.length} notification
-                {notifications.length > 1 ? "s" : ""}
+            <div className="mt-4">
+              <p>
+                <strong>Prénom :</strong> {etudiant.prenom}
+              </p>
+              <p>
+                <strong>Nom :</strong> {etudiant.nom}
+              </p>
+              <p>
+                <strong>Courriel :</strong> {etudiant.courriel}
+              </p>
+              <p>
+                <strong>Nom utilisateur :</strong> {etudiant.nomUtilisateur}
+              </p>
+              <p>
+                <strong>École :</strong> {etudiant.ecole}
               </p>
             </div>
 
-            <button
-              onClick={() => setNotificationsOuvertes(false)}
-              className="w-11 h-11 rounded-xl border border-gray-300 bg-white text-xl font-bold"
-              type="button"
-            >
-              ✕
-            </button>
+            <div className="mt-5">
+              <h3>Créer un groupe</h3>
+
+              <div className="mb-3">
+                <label>Nom du groupe</label>
+                <input
+                  value={nomNouveauGroupe}
+                  onChange={(e) => setNomNouveauGroupe(e.currentTarget.value)}
+                  type="text"
+                  className="form-control"
+                />
+              </div>
+
+              <div className="d-grid">
+                <button
+                  onClick={handleCreerGroupe}
+                  className="btn btn-primary"
+                  type="button"
+                >
+                  Créer le groupe
+                </button>
+              </div>
+            </div>
           </div>
 
-          <div className="flex-1 overflow-y-auto px-4 py-4">
-            {notificationsAffichees.length === 0 ? (
-              <div className="text-gray-500 text-lg mt-6">
-                Aucune notification pour le moment.
-              </div>
+          <div className="col-12 col-md-8 p-4">
+            <h2>Mes groupes</h2>
+
+            {groupes.length === 0 ? (
+              <p>Aucun groupe pour le moment.</p>
             ) : (
-              <div className="space-y-4">
-                {notificationsAffichees.map((notification) => {
-                  const invitation = notification as Invitation;
-
-                  return (
-                    <div
-                      key={notification.id}
-                      className={`rounded-2xl border p-4 shadow-sm ${
-                        notification.estVu
-                          ? "bg-white border-gray-200"
-                          : "bg-blue-50 border-blue-300"
-                      }`}
-                    >
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="min-w-0 flex-1">
-                          <div className="flex items-center gap-2 mb-1">
-                            {!notification.estVu && (
-                              <span className="w-3 h-3 rounded-full bg-blue-500 shrink-0"></span>
-                            )}
-
-                            <h3 className="text-lg font-bold text-gray-900 break-words">
-                              {notification.titre}
-                            </h3>
-                          </div>
-
-                          <p className="text-gray-700 break-words">
-                            {notification.message}
-                          </p>
-
-                          {estInvitation(notification) && (
-                            <div className="mt-2 text-sm text-gray-700">
-                              <div>
-                                Groupe :{" "}
-                                <span className="font-semibold">
-                                  {invitation.group.nomGroupe}
-                                </span>
-                              </div>
-
-                              <div>
-                                Envoyeur :{" "}
-                                <span className="font-semibold">
-                                  {invitation.envoyeur.firstname}{" "}
-                                  {invitation.envoyeur.lastname}
-                                </span>
-                              </div>
-                            </div>
-                          )}
-
-                          <div className="mt-3 text-xs text-gray-500">
-                            {new Date(notification.tempsCreation).toLocaleString(
-                              "fr-CA"
-                            )}
-                          </div>
-
-                          <div className="mt-4 flex flex-wrap gap-2">
-                            <button
-                              onClick={() => marquerCommeVue(notification)}
-                              disabled={notification.estVu}
-                              className={`px-3 py-2 rounded-xl font-semibold border ${
-                                notification.estVu
-                                  ? "bg-gray-200 text-gray-500 border-gray-200 cursor-not-allowed"
-                                  : "bg-white text-gray-800 border-gray-300 hover:bg-gray-50"
-                              }`}
-                              type="button"
-                            >
-                              {notification.estVu ? "Vu" : "Marquer comme vue"}
-                            </button>
-
-                            {estInvitation(notification) ? (
-                              <>
-                                <button
-                                  onClick={() => accepterInvitation(notification)}
-                                  className="px-3 py-2 rounded-xl font-semibold border border-green-700 bg-green-600 text-white hover:bg-green-700"
-                                  type="button"
-                                >
-                                  Accepter
-                                </button>
-
-                                <button
-                                  onClick={() => refuserInvitation(notification)}
-                                  className="px-3 py-2 rounded-xl font-semibold border border-red-700 bg-red-600 text-white hover:bg-red-700"
-                                  type="button"
-                                >
-                                  Refuser
-                                </button>
-                              </>
-                            ) : (
-                              <button
-                                onClick={() =>
-                                  supprimerNotificationSimple(notification)
-                                }
-                                className="px-3 py-2 rounded-xl font-semibold border border-red-700 bg-red-600 text-white hover:bg-red-700"
-                                type="button"
-                              >
-                                Supprimer
-                              </button>
-                            )}
-                          </div>
-                        </div>
-                      </div>
+              <div className="row">
+                {groupes.map((groupe) => (
+                  <div className="col-12 col-md-6 mb-3" key={groupe.id}>
+                    <div className="border rounded p-3 bg-white">
+                      <h4>{groupe.nomGroupe}</h4>
+                      <p className="mb-1">
+                        <strong>Chef :</strong>{" "}
+                        {groupe.chef
+                          ? `${groupe.chef.prenom} ${groupe.chef.nom}`
+                          : "Non défini"}
+                      </p>
+                      <p className="mb-0">
+                        <strong>Nombre d'étudiants :</strong>{" "}
+                        {groupe.etudiants ? groupe.etudiants.length : 0}
+                      </p>
                     </div>
-                  );
-                })}
+                  </div>
+                ))}
               </div>
             )}
           </div>
         </div>
-      </aside>
+      </div>
+
+      {notificationsOuvertes && (
+        <>
+          <div
+            onClick={() => setNotificationsOuvertes(false)}
+            style={{
+              position: "fixed",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+              backgroundColor: "rgba(0,0,0,0.35)",
+              zIndex: 1040,
+            }}
+          />
+
+          <div
+            style={{
+              position: "fixed",
+              top: 0,
+              right: 0,
+              width: "380px",
+              maxWidth: "100%",
+              height: "100vh",
+              backgroundColor: "white",
+              zIndex: 1050,
+              borderLeft: "1px solid #ddd",
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            <div className="p-3 border-bottom d-flex justify-content-between align-items-center">
+              <div>
+                <h4 className="mb-1">Notifications</h4>
+                <small className="text-muted">
+                  {notifications.length} notification
+                  {notifications.length > 1 ? "s" : ""}
+                </small>
+              </div>
+
+              <button
+                onClick={() => setNotificationsOuvertes(false)}
+                className="btn btn-sm btn-outline-dark"
+                type="button"
+              >
+                X
+              </button>
+            </div>
+
+            <div
+              className="p-3"
+              style={{
+                overflowY: "auto",
+                flex: 1,
+              }}
+            >
+              {notificationsTriees.length === 0 ? (
+                <p>Aucune notification.</p>
+              ) : (
+                notificationsTriees.map((notification) => (
+                  <div
+                    key={notification.id}
+                    className={`border rounded p-3 mb-3 ${
+                      notification.estVu ? "bg-white" : "bg-light"
+                    }`}
+                  >
+                    <h6 className="mb-2">{notification.titre}</h6>
+
+                    <p className="mb-2">{notification.message}</p>
+
+                    <p className="mb-2">
+                      <small className="text-muted">
+                        {new Date(notification.tempsCreation).toLocaleString(
+                          "fr-CA",
+                        )}
+                      </small>
+                    </p>
+
+                    <p className="mb-3">
+                      <small>
+                        <strong>Type :</strong> {notification.type}
+                      </small>
+                    </p>
+
+                    <div className="d-flex gap-2">
+                      {!notification.estVu && (
+                        <button
+                          onClick={() =>
+                            handleMarquerNotificationCommeVue(notification)
+                          }
+                          className="btn btn-sm btn-outline-primary"
+                          type="button"
+                        >
+                          Marquer comme vue
+                        </button>
+                      )}
+
+                      <button
+                        onClick={() =>
+                          handleSupprimerNotification(notification)
+                        }
+                        className="btn btn-sm btn-outline-danger"
+                        type="button"
+                      >
+                        Supprimer
+                      </button>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }
