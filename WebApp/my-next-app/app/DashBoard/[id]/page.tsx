@@ -42,6 +42,9 @@ export default function DashBoard() {
 const gotoGroupCalendar = (idGroupe: string) => {
   router.push(`/CalendrierGrp/${idEtudiant}/${idGroupe}`);
 };
+function gotoParametre() {
+  router.push(`/Parametres/${idEtudiant}`);
+};
 
   async function chargerDonnees() {
     try {
@@ -179,12 +182,19 @@ const gotoGroupCalendar = (idGroupe: string) => {
 
             <button
               onClick={gotoCalendrier}
-              className="ps-2 pe-2 mt-3"
+              className="ps-2 pe-2 mt-3 me-2"
               type="button"
             >
               Calendrier
             </button>
+
+            <button 
+            onClick={gotoParametre}
+            className="ps-2 pe-2 mt-3" type="button">
+              Paramètres
+            </button>
           </div>
+          
 
           <div className="col-2 p-3 text-center">
             <button
@@ -195,6 +205,7 @@ const gotoGroupCalendar = (idGroupe: string) => {
               Déconnexion
             </button>
           </div>
+        </div>
         </div>
 
         <div className="row pt-4 text-center">
@@ -329,6 +340,5 @@ const gotoGroupCalendar = (idGroupe: string) => {
           </div>
         </div>
       </div>
-    </div>
-  );
+          );
 }
