@@ -13,8 +13,12 @@ import {
 import { retournerErreur } from "@/app/attraperErreur";
 
 import {
- 
+ GotoLogin,
+ GotoHomePage,
+ GotoDashboard,
   GotoCalendarGroupe
+  G,
+  GotoCalendar
   
 } from "@/app/ChangerPage";
 
@@ -221,7 +225,7 @@ export default function Parametres() {
 
       alert("Compte supprimé");
 
-      gotoLogIn(router);
+      GotoLogin(router);
 
     } catch (e) {
 
@@ -293,7 +297,7 @@ export default function Parametres() {
 
         <div className="col-2 col-md-1">
 
-          <button onClick={() => gotoHomePage(router)} className="border-0 bg-white">
+          <button onClick={() => GotoHomePage(router)} className="border-0 bg-white">
 
             <img
               className="homepage-logo p-2"
@@ -309,7 +313,7 @@ export default function Parametres() {
         <div className="col-8 col-md-9 p-3 text-end">
 
           <button
-            onClick={() => gotoDashBoard(router,idEtudiant)}
+            onClick={() => GotoDashboard(router,idEtudiant)}
             className="ps-2 pe-2 mt-3 border me-2"
             type="button"
           >
@@ -317,7 +321,7 @@ export default function Parametres() {
           </button>
 
           <button
-            onClick={() => gotoCalendrier(router,idEtudiant)}
+            onClick={() => GotoCalendar(router,idEtudiant)}
             className="ps-2 pe-2 mt-3 border me-2"
             type="button"
           >
@@ -330,7 +334,7 @@ export default function Parametres() {
         <div className="col-2 p-3 text-center">
 
           <button
-            onClick={() => gotoLogIn(router)}
+            onClick={() => GotoLogin(router)}
             className="ps-3 pe-3 mt-3"
             type="button"
           >
