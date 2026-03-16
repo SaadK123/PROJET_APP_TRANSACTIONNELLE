@@ -43,7 +43,7 @@ public class ServiceEtudiant {
          return   entityManager.createQuery("select e from Etudiant  e where e.id = :uuid",Etudiant.class)
                     .setParameter("uuid", uuid).getSingleResult();
         } catch (Exception e) {
-            throw new LinkUpException(ERREUR_TYPE.CHAMPS_MANQUANTS,e.getMessage());
+            throw new LinkUpException(ERREUR_TYPE.CHAMPS_MANQUANTS,"aucune personne trouver");
         }
     }
 
@@ -110,13 +110,15 @@ public class ServiceEtudiant {
     @Transactional
     public SucessDTO supprimerEtudiant(SupprimerEtudiantDTO dto) {
 
+      
+           Etudiant e = getEtudiantByCourrielEtMotDePasse(dto.courriel(),dto.motDePasse());
+           serviceGroupe.quitterTousLesGroupes(e.getId().toString());
+           entityManager.createQuery("delete Etudiant e where e.id = :id")
+                   .setParameter("id",e.getId()).getSingleResult();
 
-        Etudiant e = getEtudiantByCourrielEtMotDePasse(dto.courriel(),dto.motDePasse());
-        serviceGroupe.quitterTousLesGroupes(e.getId().toString());
-       entityManager.createQuery("delete Etudiant e where e.id = :id")
-               .setParameter("id",e.getId()).getSingleResult();
+           entityManager.flush();
 
-        entityManager.flush();
+
 
       return new SucessDTO(true,Utilitary.MESSAGE_ETUDIANT_ENLEVER);
     }

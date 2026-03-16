@@ -28,7 +28,7 @@ public class RestHandler {
     public ResponseEntity<GestionErreurDTO> handleOther(Exception ex) {
         GestionErreurDTO body = new GestionErreurDTO(
 
-                "server error",
+                ex.getMessage(),
                 LocalDateTime.now()
         );
         return ResponseEntity.status(ERREUR_TYPE.ERREUR_INTERNE.http_code).body(body);
