@@ -1,4 +1,4 @@
-const URL_BASE_API = "https://linkup-n9cw.onrender.com";
+const URL_BASE_API = "http://localhost:8080";
 
 export const URLS = {
   SANTE: `${URL_BASE_API}/api/health`,
