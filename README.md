@@ -1,5 +1,5 @@
 # PROJET_APP_TRANSACTIONNELLE
-
+# NOTE PROTOTYPE TOUT LES FICHIER ONT ETE PUSH SUR LA BRANCHE MAIN (README + ANALYSE PROTOTYPE)
 ## Lien Vers le Gabarit_AnalysePreliminaire : ##
 https://bdebqcca-my.sharepoint.com/:w:/r/personal/6307527_bdeb_qc_ca/Documents/Gabarit_AnalysePreliminaire.docx?d=wb30515fcce194d5a98571c2690edcf6d&csf=1&web=1&e=quEAsd
 
