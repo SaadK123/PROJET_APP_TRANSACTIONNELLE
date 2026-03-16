@@ -14,7 +14,7 @@ export function GotoParametres(router:any,idEtudiant:string){
 }
 
 
-// aller à la page d'accueil
+// aller a la page d'accueil
 export function GotoHomePage(router:any){
     router.push("/HomePage")
 }
