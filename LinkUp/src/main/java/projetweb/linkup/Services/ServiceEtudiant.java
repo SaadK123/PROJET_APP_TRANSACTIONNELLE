@@ -111,10 +111,7 @@ public class ServiceEtudiant {
 
 
         Etudiant e = getEtudiantByCourrielEtMotDePasse(dto.courriel(),dto.motDePasse());
-
-
-
-
+        serviceGroupe.quitterTousLesGroupes(e.getId().toString());
        entityManager.createQuery("delete Etudiant e where e.id = :id")
                .setParameter("id",e.getId()).getSingleResult();
 
