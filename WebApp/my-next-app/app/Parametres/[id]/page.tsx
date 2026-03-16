@@ -6,6 +6,7 @@ import {
   obtenirEtudiantParId,
   mettreAjourProfilEtudiant,
   mettreAjourMotDePasse,
+  supprimerEtudiant,
 } from "@/app/FetchsMethodesEtudiants";
 import type { Etudiant } from "@/app/TypesObjets";
 
@@ -27,18 +28,19 @@ export default function Parametres() {
   const [vieuxMotDePasse, setVieuxMotDePasse] = useState("");
   const [nouveauMotDePasse, setNouveauMotDePasse] = useState("");
 
+  const [motDePasseSuppression, setMotDePasseSuppression] = useState("");
+
   function gotoHomePage() {
     router.push("/HomePage");
   }
 
-   function gotoDashBoard() {
+  function gotoDashBoard() {
     router.push(`/DashBoard/${idEtudiant}`);
   }
-  
-    function gotoLogIn() {
+
+  function gotoLogIn() {
     router.push("/SignIn");
   }
-
 
   function gotoCalendrier() {
     router.push(`/calendrier/${idEtudiant}`);
@@ -53,14 +55,16 @@ export default function Parametres() {
       const etudiantCharge = await obtenirEtudiantParId(idEtudiant);
       setEtudiant(etudiantCharge);
 
-      // on met les info dans les input
       setPrenom(etudiantCharge.prenom);
       setNom(etudiantCharge.nom);
       setNomUtilisateur(etudiantCharge.nomUtilisateur);
       setEcole(etudiantCharge.ecole);
     } catch (e) {
-      console.error(e);
-      setErreur("Erreur chargement");
+      if (e instanceof Error) {
+        setErreur(e.message);
+      } else {
+        setErreur("Erreur lors du chargement de l'étudiant");
+      }
     } finally {
       setChargement(false);
     }
@@ -69,47 +73,109 @@ export default function Parametres() {
   async function handleSauvegarderProfil() {
     if (!etudiant) return;
 
+    const prenomTrim = prenom.trim();
+    const nomTrim = nom.trim();
+    const nomUtilisateurTrim = nomUtilisateur.trim();
+    const ecoleTrim = ecole.trim();
+
+    if (!prenomTrim || !nomTrim || !nomUtilisateurTrim || !ecoleTrim) {
+      setErreur("Tous les champs du profil doivent être remplis.");
+      setMessage("");
+      return;
+    }
+
     try {
       setErreur("");
       setMessage("");
 
       await mettreAjourProfilEtudiant(
         etudiant.id,
-        nomUtilisateur,
-        nom,
-        ecole,
-        prenom,
+        nomUtilisateurTrim,
+        nomTrim,
+        ecoleTrim,
+        prenomTrim,
       );
 
-      setMessage("Profil mis a jour");
+      setMessage("Profil mis à jour");
       await chargerEtudiant();
     } catch (e) {
-      console.error(e);
-      setErreur("Erreur mise a jour profil");
+      if (e instanceof Error) {
+        setErreur(e.message);
+      } else {
+        setErreur("Erreur mise à jour profil");
+      }
     }
   }
 
   async function handleChangerMotDePasse() {
     if (!etudiant) return;
-    if (!vieuxMotDePasse || !nouveauMotDePasse) return;
+
+    const vieuxTrim = vieuxMotDePasse.trim();
+    const nouveauTrim = nouveauMotDePasse.trim();
+
+    if (!vieuxTrim || !nouveauTrim) {
+      setErreur("Les deux champs de mot de passe sont obligatoires.");
+      setMessage("");
+      return;
+    }
+
+    if (nouveauTrim.length < 8 || nouveauTrim.length > 28) {
+      setErreur(
+        "Le nouveau mot de passe doit contenir entre 8 et 28 caractères.",
+      );
+      setMessage("");
+      return;
+    }
 
     try {
       setErreur("");
       setMessage("");
 
-      await mettreAjourMotDePasse(
-        etudiant.id,
-        vieuxMotDePasse,
-        nouveauMotDePasse,
-      );
+      await mettreAjourMotDePasse(etudiant.id, vieuxTrim, nouveauTrim);
 
       setVieuxMotDePasse("");
       setNouveauMotDePasse("");
-      setMessage("Mot de passe mis a jour");
+      setMessage("Mot de passe mis à jour");
     } catch (e) {
       setErreur(
         e instanceof Error ? e.message : "Erreur changement mot de passe",
       );
+    }
+  }
+
+  async function handleSupprimerCompte() {
+    if (!etudiant) return;
+
+    const motDePasseTrim = motDePasseSuppression.trim();
+
+    if (!motDePasseTrim) {
+      setErreur("Entre ton mot de passe pour supprimer ton compte.");
+      setMessage("");
+      return;
+    }
+
+    const confirmation = window.confirm(
+      "Es-tu certain de vouloir supprimer ton compte ? Cette action est irréversible.",
+    );
+
+    if (!confirmation) return;
+
+    try {
+      setErreur("");
+      setMessage("");
+
+      await supprimerEtudiant(etudiant.courriel, motDePasseTrim);
+
+      setMotDePasseSuppression("");
+      alert("Compte supprimé avec succès.");
+      router.push("/SignIn");
+    } catch (e) {
+      setErreur(
+        e instanceof Error
+          ? e.message
+          : "Erreur lors de la suppression du compte",
+      );
+      setMessage("");
     }
   }
 
@@ -191,8 +257,6 @@ export default function Parametres() {
             >
               Calendrier
             </button>
-          
-
           </div>
 
           <div className="col-2 p-3 text-center">
@@ -265,7 +329,7 @@ export default function Parametres() {
 
               <button
                 onClick={handleSauvegarderProfil}
-                className="bg-blue-500 rounded text-white  p-2"
+                className="bg-blue-500 rounded text-white p-2"
                 type="button"
               >
                 Sauvegarder profil
@@ -295,10 +359,36 @@ export default function Parametres() {
 
               <button
                 onClick={handleChangerMotDePasse}
-                className="bg-green-500 rounded text-white  p-2"
+                className="bg-green-500 rounded text-white p-2"
                 type="button"
               >
                 Changer mot de passe
+              </button>
+            </div>
+
+            <div className="mt-5 border-top pt-4">
+              <h3 className="text-danger">Supprimer mon compte</h3>
+              <p>
+                Cette action est définitive. Entre ton mot de passe pour
+                confirmer.
+              </p>
+
+              <label>Mot de passe</label>
+              <input
+                value={motDePasseSuppression}
+                onChange={(e) =>
+                  setMotDePasseSuppression(e.currentTarget.value)
+                }
+                type="password"
+                className="form-control mb-3"
+              />
+
+              <button
+                onClick={handleSupprimerCompte}
+                className="bg-red-600 rounded text-white p-2"
+                type="button"
+              >
+                Supprimer mon compte
               </button>
             </div>
           </div>
