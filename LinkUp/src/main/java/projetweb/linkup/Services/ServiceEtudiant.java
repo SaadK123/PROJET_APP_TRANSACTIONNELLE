@@ -110,11 +110,11 @@ public class ServiceEtudiant {
     @Transactional
     public SucessDTO supprimerEtudiant(SupprimerEtudiantDTO dto) {
 
-      
+
            Etudiant e = getEtudiantByCourrielEtMotDePasse(dto.courriel(),dto.motDePasse());
            serviceGroupe.quitterTousLesGroupes(e.getId().toString());
            entityManager.createQuery("delete Etudiant e where e.id = :id")
-                   .setParameter("id",e.getId()).getSingleResult();
+                   .setParameter("id",e.getId()).executeUpdate();
 
            entityManager.flush();
 
