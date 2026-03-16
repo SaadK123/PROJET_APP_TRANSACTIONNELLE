@@ -77,7 +77,7 @@ public class TestControlleur {
         public List<Groupe> getGroupsFromEtudiant(@RequestParam String idEtudiant) {
                 return serviceGroupe.getToutGroupesDeUser(idEtudiant);
         }
-        @GetMapping("/groupes")
+        @GetMapping("/groupe")
         public Groupe getGroupById(@RequestParam String idGroupe) {
                 return serviceGroupe.getGroupeById(idGroupe);
         }
