@@ -20,7 +20,7 @@ public class Groupe {
 
     private UUID id;
 
-    @JsonIncludeProperties({"nomUtilisateur", "nom", "prenom", "courriel", "ecole"})
+    @JsonIncludeProperties({"nomUtilisateur", "nom", "prenom", "courriel", "ecole","id"})
     @ManyToOne
     @JoinColumn(name = "chef_id", nullable = false)
     private Etudiant chef;
