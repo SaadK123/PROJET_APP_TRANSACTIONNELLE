@@ -107,8 +107,8 @@ public class ServiceEtudiant {
 
 
 
-        String motDePasseHash =  passwordEncoder.encode(dto.motDePasse());
-        Etudiant e = getEtudiantByCourrielEtMotDePasse(dto.courriel(),motDePasseHash);
+
+        Etudiant e = getEtudiantByCourrielEtMotDePasse(dto.courriel(),dto.motDePasse());
 
         entityManager.remove(e);
         entityManager.flush();
