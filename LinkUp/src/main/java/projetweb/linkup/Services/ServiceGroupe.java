@@ -99,14 +99,10 @@ public class ServiceGroupe {
         return new SucessDTO(true,"vous avez ete ajouter dans le groupe");
     }
     @Transactional
-    public Groupe creerGroupe(CreationDeGroupeDTO groupe) {
-        
+    public Groupe creerGroupe(CreationDeGroupeDTO groupeDTO) {
+        Etudiant chef = serviceEtudiant.getEtudiantById(groupeDTO.chefID());
+        Groupe g = new Groupe(chef,groupeDTO.nomGroup());
 
-        Etudiant e =  serviceEtudiant.getEtudiantById(groupe.chefID());
-
-        Groupe g = new Groupe(e,groupe.nomGroup());
-        g.setHoraire(new Horaire());
-        g.getHoraire().setActivites(new ArrayList<>());
         entityManager.persist(g);
         entityManager.flush();
 

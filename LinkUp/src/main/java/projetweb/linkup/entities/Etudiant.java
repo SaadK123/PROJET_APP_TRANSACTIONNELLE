@@ -53,6 +53,8 @@ public class Etudiant  {
     @Column(name = "prenom",nullable = false)
     private String prenom;
 
+
+    @JsonIgnore
     @Column(name="motDePasse",nullable = false)
     private String motDePasseHash;
 
@@ -64,13 +66,14 @@ public class Etudiant  {
     @JoinColumn(name = "horaire_id")
     private Horaire horaire = new Horaire();
 
+    @JsonIgnore
     @PrePersist
     public void prePersist() {
         if (horaire == null) {
             horaire = new Horaire();
         }
     }
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name  = "notification_id")
     private List<Notification> notifications = new ArrayList<>();
 

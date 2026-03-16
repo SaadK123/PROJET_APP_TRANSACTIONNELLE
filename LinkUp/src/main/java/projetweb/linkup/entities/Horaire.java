@@ -1,5 +1,7 @@
 package projetweb.linkup.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,6 +15,7 @@ import java.util.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonIgnoreProperties({""})
 public class Horaire {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -22,12 +25,7 @@ public class Horaire {
     @JoinColumn(name = "horaire_id",nullable = false)
     private List<Activite> activites = new ArrayList<>();
 
-
-    public String getId() {
-        return id.toString();
-
-    }
-
+    @JsonIgnore
     @PrePersist
     public void prePersist() {
         if (activites == null) {
