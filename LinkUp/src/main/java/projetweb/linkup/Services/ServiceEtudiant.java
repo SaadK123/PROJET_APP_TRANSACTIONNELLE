@@ -1,6 +1,7 @@
 package projetweb.linkup.Services;
 
 
+import org.springframework.context.annotation.Lazy;
 import projetweb.linkup.DTO.ACTIONS.CreationEtudiantDTO;
 import projetweb.linkup.DTO.ACTIONS.SupprimerEtudiantDTO;
 import projetweb.linkup.DTO.ACTIONS.SucessDTO;
@@ -60,7 +61,7 @@ public class ServiceEtudiant {
         }
 
     }
-    public ServiceEtudiant(PasswordEncoder passwordEncoder, ServiceGroupe serviceGroupe) {
+    public ServiceEtudiant(PasswordEncoder passwordEncoder, @Lazy ServiceGroupe serviceGroupe) {
 
         this.passwordEncoder = passwordEncoder;
         this.serviceGroupe = serviceGroupe;
