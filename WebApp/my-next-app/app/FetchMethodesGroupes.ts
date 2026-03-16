@@ -127,6 +127,24 @@ export async function ajouterEtudiantDansGroupe(
   return succes;
 }
 
+export async function obtenirGroupeParId(idGroupe: string) {
+  const response = await fetch(
+    `${URLS.OBTENIR_GROUPE_PAR_ID}?idGroupe=${idGroupe}`,
+    {
+      method: "GET",
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message);
+  }
+
+  const groupe: Groupe = data;
+  return groupe;
+}
+
 export async function virerEtudiantDuGroupe(
   etudiantAVirerId: string,
   etudiantQuiVireId: string,

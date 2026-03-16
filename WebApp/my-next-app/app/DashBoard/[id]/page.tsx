@@ -6,12 +6,13 @@ import { obtenirEtudiantParId } from "@/app/FetchsMethodesEtudiants";
 import {
   obtenirGroupesDeEtudiant,
   creerGroupe,
+  ajouterEtudiantDansGroupe,
 } from "@/app/FetchMethodesGroupes";
 import {
   marquerNotificationCommeVue,
   supprimerNotification,
 } from "@/app/FetchMethodesNotifications";
-import type { Etudiant, Groupe, Notification } from "@/app/TypesObjets";
+import type { Etudiant, Groupe, Notification, Invitation } from "@/app/TypesObjets";
 
 export default function DashBoard() {
   const params = useParams<{ id: string }>();
@@ -110,6 +111,28 @@ function gotoParametre() {
       setErreur("Erreur suppression notification");
     }
   }
+
+  async function handleAccepterInvitation(notification: Notification) {
+  if (notification.type !== "NOUVELLE_GROUPE_INVITATION") return;
+
+  try {
+    await ajouterEtudiantDansGroupe(
+      (notification as Invitation).groupe.id,
+      idEtudiant
+    );
+
+    await supprimerNotification(notification.id);
+
+    if (notificationOuverteId === notification.id) {
+      setNotificationOuverteId(null);
+    }
+
+    await chargerDonnees();
+  } catch (e) {
+    console.error(e);
+    setErreur("Erreur acceptation invitation");
+  }
+}
 
   useEffect(() => {
     if (idEtudiant) {
@@ -320,6 +343,16 @@ function gotoParametre() {
                               notification.tempsCreation,
                             ).toLocaleString("fr-CA")}
                           </p>
+
+                          <button
+                            onClick={() => handleAccepterInvitation(notification)
+
+                            }
+                            className="btn btn-sm btn-success"
+                            type="button"
+                          >
+                            Accepter
+                          </button>
 
                           <button
                             onClick={() =>
