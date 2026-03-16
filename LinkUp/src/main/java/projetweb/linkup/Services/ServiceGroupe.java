@@ -157,18 +157,18 @@ public class ServiceGroupe {
     @Transactional
     public SucessDTO virerEtudiant(VirerEtudiantDTO virerEtudiantDTO) {
         String idVireur = virerEtudiantDTO.etudiantQuiVireId();
-        String idVirer = virerEtudiantDTO.etudiantAVirerId();
+        String nomUtilisateur = virerEtudiantDTO.nomUtilisateur();
 
 
         String groupeId =  virerEtudiantDTO.groupid();
         Etudiant vireur = serviceEtudiant.getEtudiantById(idVireur);
-        Etudiant virer  = serviceEtudiant.getEtudiantById(idVirer);
+        Etudiant virer  = serviceEtudiant.getEtudiantByUsername(nomUtilisateur);
 
         Groupe group = getGroupeById(groupeId);
 
         if(!group.getChef().getId().equals(vireur.getId())) {
             throw new LinkUpException(ERREUR_TYPE.ERREUR_METIER_LOGIQUE,Utilitary.MESSAGE_ACTION_DEMANDE_CHEF_INVITATION);
-        }else if(idVirer.equals(idVireur)) {
+        }else if(virer.getId().toString().equals(idVireur)) {
                 throw new LinkUpException(ERREUR_TYPE.ERREUR_METIER_LOGIQUE,"vous ne pouvez pas vous virer vous meme");
         }
         group.getEtudiants().remove(virer);
