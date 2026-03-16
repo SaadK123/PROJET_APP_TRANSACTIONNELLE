@@ -17,7 +17,7 @@ export const URLS = {
   OBTENIR_GROUPES_DE_ETUDIANT: `${URL_BASE_API}/api/groupes`,
   ENVOYER_INVITATION_GROUPE: `${URL_BASE_API}/api/groupes/invitations`,
   QUITTER_GROUPE: `${URL_BASE_API}/api/groupes/quitter`,
-  OBTENIR_GROUPE_PAR_ID: `${URL_BASE_API}/api/groupes`,
+  OBTENIR_GROUPE_PAR_ID: `${URL_BASE_API}/api/groupe`,
 
   OBTENIR_HORAIRE_PAR_ID: `${URL_BASE_API}/api/horaire`,
 
@@ -28,5 +28,5 @@ export const URLS = {
   VIRER_ETUDIANT_DUN_GROUPE: `${URL_BASE_API}/api/groupes/virer`,
   AJOUTER_ACTIVITE_GROUPE: `${URL_BASE_API}/api/groupes/activites/ajouter`,
   AJOUTER_ACTIVITE_ETUDIANT: `${URL_BASE_API}/api/etudiants/activites/ajouter`,
-  SUPPRIMER_ACTIVITE: `${URL_BASE_API}/api/activites`,
+  SUPPRIMER_ACTIVITE: `${URL_BASE_API}/api/activite/retirer`,
 };
