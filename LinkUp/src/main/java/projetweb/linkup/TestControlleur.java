@@ -77,7 +77,10 @@ public class TestControlleur {
         public List<Groupe> getGroupsFromEtudiant(@RequestParam String idEtudiant) {
                 return serviceGroupe.getToutGroupesDeUser(idEtudiant);
         }
-
+        @GetMapping("/groupes")
+        public Groupe getGroupById(@RequestParam String idGroupe) {
+                return serviceGroupe.getGroupeById(idGroupe);
+        }
         @PostMapping("/groupes/invitations")
         public SucessDTO envoyerInvitationGroupe(@RequestBody RequeteInvitationDTO dto) {
                 return serviceGroupe.envoyerRequeteAEtudiant(dto);
