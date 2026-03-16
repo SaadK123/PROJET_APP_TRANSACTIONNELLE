@@ -1,7 +1,7 @@
 import { URLS } from "./FichierConfiguration";
 import type { SucessDTO } from "./TypesObjets";
 
-export async function ajouterActivite(
+export async function ajouterActivitePourGroupe(
   description: string,
   titre: string,
   tempsDebut: string,
@@ -66,4 +66,23 @@ export async function ajouterActivitePourEtudiant(
 
   const succes: SucessDTO = data;
   return succes;
+}
+
+
+export async function retirerActivite(activiteId: string) {
+
+  const response = await fetch(
+    `${URLS.SUPPRIMER_ACTIVITE}?activiteId=${activiteId}`,
+    {
+      method: "DELETE"
+    }
+  );
+
+  const data: SucessDTO = await response.json();
+
+  if (!response.ok || !data.success) {
+    throw new Error(data.message);
+  }
+
+  return data;
 }

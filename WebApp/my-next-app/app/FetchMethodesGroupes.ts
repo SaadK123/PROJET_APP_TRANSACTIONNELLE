@@ -171,3 +171,24 @@ export async function virerEtudiantDuGroupe(
   const succes: SucessDTO = data;
   return succes;
 }
+export async function supprimerGroupe( groupeId: string, chefId: string) {
+
+  const response = await fetch(URLS.SUPPRIMER_GROUPE, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      groupeId: groupeId,
+      chefId: chefId
+    })
+  });
+
+  const data: SucessDTO = await response.json();
+
+  if (!response.ok || !data.success) {
+    throw new Error(data.message);
+  }
+
+  return data;
+}

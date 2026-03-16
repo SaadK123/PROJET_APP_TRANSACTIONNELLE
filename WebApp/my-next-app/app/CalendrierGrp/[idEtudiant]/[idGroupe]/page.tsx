@@ -26,7 +26,7 @@ import {
 
 import { retournerErreur } from "@/app/attraperErreur";
 import { TYPES_NOTIFICATION } from "@/app/TypesObjets";
-import type { Activite, Etudiant, Groupe } from "@/app/TypesObjets";
+import type { Activite, Groupe } from "@/app/TypesObjets";
 
 /**
  * Ce type prepare les donnees pour le calendrier.
@@ -366,7 +366,7 @@ export default function PageCalendrierGroupe() {
    * Je bloque le cas ou le chef essayerait de se retirer lui meme.
    * Quand tout passe, je recharge les donnees du groupe.
    */
-  async function retirerMembre(etudiant: Etudiant) {
+  async function retirerMembre(nomUtilisateurEtudiant: string) {
     viderMessages();
 
     if (utilisateurEstChef() === false) {
@@ -374,13 +374,18 @@ export default function PageCalendrierGroupe() {
       return;
     }
 
-    if (etudiant.id === idEtudiant) {
+    if (groupe === null) {
+      setErreur("groupe introuvable");
+      return;
+    }
+
+    if (nomUtilisateurEtudiant === groupe.chef.nomUtilisateur) {
       setErreur("le chef ne peut pas se virer lui meme");
       return;
     }
 
     try {
-      await virerEtudiantDuGroupe(etudiant.id, idEtudiant, idGroupe);
+      await virerEtudiantDuGroupe(nomUtilisateurEtudiant, idEtudiant, idGroupe);
       setMessage("membre vire du groupe");
       await chargerGroupe();
     } catch (erreurCapturee) {
@@ -458,12 +463,12 @@ export default function PageCalendrierGroupe() {
           let boutonVirer: ReactNode = null;
 
           if (utilisateurEstChef()) {
-            if (etudiant.id !== idEtudiant) {
+            if (etudiant.nomUtilisateur !== groupe.chef.nomUtilisateur) {
               boutonVirer = (
                 <button
                   type="button"
                   className="btn btn-sm btn-danger"
-                  onClick={() => retirerMembre(etudiant)}
+                  onClick={() => retirerMembre(etudiant.nomUtilisateur)}
                 >
                   Virer
                 </button>
@@ -473,7 +478,7 @@ export default function PageCalendrierGroupe() {
 
           return (
             <div
-              key={etudiant.id}
+              key={etudiant.nomUtilisateur}
               className="list-group-item d-flex justify-content-between align-items-center"
             >
               <div>

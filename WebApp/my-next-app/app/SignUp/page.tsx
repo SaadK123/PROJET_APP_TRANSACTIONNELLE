@@ -3,9 +3,9 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { creerEtudiant } from "@/app/FetchsMethodesEtudiants";
-import type { Etudiant } from "../TypesObjets";
+import { verifierEmail, verifierMotDePasse } from "@/app/VerificationEmail";
 
-export default function SignUp() {
+export default function SignUpTestPage() {
   const [username, setUsername] = useState<string>("");
   const [name, setName] = useState<string>("");
   const [firstName, setFirstName] = useState<string>("");
@@ -13,6 +13,16 @@ export default function SignUp() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [conditions, setConditions] = useState<boolean>(false);
+  const [voirMotDePasse, setVoirMotDePasse] = useState<boolean>(false);
+
+  // message d erreur affiche en haut en rouge
+  const [erreur, setErreur] = useState<string>("");
+
+  // message de succes si tout marche
+  const [message, setMessage] = useState<string>("");
+
+  // permet de bloquer le bouton pendant l envoi
+  const [chargement, setChargement] = useState<boolean>(false);
 
   const router = useRouter();
 
@@ -28,63 +38,71 @@ export default function SignUp() {
     router.push("/SignUp");
   };
 
-  async function handleSubmit() {
-    const usernameTrim = username.trim();
-    const nameTrim = name.trim();
-    const firstNameTrim = firstName.trim();
-    const uniTrim = uni.trim();
-    const emailTrim = email.trim();
-    const passwordTrim = password.trim();
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    setErreur("");
+    setMessage("");
 
-    if (
-      !conditions ||
-      !usernameTrim ||
-      !nameTrim ||
-      !firstNameTrim ||
-      !uniTrim ||
-      !emailTrim ||
-      !passwordTrim
-    ) {
-      alert(
-        "Tous les champs sont obligatoires et tu dois accepter les conditions d'utilisation.",
-      );
+    if (username.trim() === "") {
+      setErreur("le nom d utilisateur est obligatoire");
       return;
     }
 
-    if (!emailRegex.test(emailTrim)) {
-      alert("Veuillez entrer une adresse courriel valide.");
+    if (name.trim() === "") {
+      setErreur("le nom est obligatoire");
       return;
     }
 
-    if (passwordTrim.length < 8 || passwordTrim.length > 28) {
-      alert("Le mot de passe doit contenir entre 8 et 28 caractères.");
+    if (firstName.trim() === "") {
+      setErreur("le prenom est obligatoire");
+      return;
+    }
+
+    if (uni.trim() === "") {
+      setErreur("l ecole est obligatoire");
+      return;
+    }
+
+    const erreurEmail = verifierEmail(email);
+    if (erreurEmail !== "") {
+      setErreur(erreurEmail);
+      return;
+    }
+
+    const erreurMotDePasse = verifierMotDePasse(password);
+    if (erreurMotDePasse !== "") {
+      setErreur(erreurMotDePasse);
+      return;
+    }
+
+    if (!conditions) {
+      setErreur("accepter les conditions d utilisation");
       return;
     }
 
     try {
-      const etudiant: Etudiant = await creerEtudiant(
-        firstNameTrim,
-        nameTrim,
-        usernameTrim,
-        uniTrim,
-        passwordTrim,
-        emailTrim,
-      );
+      setChargement(true);
 
-      if (!etudiant) {
-        alert("La création du compte a échoué.");
-        return;
-      }
+       await creerEtudiant(
+  firstName.trim(),
+  name.trim(),
+  username.trim(),
+  uni.trim(),
+  password,
+  email.trim()
+    );
 
+      setMessage("compte cree avec succes");
       router.push("/SignIn");
     } catch (e: unknown) {
       if (e instanceof Error) {
-        alert(e.message);
+        setErreur(e.message);
       } else {
-        alert("Une erreur est survenue lors de la création du compte.");
+        setErreur("impossible de creer le compte");
       }
+    } finally {
+      setChargement(false);
     }
   }
 
@@ -94,7 +112,7 @@ export default function SignUp() {
         {/* Head */}
         <div className="container-fluid">
           <div className="row bg-white">
-            {/*LOGO*/}
+            {/* LOGO */}
             <div className="col-1">
               <button onClick={gotoHomePage}>
                 <img
@@ -105,32 +123,30 @@ export default function SignUp() {
               </button>
             </div>
 
-            {/*Middle Buttons*/}
-
-            <div className="col-9 p-3 pe-5  text-end">
+            {/* Middle Buttons */}
+            <div className="col-9 p-3 pe-5 text-end">
               <button
-                className=" ps-2 pe-2 mt-3 text-dark rounded bg-gray-300"
+                className="ps-2 pe-2 mt-3 text-dark rounded bg-gray-300"
                 type="button"
               >
                 Produit
               </button>
               <button
-                className=" ps-2 pe-2 ms-2 me-2 text-dark rounded bg-gray-300"
+                className="ps-2 pe-2 ms-2 me-2 text-dark rounded bg-gray-300"
                 type="button"
               >
                 Forfait
               </button>
               <button
-                className=" ps-2 pe-2 me-2 text-dark rounded bg-gray-300"
+                className="ps-2 pe-2 me-2 text-dark rounded bg-gray-300"
                 type="button"
               >
                 Contact
               </button>
             </div>
 
-            {/*Login/Create*/}
-
-            <div className="col-2 p-3 text-center ">
+            {/* Login / Create */}
+            <div className="col-2 p-3 text-center">
               <button
                 onClick={gotoLogIn}
                 className="ps-3 pe-3 mt-3"
@@ -148,27 +164,43 @@ export default function SignUp() {
             </div>
           </div>
 
-          {/*Body*/}
+          {/* Body */}
           <div className="col-7 m-4">
             <h2>Créer un compte</h2>
 
             <label>
-              Rejoins des milliers d&apos;étudiants qui organisent mieux leur
-              temps
+              Rejoins des milliers d'étudiants qui organisent mieux leur temps
             </label>
           </div>
 
           <div>
-            <form className="border rounded signup-form p-5 col-7 mx-auto">
+            <form
+              className="border rounded signup-form p-5 col-7 mx-auto"
+              onSubmit={handleSubmit}
+            >
+              {/* message erreur */}
+              {erreur !== "" ? (
+                <div className="alert alert-danger mb-4">
+                  {erreur}
+                </div>
+              ) : null}
+
+              {/* message succes */}
+              {message !== "" ? (
+                <div className="alert alert-success mb-4">
+                  {message}
+                </div>
+              ) : null}
+
               {/* Nom utilisateur */}
               <div className="mb-3">
-                <label>Nom d&apos;utilisateur*</label>
+                <label>Nom d'utilisateur</label>
                 <input
                   value={username}
                   onChange={(e) => {
                     setUsername(e.currentTarget.value);
                   }}
-                  className="form-control "
+                  className="form-control"
                   type="text"
                 />
               </div>
@@ -176,110 +208,141 @@ export default function SignUp() {
               {/* Nom - Prénom */}
               <div className="row mb-3">
                 <div className="col-7">
-                  <label>Nom*</label>
+                  <label>Nom</label>
                   <input
                     value={name}
                     onChange={(e) => {
                       setName(e.currentTarget.value);
                     }}
                     type="text"
-                    className="form-control "
+                    className="form-control"
                   />
                 </div>
                 <div className="col-5">
-                  <label>Prénom*</label>
+                  <label>Prénom</label>
                   <input
                     value={firstName}
                     onChange={(e) => {
                       setFirstName(e.currentTarget.value);
                     }}
                     type="text"
-                    className="form-control "
+                    className="form-control"
                   />
                 </div>
               </div>
 
               {/* Université / Cégep */}
               <div className="mb-3">
-                <label htmlFor="school">Université/Cégep*</label>
+                <label htmlFor="school">Université/Cégep</label>
                 <select
                   value={uni}
                   onChange={(e) => {
                     setUni(e.currentTarget.value);
                   }}
-                  className="form-select "
+                  className="form-select"
                   name="school"
                   id="school"
                 >
                   <option value="">Choisir une université ou un cégèp</option>
 
-                  {/* Cégeps */}
-                  <option value="bois_de_boulogne">
+                  <option value="Collège Bois-de-Boulogne">
                     Collège Bois-de-Boulogne
                   </option>
-                  <option value="vanier">Collège Vanier</option>
-                  <option value="montmorency">Cégep de Montmorency</option>
-                  <option value="sainte_foy">Cégep de Sainte-Foy</option>
-                  <option value="limoilou">Cégep Limoilou</option>
-                  <option value="temiscouata">Cégep de Témiscouata</option>
-
-                  {/* Universités */}
-                  <option value="mcgill">Université McGill</option>
-                  <option value="uqam">
+                  <option value="Collège Vanier">Collège Vanier</option>
+                  <option value="Cégep de Montmorency">
+                    Cégep de Montmorency
+                  </option>
+                  <option value="Cégep de Sainte-Foy">
+                    Cégep de Sainte-Foy
+                  </option>
+                  <option value="Cégep Limoilou">Cégep Limoilou</option>
+                  <option value="Cégep de Témiscouata">
+                    Cégep de Témiscouata
+                  </option>
+                  <option value="Université McGill">Université McGill</option>
+                  <option value="Université du Québec à Montréal (UQAM)">
                     Université du Québec à Montréal (UQAM)
                   </option>
-                  <option value="laval">Université Laval</option>
-                  <option value="montreal">Université de Montréal</option>
-                  <option value="concordia">Université Concordia</option>
-                  <option value="sherbrooke">Université de Sherbrooke</option>
-                  <option value="trois_rivieres">
+                  <option value="Université Laval">Université Laval</option>
+                  <option value="Université de Montréal">
+                    Université de Montréal
+                  </option>
+                  <option value="Université Concordia">
+                    Université Concordia
+                  </option>
+                  <option value="Université de Sherbrooke">
+                    Université de Sherbrooke
+                  </option>
+                  <option value="Université du Québec à Trois-Rivières (UQTR)">
                     Université du Québec à Trois-Rivières (UQTR)
                   </option>
-                  <option value="outaouais">
+                  <option value="Université du Québec en Outaouais (UQO)">
                     Université du Québec en Outaouais (UQO)
                   </option>
-                  <option value="chicoutimi">
+                  <option value="Université du Québec à Chicoutimi (UQAC)">
                     Université du Québec à Chicoutimi (UQAC)
                   </option>
                 </select>
               </div>
 
               {/* Email */}
-              <div className="mb-3 ">
-                <label>Email Étudiant*</label>
+              <div className="mb-3">
+                <label>Email Étudiant</label>
                 <input
                   value={email}
                   onChange={(e) => setEmail(e.currentTarget.value)}
                   type="text"
-                  className="form-control "
+                  className="form-control"
                 />
               </div>
 
-              {/* Mot de passe */}
-              <div className="mb-5">
-                <label>Mot de passe*</label>
-                <input
-                  value={password}
-                  onChange={(e) => {
-                    setPassword(e.currentTarget.value);
-                  }}
-                  type="password"
-                  className="form-control "
-                />
+           <div className="mb-3">
+  <label>Mot de passe</label>
 
+       <div className="input-group">
+             <input
+        value={password}
+      onChange={(e) => {
+        setPassword(e.currentTarget.value);
+      }}
+      type={voirMotDePasse ? "text" : "password"}
+      className="form-control"
+    />
+
+                        <button
+                       type="button"
+                         className="btn btn-outline-secondary"
+                              onClick={() => {
+                                setVoirMotDePasse(!voirMotDePasse);
+                                                     }}
+                                                              >
+                               {voirMotDePasse ? "Cacher" : "Voir"}
+                              </button>
+                        </div>
+                  </div>
+
+              {/* rappel des regles */}
+              <div className="mb-4">
+                <small>
+                  Le mot de passe doit contenir au moins 8 caractères, une
+                  majuscule, un chiffre et un caractère spécial.
+                </small>
+              </div>
+
+              {/* Conditions */}
+              <div className="mb-5">
                 <input
                   checked={conditions}
-                  onChange={(e) => setConditions(e.currentTarget.checked)}
+                  onChange={() => setConditions(!conditions)}
                   type="checkbox"
-                  className="form-check-input "
+                  className="form-check-input"
                   id="condition"
                 />
-
-                <label className="form-check-label ms-2 " htmlFor="condition">
-                  J&apos;accepte les{" "}
+                <label className="form-check-label ms-2" htmlFor="condition">
+                  J'accepte les{" "}
                   <span>
-                    <a href="??">conditions d&apos;utilisation</a>{" "}
-                  </span>
+                    <a href="??">conditions d'utilisation</a>
+                  </span>{" "}
                   et la{" "}
                   <span>
                     <a href="??">politique de confidentialité</a>
@@ -289,11 +352,11 @@ export default function SignUp() {
 
               <div className="d-grid mb-4">
                 <button
-                  onClick={handleSubmit}
-                  className="btn btn-createAcc btn-lg "
-                  type="button"
+                  className="btn btn-createAcc btn-lg"
+                  type="submit"
+                  disabled={chargement}
                 >
-                  Créer mon compte
+                  {chargement ? "Création..." : "Créer mon compte"}
                 </button>
               </div>
 
