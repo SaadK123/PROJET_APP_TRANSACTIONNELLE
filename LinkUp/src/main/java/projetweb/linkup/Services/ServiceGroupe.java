@@ -16,6 +16,7 @@ import projetweb.linkup.entities.Groupe;
 import projetweb.linkup.entities.Horaire;
 import projetweb.linkup.entities.Invitation;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -62,6 +63,8 @@ public class ServiceGroupe {
         return serviceNotification.addNotificationToStudent(invitation,receveur);
 
     }
+
+
 
     @Transactional
     public SucessDTO quitterGroupe(QuitterGroupeDTO quitterGroupeDTO) {

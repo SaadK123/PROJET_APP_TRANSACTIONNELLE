@@ -144,4 +144,8 @@ public class TestControlleur {
         public SucessDTO retirerGroupe(@RequestBody SupprimerGroupeDTO supprimerGroupeDTO) {
                 return serviceGroupe.supprimerGroupe(supprimerGroupeDTO);
         }
+        @GetMapping("/groupe")
+        public Groupe obtenirGroupe(@RequestParam String idGroupe) {
+           return serviceGroupe.getGroupeById(idGroupe);
+        }
 }
