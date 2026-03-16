@@ -18,6 +18,7 @@ import projetweb.linkup.entities.Invitation;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 @Service
@@ -173,6 +174,17 @@ public class ServiceGroupe {
         group.getEtudiants().remove(virer);
 
         return new SucessDTO(true,"letudiant a ete virer");
+    }
+
+    @Transactional
+    public SucessDTO quitterTousLesGroupes(String idEtudiant) {
+        List<Groupe>  groupes = getToutGroupesDeUser(idEtudiant);
+        for(var groupe : groupes) {
+            QuitterGroupeDTO dto = new QuitterGroupeDTO(groupe.getId().toString(),idEtudiant);
+           quitterGroupe(dto);
+        }
+
+        return new SucessDTO(true,"letudiant a pu quitter");
     }
 
 

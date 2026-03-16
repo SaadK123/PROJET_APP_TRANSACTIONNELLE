@@ -16,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import projetweb.linkup.Enumerations.ERREUR_TYPE;
 import projetweb.linkup.entities.Etudiant;
+import projetweb.linkup.entities.Groupe;
 import projetweb.linkup.entities.Horaire;
 
 import java.time.LocalDate;
@@ -28,6 +29,7 @@ import java.util.UUID;
 public class ServiceEtudiant {
 
     private final PasswordEncoder passwordEncoder;
+    private final ServiceGroupe serviceGroupe;
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -36,6 +38,7 @@ public class ServiceEtudiant {
 
         try {
             UUID uuid = UUID.fromString(id);
+
          return   entityManager.createQuery("select e from Etudiant  e where e.id = :uuid",Etudiant.class)
                     .setParameter("uuid", uuid).getSingleResult();
         } catch (Exception e) {
@@ -57,9 +60,10 @@ public class ServiceEtudiant {
         }
 
     }
-    public ServiceEtudiant(PasswordEncoder passwordEncoder) {
+    public ServiceEtudiant(PasswordEncoder passwordEncoder, ServiceGroupe serviceGroupe) {
 
         this.passwordEncoder = passwordEncoder;
+        this.serviceGroupe = serviceGroupe;
     }
 
     @Transactional
@@ -106,9 +110,10 @@ public class ServiceEtudiant {
     public SucessDTO supprimerEtudiant(SupprimerEtudiantDTO dto) {
 
 
-
-
         Etudiant e = getEtudiantByCourrielEtMotDePasse(dto.courriel(),dto.motDePasse());
+
+
+
 
        entityManager.createQuery("delete Etudiant e where e.id = :id")
                .setParameter("id",e.getId()).getSingleResult();
