@@ -110,7 +110,9 @@ public class ServiceEtudiant {
 
         Etudiant e = getEtudiantByCourrielEtMotDePasse(dto.courriel(),dto.motDePasse());
 
-        entityManager.remove(e);
+       entityManager.createQuery("delete Etudiant e where e.id = :id")
+               .setParameter("id",e.getId()).getSingleResult();
+
         entityManager.flush();
 
       return new SucessDTO(true,Utilitary.MESSAGE_ETUDIANT_ENLEVER);
