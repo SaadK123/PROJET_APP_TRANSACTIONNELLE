@@ -49,12 +49,15 @@ export default function PageCalendrierGroupe() {
 
       const groupeCharge = await obtenirGroupeParId(idGroupe);
       setGroupe(groupeCharge);
-    } catch (e) {
-      console.error(e);
-      setErreur("Erreur chargement groupe");
-    } finally {
-      setChargement(false);
-    }
+   } catch (e: unknown) {
+  if (e instanceof Error) {
+    setErreur(e.message);
+  } else {
+    setErreur("erreur inconnue");
+  }
+} finally {
+  setChargement(false);
+}
   }
 
   useEffect(() => {

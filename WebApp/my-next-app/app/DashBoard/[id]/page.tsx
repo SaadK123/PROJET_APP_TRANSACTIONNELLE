@@ -58,7 +58,6 @@ function gotoParametre() {
       setEtudiant(etudiantCharge);
       setGroupes(groupesCharges);
     } catch (e) {
-      console.error(e);
       setErreur("Erreur chargement");
     } finally {
       setChargement(false);
@@ -74,7 +73,6 @@ function gotoParametre() {
       setNomNouveauGroupe("");
       await chargerDonnees();
     } catch (e) {
-      console.error(e);
       setErreur("Erreur creation groupe");
     }
   }
@@ -92,7 +90,7 @@ function gotoParametre() {
         await marquerNotificationCommeVue(notification.id);
         await chargerDonnees();
       } catch (e) {
-        console.error(e);
+        setErreur("chargement notification erreur")
       }
     }
   }
@@ -107,7 +105,6 @@ function gotoParametre() {
 
       await chargerDonnees();
     } catch (e) {
-      console.error(e);
       setErreur("Erreur suppression notification");
     }
   }
@@ -129,7 +126,6 @@ function gotoParametre() {
 
     await chargerDonnees();
   } catch (e) {
-    console.error(e);
     setErreur("Erreur acceptation invitation");
   }
 }

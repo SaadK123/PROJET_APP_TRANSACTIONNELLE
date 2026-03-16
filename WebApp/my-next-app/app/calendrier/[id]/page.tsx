@@ -47,13 +47,15 @@ export default function CalendrierUtilisateur() {
 
       const etudiantCharge = await obtenirEtudiantParId(idEtudiant);
       setEtudiant(etudiantCharge);
-    } catch (e) {
-      console.error(e);
-      setErreur("Erreur lors du chargement du calendrier");
-    } finally {
-      setChargement(false);
-    }
+    } catch (e: unknown) {
+  if (e instanceof Error) {
+    setErreur(e.message);
+  } else {
+    setErreur("erreur serveur interne");
   }
+} finally {
+  setChargement(false);
+}
 
   useEffect(() => {
     if (idEtudiant) {
@@ -121,12 +123,15 @@ export default function CalendrierUtilisateur() {
       setTempsFin("");
 
       await chargerEtudiant();
-    } catch (e) {
-      console.error(e);
-      setErreur("Impossible d'ajouter l'activité.");
-    } finally {
-      setAjoutEnCours(false);
-    }
+   } catch (e: unknown) {
+  if (e instanceof Error) {
+    setErreur(e.message);
+  } else {
+    setErreur("erreur inconnue");
+  }
+} finally {
+  setChargement(false);
+}
   }
 
   if (chargement) {
