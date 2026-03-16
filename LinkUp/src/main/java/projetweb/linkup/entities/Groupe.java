@@ -23,7 +23,7 @@ public class Groupe {
     @ManyToOne
     @JoinColumn(name = "chef_id", nullable = false)
     private Etudiant chef;
-    
+
     @Column(name = "nom_du_groupe",nullable = false)
     private String nomGroupe;
 
@@ -45,6 +45,7 @@ public class Groupe {
 
     @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JoinColumn(name = "horaire_id",unique = true)
+    @JsonIncludeProperties({"id", "activites"})
     private Horaire horaire;
     public Groupe(Etudiant chef, String nomGroupe) {
         setChef(chef);
