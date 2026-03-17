@@ -4,7 +4,7 @@ import projetweb.linkup.entities.Activite;
 
 
 /**
- * ici destination peut etre un etudiant comme sa peut etre un groupe
+ * dto pour ajouer une activite chez un etudiant
  * @param activite
  */
 public record AjouterActiviteDTOEtudiant(Activite activite, String etudiantId) {

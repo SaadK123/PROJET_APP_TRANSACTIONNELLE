@@ -1,6 +1,7 @@
 package projetweb.linkup.Services;
 
 
+import org.springframework.context.annotation.Lazy;
 import projetweb.linkup.DTO.ACTIONS.CreationEtudiantDTO;
 import projetweb.linkup.DTO.ACTIONS.SupprimerEtudiantDTO;
 import projetweb.linkup.DTO.ACTIONS.SucessDTO;
@@ -16,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import projetweb.linkup.Enumerations.ERREUR_TYPE;
 import projetweb.linkup.entities.Etudiant;
+import projetweb.linkup.entities.Groupe;
 import projetweb.linkup.entities.Horaire;
 
 import java.time.LocalDate;
@@ -28,6 +30,7 @@ import java.util.UUID;
 public class ServiceEtudiant {
 
     private final PasswordEncoder passwordEncoder;
+    private final ServiceGroupe serviceGroupe;
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -36,6 +39,7 @@ public class ServiceEtudiant {
 
         try {
             UUID uuid = UUID.fromString(id);
+
          return   entityManager.createQuery("select e from Etudiant  e where e.id = :uuid",Etudiant.class)
                     .setParameter("uuid", uuid).getSingleResult();
         } catch (Exception e) {
@@ -57,9 +61,13 @@ public class ServiceEtudiant {
         }
 
     }
-    public ServiceEtudiant(PasswordEncoder passwordEncoder) {
+    /**
+     * ici lazy permet deviter que les services qui se couplent font une boucle infinie
+     * **/
+    public ServiceEtudiant(PasswordEncoder passwordEncoder, @Lazy ServiceGroupe serviceGroupe) {
 
         this.passwordEncoder = passwordEncoder;
+        this.serviceGroupe = serviceGroupe;
     }
 
     @Transactional
@@ -69,7 +77,7 @@ public class ServiceEtudiant {
         if (dto == null) throw new LinkUpException(ERREUR_TYPE.CHAMPS_MANQUANTS, Utilitary.EXCEPTION_CHAMPS_MANQUANTS);
         Etudiant e = new Etudiant();
 
-
+        // on creer un nouvel etuidant et on rajoute les infos du dto
         e.setCourriel(dto.courriel());
         e.setPrenom(dto.prenom());
         e.setMotDePasseHash(passwordEncoder.encode(dto.motDePasse()));
@@ -82,7 +90,7 @@ public class ServiceEtudiant {
 
  try {
 
-
+// on essaye dinserer desfois sa peut ne pas marcher si les elements unique sont dupliquer
    entityManager.createQuery("insert into Etudiant (courriel,prenom,nom,nomUtilisateur,motDePasseHash,ecole,dernierDate)" +
            " values (:courriel,:prenom,:nom,:nomUtilisateur,:motDePasseHash,:ecole,:dernierDate)")
            .setParameter("courriel", e.getCourriel()).setParameter("prenom", e.getPrenom()).setParameter("nom", e.getNom());
@@ -92,6 +100,7 @@ public class ServiceEtudiant {
  }catch (Exception ex) {
 
      switch (ex.getMessage()) {
+         // on catch les elements uniques ici par exemple si le email est repete ou le username
          case "UK_EMAIL" -> throw new LinkUpException(ERREUR_TYPE.CONTRAINTE_UNIQUE, Utilitary.EXCEPTION_MESSAGE_DUPLICATION_EMAIL);
          case "UK_USERNAME" -> throw new LinkUpException(ERREUR_TYPE.CONTRAINTE_UNIQUE, Utilitary.EXCEPTION_MESSAGE_DUPLICATION_USERNAME);
          default ->  throw ex;
@@ -102,16 +111,21 @@ public class ServiceEtudiant {
         return e;
     }
 
+
+
     @Transactional
     public SucessDTO supprimerEtudiant(SupprimerEtudiantDTO dto) {
+   /* pour supprimer un etudiant il faut supprimer ses dependances qui sont tous ses groupes
+   * il faut le retirer de tous les groupes car il faut pas garder de dependances*/
+
+           Etudiant e = getEtudiantByCourrielEtMotDePasse(dto.courriel(),dto.motDePasse());
+           serviceGroupe.quitterTousLesGroupes(e.getId().toString());
+           entityManager.createQuery("delete Etudiant e where e.id = :id")
+                   .setParameter("id",e.getId()).executeUpdate();
+
+           entityManager.flush();
 
 
-
-        String motDePasseHash =  passwordEncoder.encode(dto.motDePasse());
-        Etudiant e = getEtudiantByCourrielEtMotDePasse(dto.courriel(),motDePasseHash);
-
-        entityManager.remove(e);
-        entityManager.flush();
 
       return new SucessDTO(true,Utilitary.MESSAGE_ETUDIANT_ENLEVER);
     }
@@ -140,6 +154,8 @@ public class ServiceEtudiant {
         Etudiant e = getEtudiantById(updateDTO.getEtudiantID());
 
         try {
+
+            // on tente de ajouter les elements si ils sont pas null
             if (updateDTO.getNomUtilisateur() != null) {
                 e.setNomUtilisateur(updateDTO.getNomUtilisateur());
             }

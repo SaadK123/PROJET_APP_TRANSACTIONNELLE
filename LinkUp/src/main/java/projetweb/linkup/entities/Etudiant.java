@@ -53,7 +53,8 @@ public class Etudiant  {
     @Column(name = "prenom",nullable = false)
     private String prenom;
 
-
+   /* ici le json ignore permet de ne pas diffuser le mot de passe hash a traver
+   * http*/
     @JsonIgnore
     @Column(name="motDePasse",nullable = false)
     private String motDePasseHash;
@@ -62,7 +63,7 @@ public class Etudiant  {
     private String ecole;
 
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY,orphanRemoval = true)
     @JoinColumn(name = "horaire_id")
     private Horaire horaire = new Horaire();
 
@@ -73,7 +74,7 @@ public class Etudiant  {
             horaire = new Horaire();
         }
     }
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true)
     @JoinColumn(name  = "notification_id")
     private List<Notification> notifications = new ArrayList<>();
 

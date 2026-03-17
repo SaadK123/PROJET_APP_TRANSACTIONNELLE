@@ -15,17 +15,15 @@ import java.util.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonIgnoreProperties({""})
 public class Horaire {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @OneToMany(fetch = FetchType.LAZY,orphanRemoval = true,cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER,orphanRemoval = true,cascade = CascadeType.ALL)
     @JoinColumn(name = "horaire_id",nullable = false)
     private List<Activite> activites = new ArrayList<>();
 
-    @JsonIgnore
     @PrePersist
     public void prePersist() {
         if (activites == null) {

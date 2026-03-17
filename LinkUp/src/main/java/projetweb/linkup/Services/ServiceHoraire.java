@@ -30,7 +30,7 @@ public class ServiceHoraire {
         this.serviceEtudiant = serviceEtudiant;
     }
 
-
+   // recupere un horaire avec son id
     public Horaire getHoraireFromId(String id) {
         try {
          UUID uuid = UUID.fromString(id);
@@ -42,6 +42,7 @@ public class ServiceHoraire {
           throw new LinkUpException(ERREUR_TYPE.NON_EXISTANT,"cet horaire n'existe pas");  // todo
         }
     }
+    // verifie si un temps trouver est overlapper par une autre activite
     @Transactional
     public boolean estOverlapper(LocalDateTime debut,LocalDateTime fin,Horaire horaire) {
         ///  ici on verifie si le debut est avant la fin et si la fin est apres le debut
@@ -54,6 +55,7 @@ public class ServiceHoraire {
         return false; /// on retourne faux
     }
 
+    // permet de envoyer une requete et de demander de rechercher une activite
     @Transactional
     public SucessDTO trouverActivite(RequeteActiviteGroupeDTO activiteGroupeDTO) {
         LocalDateTime tempsDebut = activiteGroupeDTO.tempsDebut();
@@ -85,20 +87,28 @@ public class ServiceHoraire {
 
     @Transactional
     public SucessDTO ajouterActivitePourEtudiant(AjouterActiviteDTOEtudiant ajouter) {
-        try {
-            Etudiant etudiant = serviceEtudiant.getEtudiantById(ajouter.etudiantId());
+        Etudiant etudiant = serviceEtudiant.getEtudiantById(ajouter.etudiantId());
 
-            etudiant.getHoraire().getActivites().add(ajouter.activite());
-
-            return new SucessDTO(true, "sa marche");
-        } catch (Exception e) {
-            throw new LinkUpException(ERREUR_TYPE.ERREUR_INTERNE,"impossible dajouter une activite pour le moment");
+      // si lactivite est overlapper alors on va retourner une exception
+        if (estOverlapper(
+                ajouter.activite().getTempsDebut(),
+                ajouter.activite().getTempsFin(),
+                etudiant.getHoraire())) {
+            throw new LinkUpException(
+                    ERREUR_TYPE.ERREUR_INTERNE,
+                    "Lactivite est en collision avec une autre"
+            );
         }
+         // sinon on ajoute lactivite
+        etudiant.getHoraire().getActivites().add(ajouter.activite());
+
+        return new SucessDTO(true, "sa marche");
     }
 
 
     @Transactional public SucessDTO supprimerActivite(String activiteId) {
         try {
+            // ici on peut supprimer une activite avec son id
             entityManager.createQuery("delete from Activite e  where e.id = :id")
                     .setParameter("id",UUID.fromString(activiteId)).executeUpdate();
             return new SucessDTO(true,"lactivite a ete ajouter");
