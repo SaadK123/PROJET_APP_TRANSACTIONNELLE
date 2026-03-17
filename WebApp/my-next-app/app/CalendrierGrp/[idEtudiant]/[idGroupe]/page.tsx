@@ -1,14 +1,17 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { ChangeEvent, FormEvent, ReactNode } from "react";
+import type { ChangeEvent, FormEvent } from "react";
 import { useParams, useRouter } from "next/navigation";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
-import interactionPlugin from "@fullcalendar/interaction";
 
-import { ajouterActivitePourGroupe, retirerActivite } from "@/app/FetchMethodesActivites";
+import {
+  ajouterActivitePourGroupe,
+  retirerActivite,
+} from "@/app/FetchMethodesActivites";
+
 import {
   obtenirGroupeParId,
   envoyerInvitationGroupe,
@@ -29,9 +32,87 @@ import { TYPES_NOTIFICATION } from "@/app/TypesObjets";
 import type { Activite, Groupe } from "@/app/TypesObjets";
 
 /**
- * Ce type prepare les donnees pour le calendrier.
- * Je garde seulement les champs utiles pour afficher
- * les activites sans ajouter de structure en trop.
+ * ici je met toute les constante en haut
+ * comme sa tout est au meme endroit
+ * et je reutilise les texte partout
+ */
+
+/* erreurs */
+const ERREUR_SERVEUR = "erreur serveur";
+const ERREUR_GROUPE_INTROUVABLE = "groupe introuvable";
+const ERREUR_HORAIRE_GROUPE_INTROUVABLE = "horaire du groupe introuvable";
+const ERREUR_SEUL_CHEF_INVITER = "seul le chef peut inviter";
+const ERREUR_SEUL_CHEF_AJOUTER_ACTIVITE =
+  "seul le chef peut ajouter une activité";
+const ERREUR_SEUL_CHEF_VIRER = "seul le chef peut virer un membre";
+const ERREUR_NOM_UTILISATEUR_OBLIGATOIRE = "nom utilisateur obligatoire";
+const ERREUR_TITRE_OBLIGATOIRE = "titre obligatoire";
+const ERREUR_DESCRIPTION_OBLIGATOIRE = "description obligatoire";
+const ERREUR_TEMPS_DEBUT_OBLIGATOIRE = "temps début obligatoire";
+const ERREUR_TEMPS_FIN_OBLIGATOIRE = "temps fin obligatoire";
+const ERREUR_DUREE_INVALIDE = "durée invalide";
+const ERREUR_FIN_AVANT_DEBUT =
+  "le temps de fin doit être après le temps de début";
+
+/* succes */
+const MESSAGE_INVITATION_ENVOYEE = "invitation envoyée";
+const MESSAGE_ACTIVITE_AJOUTEE = "activité ajoutée";
+const MESSAGE_ACTIVITE_SUPPRIMEE = "activité supprimée";
+const MESSAGE_MEMBRE_RETIRE = "membre viré du groupe";
+
+/* titres */
+const TITRE_PAGE = "Calendrier de groupe";
+const TITRE_MEMBRES = "Membres du groupe";
+const TITRE_INVITATION = "Inviter un étudiant";
+const TITRE_AJOUT_ACTIVITE = "Ajouter une activité";
+const TITRE_CALENDRIER = "Calendrier";
+const TITRE_LISTE_ACTIVITES = "Liste des activités";
+const TITRE_CHARGEMENT = "Chargement...";
+const TITRE_AUCUN_MEMBRE = "aucun membre";
+const TITRE_AUCUNE_ACTIVITE = "aucune activité";
+
+/* labels */
+const LABEL_CHEF = "Chef : ";
+const LABEL_NOMBRE_MEMBRES = "Nombre de membres : ";
+const LABEL_MON_ROLE = "Mon rôle : ";
+const LABEL_NOM_UTILISATEUR = "Nom utilisateur";
+const LABEL_TITRE_NOTIFICATION = "Titre notification";
+const LABEL_MESSAGE_NOTIFICATION = "Message notification";
+const LABEL_TITRE = "Titre";
+const LABEL_DESCRIPTION = "Description";
+const LABEL_TEMPS_DEBUT = "Temps début";
+const LABEL_TEMPS_FIN = "Temps fin";
+const LABEL_DUREE = "Durée en minute";
+const LABEL_DEBUT = "Début : ";
+const LABEL_FIN = "Fin : ";
+
+/* boutons */
+const BOUTON_ACCUEIL = "Accueil";
+const BOUTON_DASHBOARD = "Dashboard";
+const BOUTON_CALENDRIER_PERSO = "Calendrier perso";
+const BOUTON_DECONNEXION = "Déconnexion";
+const BOUTON_RECHARGER = "Recharger le groupe";
+const BOUTON_SUPPRIMER_GROUPE = "Supprimer le groupe";
+const BOUTON_QUITTER_GROUPE = "Quitter le groupe";
+const BOUTON_ENVOYER_INVITATION = "Envoyer invitation";
+const BOUTON_AJOUTER_ACTIVITE = "Ajouter activité";
+const BOUTON_SUPPRIMER = "Supprimer";
+const BOUTON_VIRER = "Virer";
+
+/* roles */
+const ROLE_CHEF = "Chef";
+const ROLE_MEMBRE = "Membre";
+
+/* calendrier */
+const CALENDRIER_AUJOURD_HUI = "Aujourd hui";
+const CALENDRIER_MOIS = "Mois";
+const CALENDRIER_SEMAINE = "Semaine";
+const CALENDRIER_JOUR = "Jour";
+const CALENDRIER_HAUTEUR = "70vh";
+
+/**
+ * ce type sert juste pour fullcalendar
+ * je garde juste les champ utile
  */
 type EvenementCalendrier = {
   id: string;
@@ -41,46 +122,34 @@ type EvenementCalendrier = {
 };
 
 export default function PageCalendrierGroupe() {
-  // je garde le router pour changer de page
   const router = useRouter();
 
   /**
-   * Cette partie lit les deux ids dans l url.
-   * Le premier id sert a savoir quel etudiant est connecte.
-   * Le deuxieme id sert a retrouver le bon groupe.
+   * ici je lis les id depuis url
+   * idEtudiant = personne connecter
+   * idGroupe = groupe afficher
    */
   const params = useParams<{ idEtudiant: string; idGroupe: string }>();
   const idEtudiant = params.idEtudiant;
   const idGroupe = params.idGroupe;
 
-  // ce state contient le groupe charge depuis le backend
+  /* state principal */
   const [groupe, setGroupe] = useState<Groupe | null>(null);
-
-  // ce state sert a afficher le texte de chargement
   const [chargement, setChargement] = useState<boolean>(true);
-
-  // ce state garde le dernier message erreur
   const [erreur, setErreur] = useState<string>("");
-
-  // ce state garde le dernier message succes
   const [message, setMessage] = useState<string>("");
 
-  /**
-   * Ces states servent au formulaire d invitation.
-   * Je garde le nom utilisateur vise, puis le titre
-   * et le message qui seront envoyes dans la notification.
-   */
-  const [nomUtilisateurInvitation, setNomUtilisateurInvitation] = useState<string>("");
-  const [titreInvitation, setTitreInvitation] = useState<string>("Invitation de groupe");
+  /* state formulaire invitation */
+  const [nomUtilisateurInvitation, setNomUtilisateurInvitation] =
+    useState<string>("");
+  const [titreInvitation, setTitreInvitation] = useState<string>(
+    "Invitation de groupe"
+  );
   const [messageInvitation, setMessageInvitation] = useState<string>(
     "Tu as recu une invitation dans le groupe"
   );
 
-  /**
-   * Dans ce bloc je garde tous les champs utiles
-   * pour la creation d une activite de groupe.
-   * Tout reste en texte pour que le code soit simple.
-   */
+  /* state formulaire activite */
   const [titreActivite, setTitreActivite] = useState<string>("");
   const [descriptionActivite, setDescriptionActivite] = useState<string>("");
   const [tempsDebut, setTempsDebut] = useState<string>("");
@@ -88,41 +157,17 @@ export default function PageCalendrierGroupe() {
   const [dureeEnMinute, setDureeEnMinute] = useState<string>("60");
 
   /**
-   * Cette fonction transforme une erreur en texte simple.
-   * Je passe par retournerErreur quand c est possible.
-   * Si quelque chose se passe mal, je retombe sur un message par defaut.
+   * je vide les message avant une action
+   * comme sa je garde lecran propre
    */
-  function lireErreur(erreurCapturee: unknown): string {
-    try {
-      const attraperErreur = retournerErreur as (
-        erreur: unknown,
-        messageDefaut: string
-      ) => string;
-
-      const messageLu = attraperErreur(erreurCapturee, "erreur serveur");
-
-      if (typeof messageLu === "string") {
-        if (messageLu.trim() !== "") {
-          return messageLu;
-        }
-      }
-    } catch {
-      return "erreur serveur";
-    }
-
-    return "erreur serveur";
-  }
-
-  // je nettoie les deux messages avant une action
   function viderMessages() {
     setErreur("");
     setMessage("");
   }
 
   /**
-   * Cette fonction va chercher le groupe dans le backend.
-   * Je l utilise au depart puis apres les actions importantes
-   * pour garder les donnees de la page a jour.
+   * ici je charge le groupe depuis backend
+   * je reutilise sa au debut et apres les action
    */
   async function chargerGroupe() {
     setChargement(true);
@@ -131,39 +176,39 @@ export default function PageCalendrierGroupe() {
     try {
       const groupeCharge = await obtenirGroupeParId(idGroupe);
       setGroupe(groupeCharge);
-    } catch (erreurCapturee) {
-      setErreur(lireErreur(erreurCapturee));
+    } catch (erreurCapturee: any) {
+      setGroupe(null);
+      setErreur(retournerErreur(erreurCapturee, ERREUR_SERVEUR));
     }
 
     setChargement(false);
   }
 
   /**
-   * Des que la page ouvre, je charge le groupe.
-   * Si l id du groupe change, je relance aussi ce chargement.
+   * des que la page ouvre je charge le groupe
+   * si idGroupe change je recharge aussi
    */
   useEffect(() => {
-    chargerGroupe();
+    if (idGroupe) {
+      chargerGroupe();
+    }
   }, [idGroupe]);
 
   /**
-   * Cette verification sert a savoir si la personne connectee
-   * correspond bien au chef du groupe.
-   * Le resultat est reutilise dans plusieurs parties de la page.
+   * ici je check si la personne connecter
+   * est bien le chef du groupe
    */
   function utilisateurEstChef(): boolean {
     if (groupe === null) {
       return false;
     }
 
-    if (groupe.chef.id === idEtudiant) {
-      return true;
-    }
-
-    return false;
+    return groupe.chef.id === idEtudiant;
   }
 
-  // je prepare le nom complet du chef pour l affichage
+  /**
+   * sa lit le nom complet du chef
+   */
   function lireNomChef(): string {
     if (groupe === null) {
       return "";
@@ -172,7 +217,9 @@ export default function PageCalendrierGroupe() {
     return groupe.chef.prenom + " " + groupe.chef.nom;
   }
 
-  // cette petite fonction donne le nombre total de membres
+  /**
+   * sa compte les membre du groupe
+   */
   function lireNombreMembres(): number {
     if (groupe === null) {
       return 0;
@@ -182,22 +229,19 @@ export default function PageCalendrierGroupe() {
   }
 
   /**
-   * Je transforme le role en texte simple.
-   * Cela evite de remettre la meme verification directement
-   * dans la partie visuelle de la page.
+   * sa retourne le role en texte simple
    */
   function lireRole(): string {
     if (utilisateurEstChef()) {
-      return "Chef";
+      return ROLE_CHEF;
     }
 
-    return "Membre";
+    return ROLE_MEMBRE;
   }
 
   /**
-   * Ce passage transforme les activites du groupe
-   * dans le format attendu par FullCalendar.
-   * Je parcours la liste une par une pour rester direct.
+   * ici je transforme les activite
+   * dans le format attendu par fullcalendar
    */
   function construireEvenements(): EvenementCalendrier[] {
     const evenements: EvenementCalendrier[] = [];
@@ -225,26 +269,38 @@ export default function PageCalendrierGroupe() {
   }
 
   /**
-   * Cette fonction gere l envoi d une invitation.
-   * Je controle d abord les cas simples comme le groupe absent,
-   * le role non autorise et le champ vide.
+   * ici je rend la date un peu plus lisible
+   * si jamais la date est bizarre je retourne le texte brut
+   */
+  function formaterDateHeure(dateTexte: string): string {
+    const date = new Date(dateTexte);
+
+    if (Number.isNaN(date.getTime())) {
+      return dateTexte;
+    }
+
+    return date.toLocaleString("fr-CA");
+  }
+
+  /**
+   * ici je gere lenvoie dinvitation
    */
   async function soumettreInvitation(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     viderMessages();
 
     if (groupe === null) {
-      setErreur("groupe introuvable");
+      setErreur(ERREUR_GROUPE_INTROUVABLE);
       return;
     }
 
     if (utilisateurEstChef() === false) {
-      setErreur("seul le chef peut inviter");
+      setErreur(ERREUR_SEUL_CHEF_INVITER);
       return;
     }
 
     if (nomUtilisateurInvitation.trim() === "") {
-      setErreur("nom utilisateur obligatoire");
+      setErreur(ERREUR_NOM_UTILISATEUR_OBLIGATOIRE);
       return;
     }
 
@@ -259,65 +315,64 @@ export default function PageCalendrierGroupe() {
       );
 
       setNomUtilisateurInvitation("");
-      setMessage("invitation envoyee");
-    } catch (erreurCapturee) {
-      setErreur(lireErreur(erreurCapturee));
+      setMessage(MESSAGE_INVITATION_ENVOYEE);
+    } catch (erreurCapturee: any) {
+      setErreur(retournerErreur(erreurCapturee, ERREUR_SERVEUR));
     }
   }
 
   /**
-   * Cette fonction ajoute une activite dans l horaire du groupe.
-   * Je verifie les champs un a un pour eviter les appels inutiles.
-   * Si tout marche, je vide le formulaire puis je recharge le groupe.
+   * ici je gere lajout dune activite
+   * je valide les champ avant
    */
   async function soumettreActivite(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     viderMessages();
 
     if (groupe === null) {
-      setErreur("groupe introuvable");
+      setErreur(ERREUR_GROUPE_INTROUVABLE);
       return;
     }
 
     if (utilisateurEstChef() === false) {
-      setErreur("seul le chef peut ajouter une activite");
+      setErreur(ERREUR_SEUL_CHEF_AJOUTER_ACTIVITE);
       return;
     }
 
     if (groupe.horaire === null) {
-      setErreur("horaire du groupe introuvable");
+      setErreur(ERREUR_HORAIRE_GROUPE_INTROUVABLE);
       return;
     }
 
     if (titreActivite.trim() === "") {
-      setErreur("titre obligatoire");
+      setErreur(ERREUR_TITRE_OBLIGATOIRE);
       return;
     }
 
     if (descriptionActivite.trim() === "") {
-      setErreur("description obligatoire");
+      setErreur(ERREUR_DESCRIPTION_OBLIGATOIRE);
       return;
     }
 
     if (tempsDebut.trim() === "") {
-      setErreur("temps debut obligatoire");
+      setErreur(ERREUR_TEMPS_DEBUT_OBLIGATOIRE);
       return;
     }
 
     if (tempsFin.trim() === "") {
-      setErreur("temps fin obligatoire");
+      setErreur(ERREUR_TEMPS_FIN_OBLIGATOIRE);
+      return;
+    }
+
+    if (new Date(tempsFin).getTime() <= new Date(tempsDebut).getTime()) {
+      setErreur(ERREUR_FIN_AVANT_DEBUT);
       return;
     }
 
     const duree = Number(dureeEnMinute);
 
-    if (Number.isNaN(duree)) {
-      setErreur("duree invalide");
-      return;
-    }
-
-    if (duree <= 0) {
-      setErreur("duree invalide");
+    if (Number.isNaN(duree) || duree <= 0) {
+      setErreur(ERREUR_DUREE_INVALIDE);
       return;
     }
 
@@ -336,67 +391,59 @@ export default function PageCalendrierGroupe() {
       setTempsDebut("");
       setTempsFin("");
       setDureeEnMinute("60");
-      setMessage("activite ajoutee");
+      setMessage(MESSAGE_ACTIVITE_AJOUTEE);
 
       await chargerGroupe();
-    } catch (erreurCapturee) {
-      setErreur(lireErreur(erreurCapturee));
+    } catch (erreurCapturee: any) {
+      setErreur(retournerErreur(erreurCapturee, ERREUR_SERVEUR));
     }
   }
 
   /**
-   * Dans cette action je supprime une activite par son id.
-   * Juste apres, je recharge le groupe pour revoir la liste
-   * et le calendrier avec les donnees a jour.
+   * ici je supprime une activite
+   * puis je recharge le groupe
    */
   async function supprimerUneActivite(activiteId: string) {
     viderMessages();
 
     try {
       await retirerActivite(activiteId);
-      setMessage("activite supprimee");
+      setMessage(MESSAGE_ACTIVITE_SUPPRIMEE);
       await chargerGroupe();
-    } catch (erreurCapturee) {
-      setErreur(lireErreur(erreurCapturee));
+    } catch (erreurCapturee: any) {
+      setErreur(retournerErreur(erreurCapturee, ERREUR_SERVEUR));
     }
   }
 
   /**
-   * Cette fonction retire un membre du groupe.
-   * Je bloque le cas ou le chef essayerait de se retirer lui meme.
-   * Quand tout passe, je recharge les donnees du groupe.
+   * ici je vire un membre du groupe
+   * le bouton existe deja pas pour le chef
+   * donc pas besoin de check en plus
    */
   async function retirerMembre(nomUtilisateurEtudiant: string) {
     viderMessages();
 
     if (utilisateurEstChef() === false) {
-      setErreur("seul le chef peut virer un membre");
+      setErreur(ERREUR_SEUL_CHEF_VIRER);
       return;
     }
 
     if (groupe === null) {
-      setErreur("groupe introuvable");
-      return;
-    }
-
-    if (nomUtilisateurEtudiant === groupe.chef.nomUtilisateur) {
-      setErreur("le chef ne peut pas se virer lui meme");
+      setErreur(ERREUR_GROUPE_INTROUVABLE);
       return;
     }
 
     try {
       await virerEtudiantDuGroupe(nomUtilisateurEtudiant, idEtudiant, idGroupe);
-      setMessage("membre vire du groupe");
+      setMessage(MESSAGE_MEMBRE_RETIRE);
       await chargerGroupe();
-    } catch (erreurCapturee) {
-      setErreur(lireErreur(erreurCapturee));
+    } catch (erreurCapturee: any) {
+      setErreur(retournerErreur(erreurCapturee, ERREUR_SERVEUR));
     }
   }
 
   /**
-   * Je quitte le groupe puis je repars vers le tableau de bord.
-   * Cette action sert au membre normal et ne montre pas
-   * de fenetre de confirmation.
+   * ici un membre quitte le groupe
    */
   async function quitterLeGroupe() {
     viderMessages();
@@ -404,15 +451,13 @@ export default function PageCalendrierGroupe() {
     try {
       await quitterGroupe(idGroupe, idEtudiant);
       GotoDashboard(router, idEtudiant);
-    } catch (erreurCapturee) {
-      setErreur(lireErreur(erreurCapturee));
+    } catch (erreurCapturee: any) {
+      setErreur(retournerErreur(erreurCapturee, ERREUR_SERVEUR));
     }
   }
 
   /**
-   * Ce bloc supprime le groupe complet.
-   * Quand la suppression passe, je redirige
-   * directement vers le tableau de bord.
+   * ici le chef supprime le groupe
    */
   async function supprimerLeGroupe() {
     viderMessages();
@@ -420,73 +465,49 @@ export default function PageCalendrierGroupe() {
     try {
       await supprimerGroupe(idGroupe, idEtudiant);
       GotoDashboard(router, idEtudiant);
-    } catch (erreurCapturee) {
-      setErreur(lireErreur(erreurCapturee));
+    } catch (erreurCapturee: any) {
+      setErreur(retournerErreur(erreurCapturee, ERREUR_SERVEUR));
     }
-  }
-
-  // cette fonction fabrique le message succes
-  function afficherMessageSucces(): ReactNode {
-    if (message === "") {
-      return null;
-    }
-
-    return <div className="alert alert-success">{message}</div>;
-  }
-
-  // je fabrique le message erreur seulement s il existe
-  function afficherMessageErreur(): ReactNode {
-    if (erreur === "") {
-      return null;
-    }
-
-    return <div className="alert alert-danger">{erreur}</div>;
   }
 
   /**
-   * Dans cette partie je construis la liste des membres.
-   * Le bouton Virer apparait seulement pour le chef
-   * et jamais sur la propre ligne du chef.
+   * ici je construit la liste des membre
+   * un bouton virer apparait juste pour le chef
    */
-  function afficherMembres(): ReactNode {
+  function afficherMembres() {
     if (groupe === null) {
-      return <p className="mb-0">aucun membre</p>;
+      return <p className="mb-0">{TITRE_AUCUN_MEMBRE}</p>;
     }
 
     if (groupe.etudiants.length === 0) {
-      return <p className="mb-0">aucun membre</p>;
+      return <p className="mb-0">{TITRE_AUCUN_MEMBRE}</p>;
     }
 
     return (
       <div className="list-group">
         {groupe.etudiants.map((etudiant) => {
-          let boutonVirer: ReactNode = null;
-
-          if (utilisateurEstChef()) {
-            if (etudiant.nomUtilisateur !== groupe.chef.nomUtilisateur) {
-              boutonVirer = (
-                <button
-                  type="button"
-                  className="btn btn-sm btn-danger"
-                  onClick={() => retirerMembre(etudiant.nomUtilisateur)}
-                >
-                  Virer
-                </button>
-              );
-            }
-          }
-
           return (
             <div
               key={etudiant.nomUtilisateur}
               className="list-group-item d-flex justify-content-between align-items-center"
             >
               <div>
-                <div>{etudiant.prenom} {etudiant.nom}</div>
+                <div>
+                  {etudiant.prenom} {etudiant.nom}
+                </div>
                 <div>{etudiant.nomUtilisateur}</div>
               </div>
 
-              <div>{boutonVirer}</div>
+              {utilisateurEstChef() &&
+                etudiant.nomUtilisateur !== groupe.chef.nomUtilisateur && (
+                  <button
+                    type="button"
+                    className="btn btn-sm btn-danger"
+                    onClick={() => retirerMembre(etudiant.nomUtilisateur)}
+                  >
+                    {BOUTON_VIRER}
+                  </button>
+                )}
             </div>
           );
         })}
@@ -495,53 +516,47 @@ export default function PageCalendrierGroupe() {
   }
 
   /**
-   * Ce bloc montre les activites en liste simple.
-   * Je laisse aussi un bouton supprimer a droite
-   * quand la personne connectee est le chef.
+   * ici je montre les activite en pile verticale
+   * chaque activite a son bloc
    */
-  function afficherActivites(): ReactNode {
+  function afficherActivites() {
     if (groupe === null) {
-      return <p className="mb-0">aucune activite</p>;
+      return <p className="mb-0">{TITRE_AUCUNE_ACTIVITE}</p>;
     }
 
     if (groupe.horaire === null) {
-      return <p className="mb-0">aucune activite</p>;
+      return <p className="mb-0">{TITRE_AUCUNE_ACTIVITE}</p>;
     }
 
     if (groupe.horaire.activites.length === 0) {
-      return <p className="mb-0">aucune activite</p>;
+      return <p className="mb-0">{TITRE_AUCUNE_ACTIVITE}</p>;
     }
 
     return (
-      <div className="list-group">
+      <div className="d-flex flex-column gap-3">
         {groupe.horaire.activites.map((activite: Activite) => {
-          let boutonSupprimer: ReactNode = null;
-
-          if (utilisateurEstChef()) {
-            boutonSupprimer = (
-              <button
-                type="button"
-                className="btn btn-sm btn-danger"
-                onClick={() => supprimerUneActivite(activite.id)}
-              >
-                Supprimer
-              </button>
-            );
-          }
-
           return (
-            <div
-              key={activite.id}
-              className="list-group-item d-flex justify-content-between align-items-center"
-            >
-              <div>
-                <div>{activite.titre}</div>
-                <div>{activite.description}</div>
-                <div>Debut : {activite.tempsDebut}</div>
-                <div>Fin : {activite.tempsFin}</div>
-              </div>
+            <div key={activite.id} className="card">
+              <div className="card-body">
+                <div className="d-flex justify-content-between align-items-start">
+                  <div>
+                    <h6 className="mb-2">{activite.titre}</h6>
+                    <div className="mb-2">{activite.description}</div>
+                    <div>{LABEL_DEBUT + formaterDateHeure(activite.tempsDebut)}</div>
+                    <div>{LABEL_FIN + formaterDateHeure(activite.tempsFin)}</div>
+                  </div>
 
-              <div>{boutonSupprimer}</div>
+                  {utilisateurEstChef() && (
+                    <button
+                      type="button"
+                      className="btn btn-sm btn-danger"
+                      onClick={() => supprimerUneActivite(activite.id)}
+                    >
+                      {BOUTON_SUPPRIMER}
+                    </button>
+                  )}
+                </div>
+              </div>
             </div>
           );
         })}
@@ -550,11 +565,11 @@ export default function PageCalendrierGroupe() {
   }
 
   /**
-   * Cette fonction choisit le gros bouton principal.
-   * Le chef voit la suppression du groupe.
-   * Le membre simple voit le bouton pour partir.
+   * ici je montre le bouton principal
+   * chef = supprimer groupe
+   * membre = quitter groupe
    */
-  function afficherBlocActions(): ReactNode {
+  function afficherBlocActions() {
     if (groupe === null) {
       return null;
     }
@@ -567,7 +582,7 @@ export default function PageCalendrierGroupe() {
             className="btn btn-danger w-100"
             onClick={supprimerLeGroupe}
           >
-            Supprimer le groupe
+            {BOUTON_SUPPRIMER_GROUPE}
           </button>
         </div>
       );
@@ -580,18 +595,17 @@ export default function PageCalendrierGroupe() {
           className="btn btn-warning w-100"
           onClick={quitterLeGroupe}
         >
-          Quitter le groupe
+          {BOUTON_QUITTER_GROUPE}
         </button>
       </div>
     );
   }
 
   /**
-   * Ce formulaire sert a inviter un etudiant
-   * a partir de son nom utilisateur.
-   * Je cache tout ce bloc pour les membres simples.
+   * ici je montre le bloc invitation
+   * juste pour le chef
    */
-  function afficherBlocInvitation(): ReactNode {
+  function afficherBlocInvitation() {
     if (groupe === null) {
       return null;
     }
@@ -603,11 +617,11 @@ export default function PageCalendrierGroupe() {
     return (
       <div className="card mt-3">
         <div className="card-body">
-          <h5 className="card-title">Inviter un etudiant</h5>
+          <h5 className="card-title">{TITRE_INVITATION}</h5>
 
           <form onSubmit={soumettreInvitation}>
             <div className="mb-3">
-              <label className="form-label">Nom utilisateur</label>
+              <label className="form-label">{LABEL_NOM_UTILISATEUR}</label>
               <input
                 type="text"
                 className="form-control"
@@ -619,7 +633,7 @@ export default function PageCalendrierGroupe() {
             </div>
 
             <div className="mb-3">
-              <label className="form-label">Titre notification</label>
+              <label className="form-label">{LABEL_TITRE_NOTIFICATION}</label>
               <input
                 type="text"
                 className="form-control"
@@ -631,7 +645,7 @@ export default function PageCalendrierGroupe() {
             </div>
 
             <div className="mb-3">
-              <label className="form-label">Message notification</label>
+              <label className="form-label">{LABEL_MESSAGE_NOTIFICATION}</label>
               <textarea
                 className="form-control"
                 value={messageInvitation}
@@ -642,7 +656,7 @@ export default function PageCalendrierGroupe() {
             </div>
 
             <button type="submit" className="btn btn-primary">
-              Envoyer invitation
+              {BOUTON_ENVOYER_INVITATION}
             </button>
           </form>
         </div>
@@ -651,11 +665,10 @@ export default function PageCalendrierGroupe() {
   }
 
   /**
-   * Ce formulaire sert a ajouter une activite au groupe.
-   * Je le garde volontairement simple avec des champs directs
-   * et sans mise en page compliquee.
+   * ici je montre le formulaire activite
+   * juste pour le chef aussi
    */
-  function afficherBlocAjoutActivite(): ReactNode {
+  function afficherBlocAjoutActivite() {
     if (groupe === null) {
       return null;
     }
@@ -667,11 +680,11 @@ export default function PageCalendrierGroupe() {
     return (
       <div className="card mt-3">
         <div className="card-body">
-          <h5 className="card-title">Ajouter une activite</h5>
+          <h5 className="card-title">{TITRE_AJOUT_ACTIVITE}</h5>
 
           <form onSubmit={soumettreActivite}>
             <div className="mb-3">
-              <label className="form-label">Titre</label>
+              <label className="form-label">{LABEL_TITRE}</label>
               <input
                 type="text"
                 className="form-control"
@@ -683,7 +696,7 @@ export default function PageCalendrierGroupe() {
             </div>
 
             <div className="mb-3">
-              <label className="form-label">Description</label>
+              <label className="form-label">{LABEL_DESCRIPTION}</label>
               <textarea
                 className="form-control"
                 value={descriptionActivite}
@@ -694,7 +707,7 @@ export default function PageCalendrierGroupe() {
             </div>
 
             <div className="mb-3">
-              <label className="form-label">Temps debut</label>
+              <label className="form-label">{LABEL_TEMPS_DEBUT}</label>
               <input
                 type="datetime-local"
                 className="form-control"
@@ -706,7 +719,7 @@ export default function PageCalendrierGroupe() {
             </div>
 
             <div className="mb-3">
-              <label className="form-label">Temps fin</label>
+              <label className="form-label">{LABEL_TEMPS_FIN}</label>
               <input
                 type="datetime-local"
                 className="form-control"
@@ -718,7 +731,7 @@ export default function PageCalendrierGroupe() {
             </div>
 
             <div className="mb-3">
-              <label className="form-label">Duree en minute</label>
+              <label className="form-label">{LABEL_DUREE}</label>
               <input
                 type="number"
                 className="form-control"
@@ -730,7 +743,7 @@ export default function PageCalendrierGroupe() {
             </div>
 
             <button type="submit" className="btn btn-success">
-              Ajouter activite
+              {BOUTON_AJOUTER_ACTIVITE}
             </button>
           </form>
         </div>
@@ -739,44 +752,42 @@ export default function PageCalendrierGroupe() {
   }
 
   /**
-   * Pendant le chargement je montre juste un texte brut.
-   * Je ne cherche pas a faire plus joli que necessaire.
+   * si sa charge je montre juste sa
    */
   if (chargement) {
     return (
       <div className="container-fluid p-4">
-        <h2>Chargement...</h2>
+        <h2>{TITRE_CHARGEMENT}</h2>
       </div>
     );
   }
 
   /**
-   * Si une erreur arrive avant que le groupe existe,
-   * je montre ce grand message a la place de la page.
+   * si erreur avant davoir le groupe
+   * je montre juste le message
    */
-  if (erreur !== "") {
-    if (groupe === null) {
-      return (
-        <div className="container-fluid p-4">
-          <h2>{erreur}</h2>
-        </div>
-      );
-    }
+  if (erreur !== "" && groupe === null) {
+    return (
+      <div className="container-fluid p-4">
+        <h2>{erreur}</h2>
+      </div>
+    );
   }
 
-  // dernier filet de securite si aucun groupe n est disponible
+  /**
+   * dernier filet de securite
+   */
   if (groupe === null) {
     return (
       <div className="container-fluid p-4">
-        <h2>Groupe introuvable</h2>
+        <h2>{ERREUR_GROUPE_INTROUVABLE}</h2>
       </div>
     );
   }
 
   /**
-   * Cette partie assemble toute la page.
-   * Je garde un style tres simple en bootstrap
-   * avec la logique comme vraie priorite.
+   * ici je construit toute la page
+   * bootstrap simple et logique claire
    */
   return (
     <div className="container-fluid">
@@ -787,7 +798,7 @@ export default function PageCalendrierGroupe() {
             className="btn btn-secondary me-2"
             onClick={() => GotoHomePage(router)}
           >
-            Accueil
+            {BOUTON_ACCUEIL}
           </button>
 
           <button
@@ -795,7 +806,7 @@ export default function PageCalendrierGroupe() {
             className="btn btn-secondary me-2"
             onClick={() => GotoDashboard(router, idEtudiant)}
           >
-            Dashboard
+            {BOUTON_DASHBOARD}
           </button>
 
           <button
@@ -803,12 +814,12 @@ export default function PageCalendrierGroupe() {
             className="btn btn-secondary me-2"
             onClick={() => GotoCalendar(router, idEtudiant)}
           >
-            Calendrier perso
+            {BOUTON_CALENDRIER_PERSO}
           </button>
         </div>
 
         <div className="col-12 col-md-4 text-md-center mb-2 mb-md-0">
-          <h3 className="mb-0">Calendrier de groupe</h3>
+          <h3 className="mb-0">{TITRE_PAGE}</h3>
         </div>
 
         <div className="col-12 col-md-4 text-md-end">
@@ -817,31 +828,31 @@ export default function PageCalendrierGroupe() {
             className="btn btn-dark"
             onClick={() => GotoLogin(router)}
           >
-            Deconnexion
+            {BOUTON_DECONNEXION}
           </button>
         </div>
       </div>
 
       <div className="row p-3">
         <div className="col-12">
-          {afficherMessageSucces()}
-          {afficherMessageErreur()}
+          {message !== "" && <div className="alert alert-success">{message}</div>}
+          {erreur !== "" && <div className="alert alert-danger">{erreur}</div>}
         </div>
 
         <div className="col-12 col-lg-4 mb-3">
           <div className="card">
             <div className="card-body">
               <h4 className="card-title">{groupe.nomGroupe}</h4>
-              <p className="mb-2">Chef : {lireNomChef()}</p>
-              <p className="mb-2">Nombre de membres : {lireNombreMembres()}</p>
-              <p className="mb-2">Mon role : {lireRole()}</p>
+              <p className="mb-2">{LABEL_CHEF + lireNomChef()}</p>
+              <p className="mb-2">{LABEL_NOMBRE_MEMBRES + lireNombreMembres()}</p>
+              <p className="mb-2">{LABEL_MON_ROLE + lireRole()}</p>
 
               <button
                 type="button"
                 className="btn btn-outline-primary w-100 mt-2"
                 onClick={chargerGroupe}
               >
-                Recharger le groupe
+                {BOUTON_RECHARGER}
               </button>
 
               {afficherBlocActions()}
@@ -850,7 +861,7 @@ export default function PageCalendrierGroupe() {
 
           <div className="card mt-3">
             <div className="card-body">
-              <h5 className="card-title">Membres du groupe</h5>
+              <h5 className="card-title">{TITRE_MEMBRES}</h5>
               {afficherMembres()}
             </div>
           </div>
@@ -862,10 +873,10 @@ export default function PageCalendrierGroupe() {
         <div className="col-12 col-lg-8 mb-3">
           <div className="card">
             <div className="card-body">
-              <h5 className="card-title">Calendrier</h5>
+              <h5 className="card-title">{TITRE_CALENDRIER}</h5>
 
               <FullCalendar
-                plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+                plugins={[dayGridPlugin, timeGridPlugin]}
                 initialView="dayGridMonth"
                 headerToolbar={{
                   left: "prev,next today",
@@ -873,20 +884,20 @@ export default function PageCalendrierGroupe() {
                   right: "dayGridMonth,timeGridWeek,timeGridDay",
                 }}
                 buttonText={{
-                  today: "Aujourd hui",
-                  month: "Mois",
-                  week: "Semaine",
-                  day: "Jour",
+                  today: CALENDRIER_AUJOURD_HUI,
+                  month: CALENDRIER_MOIS,
+                  week: CALENDRIER_SEMAINE,
+                  day: CALENDRIER_JOUR,
                 }}
                 events={construireEvenements()}
-                height="70vh"
+                height={CALENDRIER_HAUTEUR}
               />
             </div>
           </div>
 
           <div className="card mt-3">
             <div className="card-body">
-              <h5 className="card-title">Liste des activites</h5>
+              <h5 className="card-title">{TITRE_LISTE_ACTIVITES}</h5>
               {afficherActivites()}
             </div>
           </div>
