@@ -1,7 +1,8 @@
-const URL_BASE_API = "http://localhost:8080";
+const URL_BASE_API = "https://linkup-n9cw.onrender.com";
 
 export const URLS = {
   SANTE: `${URL_BASE_API}/api/health`,
+
 
   CREER_ETUDIANT: `${URL_BASE_API}/api/etudiants`,
   SUPPRIMER_ETUDIANT: `${URL_BASE_API}/api/etudiants`,
@@ -29,4 +30,5 @@ export const URLS = {
   AJOUTER_ACTIVITE_GROUPE: `${URL_BASE_API}/api/groupes/activites/ajouter`,
   AJOUTER_ACTIVITE_ETUDIANT: `${URL_BASE_API}/api/etudiants/activites/ajouter`,
   SUPPRIMER_ACTIVITE: `${URL_BASE_API}/api/activite/retirer`,
+  SUPPRIMER_GROUPE: `${URL_BASE_API}/api/groupe/supprimer`,
 };
