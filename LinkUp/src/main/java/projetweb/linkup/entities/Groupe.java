@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
 
 import java.util.*;
 
@@ -18,12 +19,15 @@ public class Groupe {
     @GeneratedValue(strategy = GenerationType.UUID)
 
     private UUID id;
-
-    @JsonIncludeProperties({"nomUtilisateur", "nom", "prenom", "courriel", "ecole"})
+    /**
+     * les inclusions de propriete permettent de limiter la portee
+     * des choses envoyer vers le front end
+     */
+    @JsonIncludeProperties({"nomUtilisateur", "nom", "prenom", "courriel", "ecole","id"})
     @ManyToOne
     @JoinColumn(name = "chef_id", nullable = false)
     private Etudiant chef;
-    
+
     @Column(name = "nom_du_groupe",nullable = false)
     private String nomGroupe;
 
@@ -45,6 +49,7 @@ public class Groupe {
 
     @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JoinColumn(name = "horaire_id",unique = true)
+    @JsonIncludeProperties({"id", "activites"})
     private Horaire horaire;
     public Groupe(Etudiant chef, String nomGroupe) {
         setChef(chef);
