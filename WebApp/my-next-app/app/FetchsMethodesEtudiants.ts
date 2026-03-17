@@ -1,6 +1,11 @@
 import { URLS } from "./FichierConfiguration";
 import type { Etudiant, SucessDTO } from "./TypesObjets";
 
+
+/**
+ * Crée un nouvel étudiant avec les informations fournies.
+ * Envoie une requête POST à l'API.
+ */
 export async function creerEtudiant(
   prenom: string,
   nom: string,
@@ -34,6 +39,10 @@ export async function creerEtudiant(
   return etudiant;
 }
 
+/**
+ * Supprime un étudiant à partir de son courriel et de son mot de passe.
+ * Envoie une requête DELETE à l'API.
+ */
 export async function supprimerEtudiant(
   courriel: string,
   motDePasse: string
@@ -59,6 +68,11 @@ export async function supprimerEtudiant(
   return succes;
 }
 
+/**
+ * Récupère un étudiant à partir de son identifiant.
+ * Envoie une requête GET à l'API.
+ */
+
 export async function obtenirEtudiantParId(id: string) {
   const response = await fetch(
     `${URLS.OBTENIR_ETUDIANT_PAR_ID}?id=${encodeURIComponent(id)}`,
@@ -77,12 +91,15 @@ export async function obtenirEtudiantParId(id: string) {
   return etudiant;
 }
 
+/**
+ * Récupère un étudiant à partir de son nom d'utilisateur.
+ * Envoie une requête GET à l'API.
+ */
 export async function obtenirEtudiantParNomUtilisateur(
   nomUtilisateur: string
 ) {
   const response = await fetch(
-    `${URLS.OBTENIR_ETUDIANT_PAR_NOM_UTILISATEUR}?username=${
-      nomUtilisateur
+    `${URLS.OBTENIR_ETUDIANT_PAR_NOM_UTILISATEUR}?username=${nomUtilisateur
     }`,
     {
       method: "GET",
@@ -98,6 +115,12 @@ export async function obtenirEtudiantParNomUtilisateur(
   const etudiant: Etudiant = data;
   return etudiant;
 }
+
+
+/**
+ * Authentifie un étudiant avec son courriel et son mot de passe.
+ * Envoie une requête POST à l'API.
+ */
 
 export async function obtenirEtudiantParAuth(
   courriel: string,
@@ -123,6 +146,11 @@ export async function obtenirEtudiantParAuth(
   const etudiant: Etudiant = data;
   return etudiant;
 }
+
+/**
+ * Met à jour les informations du profil d’un étudiant.
+ * Envoie une requête PUT à l'API.
+ */
 
 export async function mettreAjourProfilEtudiant(
   etudiantID: string,
@@ -155,6 +183,10 @@ export async function mettreAjourProfilEtudiant(
   return succes;
 }
 
+/**
+ * Met à jour le mot de passe d’un étudiant.
+ * Envoie une requête PUT à l'API.
+ */
 export async function mettreAjourMotDePasse(
   etudiantID: string,
   vieuxMotDePasse: string,
