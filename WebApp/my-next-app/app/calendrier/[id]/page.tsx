@@ -316,6 +316,22 @@ export default function CalendrierUtilisateur() {
                 </button>
               </div>
 
+              {etudiant?.horaire?.activites?.map((activite) => (
+              <div key={activite.id} className="border rounded p-2 mb-2">
+
+                <div className="fw-bold">{activite.titre}</div>
+                <div className="small">{activite.description}</div>
+
+                <button
+                  className="btn btn-danger btn-sm mt-2"
+                  onClick={() => handleRetirerActivite({ event: { id: activite.id, title: activite.titre } })}
+                >
+                  Supprimer
+                </button>
+
+              </div>
+            ))}
+
 
 
               <div className="mt-3 text-muted small">
