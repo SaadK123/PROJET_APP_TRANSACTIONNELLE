@@ -19,7 +19,10 @@ public class Groupe {
     @GeneratedValue(strategy = GenerationType.UUID)
 
     private UUID id;
-
+    /**
+     * les inclusions de propriete permettent de limiter la portee
+     * des choses envoyer vers le front end
+     */
     @JsonIncludeProperties({"nomUtilisateur", "nom", "prenom", "courriel", "ecole","id"})
     @ManyToOne
     @JoinColumn(name = "chef_id", nullable = false)

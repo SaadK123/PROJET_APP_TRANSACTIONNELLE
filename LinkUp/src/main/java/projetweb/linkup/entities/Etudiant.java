@@ -53,7 +53,8 @@ public class Etudiant  {
     @Column(name = "prenom",nullable = false)
     private String prenom;
 
-
+   /* ici le json ignore permet de ne pas diffuser le mot de passe hash a traver
+   * http*/
     @JsonIgnore
     @Column(name="motDePasse",nullable = false)
     private String motDePasseHash;

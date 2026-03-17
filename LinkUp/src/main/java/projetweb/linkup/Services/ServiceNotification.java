@@ -9,7 +9,6 @@ import projetweb.linkup.Enumerations.ERREUR_TYPE;
 import projetweb.linkup.Exceptions.LinkUpException;
 import projetweb.linkup.Util.Utilitary;
 import projetweb.linkup.entities.Etudiant;
-import projetweb.linkup.entities.Invitation;
 import projetweb.linkup.entities.Notification;
 
 import java.util.List;
@@ -27,7 +26,7 @@ public class ServiceNotification {
     }
 
     public List<Notification> getToutNotificationsDeUser(String idEtudiant) {
-
+   // ici on recupere tout less notifications  de lutilisateur
      try {
          return serviceEtudiant.getEtudiantById(idEtudiant).getNotifications();
      }catch (Exception e) {
@@ -40,6 +39,7 @@ public class ServiceNotification {
 
     @Transactional
     public SucessDTO setToWasSeen(String idNotification) {
+        // permet de mettre une notification a vu (pas encore utilise)
         UUID id = UUID.fromString(idNotification);
         Notification notification = entityManager.find(Notification.class, id);
         if(notification == null) {
@@ -54,6 +54,7 @@ public class ServiceNotification {
 
     @Transactional
         public SucessDTO deleteNotification(String idNotification) {
+        // permet de retirer une notification avec son id
         UUID id = UUID.fromString(idNotification);
         Notification notification = entityManager.find(Notification.class, id);
         if(notification == null) {
@@ -68,9 +69,9 @@ public class ServiceNotification {
 
 
     @Transactional
-    public SucessDTO addNotificationToStudent(Invitation invitation,Etudiant receveur) {
-
-       receveur.getNotifications().add(invitation);
+    public SucessDTO addNotificationToStudent(Notification notification,Etudiant receveur) {
+       // permet de ajouter une notification
+       receveur.getNotifications().add(notification);
 
         return new SucessDTO(true,"Notification ajoutée");
     }

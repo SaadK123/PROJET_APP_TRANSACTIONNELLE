@@ -61,6 +61,9 @@ public class ServiceEtudiant {
         }
 
     }
+    /**
+     * ici lazy permet deviter que les services qui se couplent font une boucle infinie
+     * **/
     public ServiceEtudiant(PasswordEncoder passwordEncoder, @Lazy ServiceGroupe serviceGroupe) {
 
         this.passwordEncoder = passwordEncoder;
@@ -74,7 +77,7 @@ public class ServiceEtudiant {
         if (dto == null) throw new LinkUpException(ERREUR_TYPE.CHAMPS_MANQUANTS, Utilitary.EXCEPTION_CHAMPS_MANQUANTS);
         Etudiant e = new Etudiant();
 
-
+        // on creer un nouvel etuidant et on rajoute les infos du dto
         e.setCourriel(dto.courriel());
         e.setPrenom(dto.prenom());
         e.setMotDePasseHash(passwordEncoder.encode(dto.motDePasse()));
@@ -87,7 +90,7 @@ public class ServiceEtudiant {
 
  try {
 
-
+// on essaye dinserer desfois sa peut ne pas marcher si les elements unique sont dupliquer
    entityManager.createQuery("insert into Etudiant (courriel,prenom,nom,nomUtilisateur,motDePasseHash,ecole,dernierDate)" +
            " values (:courriel,:prenom,:nom,:nomUtilisateur,:motDePasseHash,:ecole,:dernierDate)")
            .setParameter("courriel", e.getCourriel()).setParameter("prenom", e.getPrenom()).setParameter("nom", e.getNom());
@@ -97,6 +100,7 @@ public class ServiceEtudiant {
  }catch (Exception ex) {
 
      switch (ex.getMessage()) {
+         // on catch les elements uniques ici par exemple si le email est repete ou le username
          case "UK_EMAIL" -> throw new LinkUpException(ERREUR_TYPE.CONTRAINTE_UNIQUE, Utilitary.EXCEPTION_MESSAGE_DUPLICATION_EMAIL);
          case "UK_USERNAME" -> throw new LinkUpException(ERREUR_TYPE.CONTRAINTE_UNIQUE, Utilitary.EXCEPTION_MESSAGE_DUPLICATION_USERNAME);
          default ->  throw ex;
@@ -107,9 +111,12 @@ public class ServiceEtudiant {
         return e;
     }
 
+
+
     @Transactional
     public SucessDTO supprimerEtudiant(SupprimerEtudiantDTO dto) {
-
+   /* pour supprimer un etudiant il faut supprimer ses dependances qui sont tous ses groupes
+   * il faut le retirer de tous les groupes car il faut pas garder de dependances*/
 
            Etudiant e = getEtudiantByCourrielEtMotDePasse(dto.courriel(),dto.motDePasse());
            serviceGroupe.quitterTousLesGroupes(e.getId().toString());
@@ -147,6 +154,8 @@ public class ServiceEtudiant {
         Etudiant e = getEtudiantById(updateDTO.getEtudiantID());
 
         try {
+
+            // on tente de ajouter les elements si ils sont pas null
             if (updateDTO.getNomUtilisateur() != null) {
                 e.setNomUtilisateur(updateDTO.getNomUtilisateur());
             }
