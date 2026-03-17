@@ -146,7 +146,7 @@ export async function obtenirGroupeParId(idGroupe: string) {
 }
 
 export async function virerEtudiantDuGroupe(
-  etudiantAVirerId: string,
+  nomUtilisateur: string,
   etudiantQuiVireId: string,
   groupid: string
 ) {
@@ -156,7 +156,7 @@ export async function virerEtudiantDuGroupe(
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      etudiantAVirerId,
+      nomUtilisateur,
       etudiantQuiVireId,
       groupid,
     }),
@@ -171,7 +171,7 @@ export async function virerEtudiantDuGroupe(
   const succes: SucessDTO = data;
   return succes;
 }
-export async function supprimerGroupe( groupeId: string, chefId: string) {
+export async function supprimerGroupe(groupeId: string, chefId: string) {
 
   const response = await fetch(URLS.SUPPRIMER_GROUPE, {
     method: "DELETE",
