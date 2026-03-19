@@ -15,7 +15,8 @@ import {
 import { supprimerNotification } from "@/app/FetchMethodesNotifications";
 
 import { retournerErreur } from "@/app/attraperErreur";
-
+//npm install react-bootstrap bootstrap
+import Spinner from "react-bootstrap/Spinner";
 import {
   GotoCalendar,
   GotoCalendarGroupe,
@@ -105,6 +106,11 @@ export default function Dashboard() {
     setErreur("");
     setMessage("");
   }
+
+//Animation Chargement
+  function Chargement() {
+  return <Spinner animation="border" />;
+}
 
   /**
    * ici je charge letudiant
@@ -246,7 +252,11 @@ export default function Dashboard() {
    * si sa charge je montre juste sa
    */
   if (load) {
-    return <p>{TITRE_CHARGEMENT}</p>;
+    return (
+      <div className="container-fluid p-4">
+        {Chargement()}
+      </div>
+    );
   }
 
   /**
