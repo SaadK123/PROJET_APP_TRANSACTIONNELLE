@@ -30,6 +30,7 @@ import {
 import { retournerErreur } from "@/app/attraperErreur";
 import { TYPES_NOTIFICATION } from "@/app/TypesObjets";
 import type { Activite, Groupe } from "@/app/TypesObjets";
+import Spinner from "react-bootstrap/Spinner";
 
 /**
  * ici je met toute les constante en haut
@@ -164,7 +165,10 @@ export default function PageCalendrierGroupe() {
     setErreur("");
     setMessage("");
   }
-
+//Animation Chargement
+  function Chargement() {
+  return <Spinner animation="border" />;
+}
   /**
    * ici je charge le groupe depuis backend
    * je reutilise sa au debut et apres les action
@@ -757,7 +761,7 @@ export default function PageCalendrierGroupe() {
   if (chargement) {
     return (
       <div className="container-fluid p-4">
-        <h2>{TITRE_CHARGEMENT}</h2>
+        {Chargement()}
       </div>
     );
   }
