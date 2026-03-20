@@ -31,6 +31,7 @@ public class ServiceEtudiant {
 
     private final PasswordEncoder passwordEncoder;
     private final ServiceGroupe serviceGroupe;
+    private final ServiceNotification serviceNotification;
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -64,10 +65,11 @@ public class ServiceEtudiant {
     /**
      * ici lazy permet deviter que les services qui se couplent font une boucle infinie
      * **/
-    public ServiceEtudiant(PasswordEncoder passwordEncoder, @Lazy ServiceGroupe serviceGroupe) {
+    public ServiceEtudiant(PasswordEncoder passwordEncoder, @Lazy ServiceGroupe serviceGroupe, @Lazy ServiceNotification serviceNotification) {
 
         this.passwordEncoder = passwordEncoder;
         this.serviceGroupe = serviceGroupe;
+        this.serviceNotification= serviceNotification;
     }
 
     @Transactional
@@ -120,6 +122,8 @@ public class ServiceEtudiant {
 
            Etudiant e = getEtudiantByCourrielEtMotDePasse(dto.courriel(),dto.motDePasse());
            serviceGroupe.quitterTousLesGroupes(e.getId().toString());
+           entityManager.flush();
+           serviceNotification.supprimerToutNotificationsDeEtudiant(e.getId().toString());
            entityManager.flush();
            entityManager.createQuery("delete from Etudiant e where e.id = :id")
                    .setParameter("id",e.getId()).executeUpdate();

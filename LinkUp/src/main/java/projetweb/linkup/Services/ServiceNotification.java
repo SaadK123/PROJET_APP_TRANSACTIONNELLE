@@ -38,6 +38,23 @@ public class ServiceNotification {
     }
 
     @Transactional
+    public SucessDTO supprimerToutNotificationsDeEtudiant(String idEtudiant) {
+
+        try {
+            Etudiant etudiant = serviceEtudiant.getEtudiantById(idEtudiant);
+            List<Notification> notifications = etudiant.getNotifications();
+            for (Notification notification : notifications) {
+                deleteNotification(notification.getId().toString());
+            }
+            notifications.clear();
+            return new SucessDTO(true,"Toutes les notifications ont été supprimées");
+        } catch (Exception e) {
+            throw new LinkUpException(ERREUR_TYPE.NON_EXISTANT, Utilitary.EXCEPTION_MESSAGE_NON_EXISTANT);
+    }
+
+    }
+
+    @Transactional
     public SucessDTO setToWasSeen(String idNotification) {
         // permet de mettre une notification a vu (pas encore utilise)
         UUID id = UUID.fromString(idNotification);
