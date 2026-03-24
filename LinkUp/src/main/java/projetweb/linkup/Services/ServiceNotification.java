@@ -84,6 +84,8 @@ public class ServiceNotification {
     }
 
 
+    // select n from Notification where n.sender.id := id or n.receveur.id := id
+
 
     @Transactional
     public SucessDTO addNotificationToStudent(Notification notification,Etudiant receveur) {

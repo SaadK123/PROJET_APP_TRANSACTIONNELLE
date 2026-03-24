@@ -28,4 +28,7 @@ public class Conversation {
 
     @Column(name = "messages", nullable = false)
     private List<Message> messages;
+
+
+
 }
