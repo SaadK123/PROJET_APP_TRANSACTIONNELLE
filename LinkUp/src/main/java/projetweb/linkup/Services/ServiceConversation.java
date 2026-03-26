@@ -30,9 +30,9 @@ public class ServiceConversation {
    private final MongoTemplate mongoTemplate;
    private final ServiceEtudiant serviceEtudiant;
 
-   public ServiceConversation(MongoTemplate mongoTemplate, ServiceEtudiant serviceEtudiant, ServiceEtudiant serviceEtudiant1) {
+   public ServiceConversation(MongoTemplate mongoTemplate, ServiceEtudiant serviceEtudiant) {
        this.mongoTemplate = mongoTemplate;
-       this.serviceEtudiant = serviceEtudiant1;
+       this.serviceEtudiant = serviceEtudiant;
    }
     @Transactional
    public SucessDTO creerConversation(CreationDeGroupeDTO groupe) {
@@ -41,7 +41,7 @@ public class ServiceConversation {
        //Vérifier l'insertion de la conversation
        try {
            mongoTemplate.insert(conversation); // Insérer la conversation
-       }catch(LinkUpException e){
+       }catch(Exception e){
            return new SucessDTO(false,"Error in creerConversation");
 
        }
@@ -53,7 +53,7 @@ public class ServiceConversation {
         // Tenter de supprimer la conversation
         try {
             mongoTemplate.remove(conversation);
-        } catch(LinkUpException e){
+        } catch(Exception e){
             return new SucessDTO(false, "Error in supprimerconversation");
         }
         return new SucessDTO(true, "Success in supprimerConversation");
@@ -77,15 +77,16 @@ public class ServiceConversation {
            // Créer la conversation et la retourner en cas de succès
            return entityManager.createQuery("select c from Groupe c where c.id = :conversationId", Conversation.class)
                    .setParameter("conversationId", conversationId).getSingleResult();
-       } catch (NoResultException ex) {
+       } catch (Exception ex) {
            throw  new LinkUpException(ERREUR_TYPE.NON_EXISTANT, Utilitary.EXCEPTION_UTILISATEUR_NON_TROUVER);
        }
    }
    public SucessDTO InvitationConversation(RequeteInvitationDTO invitation){
 
+       return null;
    }
     @Transactional
     public boolean estUnChef(Conversation conversation, Etudiant etudiant) {
-        return conversation.getChef().getId().equals(etudiant.getId());
+        return conversation.getChef().equals(etudiant.getId());
     }
 }
