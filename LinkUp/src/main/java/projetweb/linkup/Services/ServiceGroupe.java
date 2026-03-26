@@ -50,7 +50,7 @@ public class ServiceGroupe {
     public SucessDTO envoyerRequeteAEtudiant(RequeteInvitationDTO requeteInvitationDTO) {
         // on envoie une requete vers letudiant pour linviter a un groupe
          // 1. on recupere le groupe
-        Groupe groupe = getGroupeById(requeteInvitationDTO.getGroupId());
+        Groupe groupe = getGroupeById(requeteInvitationDTO.getDestination());
         // on recuperer le receeur et lenvoyeur
         Etudiant receveur = serviceEtudiant.getEtudiantByUsername(requeteInvitationDTO.getEtudiantNomUtilisateur());
         Etudiant envoyeur =  serviceEtudiant.getEtudiantById(requeteInvitationDTO.getEnvoyeurId());

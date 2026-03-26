@@ -10,7 +10,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Document(collection = "conversation")
@@ -23,10 +25,12 @@ public class Conversation {
     @Id
     private UUID id;
 
-    @Column(name = "participants", nullable = false)
-    private List<UUID> participants;
 
-    @Column(name = "messages", nullable = false)
+    private UUID chef;
+
+    private Set<UUID> participants;
+
+
     private List<Message> messages;
 
 
