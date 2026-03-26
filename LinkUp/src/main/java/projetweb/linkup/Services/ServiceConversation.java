@@ -81,10 +81,16 @@ public class ServiceConversation {
            throw  new LinkUpException(ERREUR_TYPE.NON_EXISTANT, Utilitary.EXCEPTION_UTILISATEUR_NON_TROUVER);
        }
    }
-   public SucessDTO InvitationConversation(RequeteInvitationDTO invitation){
-
-       return null;
-   }
+//   public SucessDTO InvitationConversation(RequeteInvitationDTO invitation){
+//
+//       Conversation conversation = getConversationById(invitation.getDestination());
+//       Etudiant sender = serviceEtudiant.getEtudiantByUsername(invitation.getEtudiantNomUtilisateur());
+//       Etudiant receiver =  serviceEtudiant.getEtudiantById(invitation.getEnvoyeurId());
+//
+//       
+//
+//
+//   }
     @Transactional
     public boolean estUnChef(Conversation conversation, Etudiant etudiant) {
         return conversation.getChef().equals(etudiant.getId());
