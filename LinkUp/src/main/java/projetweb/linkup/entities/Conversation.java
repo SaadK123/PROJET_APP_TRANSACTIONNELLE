@@ -33,6 +33,8 @@ public class Conversation {
 
     private List<Message> messages;
 
-
+    public Conversation(UUID chef){
+        this.chef = chef;
+    }
 
 }
