@@ -8,6 +8,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
+import projetweb.linkup.DTO.ACTIONS.CreationConversationDTO;
 import projetweb.linkup.DTO.ACTIONS.CreationDeGroupeDTO;
 import projetweb.linkup.DTO.ACTIONS.SucessDTO;
 import projetweb.linkup.DTO.ACTIONS.SupprimerGroupeDTO;
@@ -35,18 +36,20 @@ public class ServiceConversation {
        this.serviceEtudiant = serviceEtudiant;
    }
     @Transactional
-   public SucessDTO creerConversation(CreationDeGroupeDTO groupe) {
-       Etudiant chef = serviceEtudiant.getEtudiantById(groupe.chefID());
-       Conversation conversation = new Conversation(chef.getId()); // Créer la conversation
-       //Vérifier l'insertion de la conversation
-       try {
-           mongoTemplate.insert(conversation); // Insérer la conversation
-       }catch(Exception e){
-           return new SucessDTO(false,"Error in creerConversation");
+   public SucessDTO creerConversation(CreationConversationDTO dto, UUID id) {
+        try {
+            UUID chefId = UUID.fromString(dto.chefId());
 
-       }
-    return new SucessDTO(true, "Success in creerConversation");
+            Conversation conversation = id==null ? new Conversation(chefId, dto.nomGroupe()) : new Conversation(id, chefId, dto.nomGroupe());
+            mongoTemplate.insert(conversation);
+
+            return new SucessDTO(true, "Success in creerConversation");
+        } catch (Exception e) {
+            return new SucessDTO(false, "Error in creerConversation");
+        }
    }
+
+
     @Transactional
     public SucessDTO supprimerConversation(String conversationId){
         Conversation conversation = getConversationById(conversationId);

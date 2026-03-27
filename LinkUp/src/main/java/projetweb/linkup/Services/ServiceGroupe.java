@@ -10,6 +10,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import projetweb.linkup.Enumerations.ERREUR_TYPE;
+import projetweb.linkup.entities.Conversation;
 import projetweb.linkup.entities.Etudiant;
 import projetweb.linkup.entities.Groupe;
 import projetweb.linkup.entities.Invitation;
@@ -113,10 +114,12 @@ public class ServiceGroupe {
         return new SucessDTO(true,"vous avez ete ajouter dans le groupe");
     }
     @Transactional
-    public Groupe creerGroupe(CreationDeGroupeDTO groupeDTO) {
+    public Groupe creerGroupe(CreationDeGroupeDTO groupeDTO, ServiceConversation serviceConversation){
         // creer un groupe ici fonctionne pratiquement toujours on pourrais faire une limite
         Etudiant chef = serviceEtudiant.getEtudiantById(groupeDTO.chefID());
         Groupe g = new Groupe(chef,groupeDTO.nomGroup());
+        var conversationDTO = new CreationConversationDTO(groupeDTO.chefID(),groupeDTO.nomGroup());
+        serviceConversation.creerConversation(conversationDTO, g.getId());
           // on persiste lentite pour la mettre dans la bd ( pas requis mais safe)
         entityManager.persist(g);
         entityManager.flush();

@@ -5,10 +5,7 @@ import projetweb.linkup.DTO.ACTIONS.*;
 import projetweb.linkup.DTO.TYPES.RequeteInvitationDTO;
 import projetweb.linkup.DTO.TYPES.MiseAJourEtudiantMotDePasse;
 import projetweb.linkup.DTO.TYPES.MiseAJourEtudiantProfil;
-import projetweb.linkup.Services.ServiceEtudiant;
-import projetweb.linkup.Services.ServiceGroupe;
-import projetweb.linkup.Services.ServiceHoraire;
-import projetweb.linkup.Services.ServiceNotification;
+import projetweb.linkup.Services.*;
 import projetweb.linkup.entities.Etudiant;
 import projetweb.linkup.entities.Groupe;
 import projetweb.linkup.entities.Horaire;
@@ -24,15 +21,18 @@ public class TestControlleur {
         private final ServiceGroupe serviceGroupe;
         private final ServiceHoraire serviceHoraire;
         private final ServiceNotification serviceNotification;
+        private final ServiceConversation serviceConversation;
         public TestControlleur(
                 ServiceEtudiant serviceEtudiant,
                 ServiceGroupe serviceGroupe,
-                ServiceHoraire serviceHoraire, ServiceNotification serviceNotification
+                ServiceHoraire serviceHoraire, ServiceNotification serviceNotification,
+                ServiceConversation serviceConversation
         ) {
                 this.serviceEtudiant = serviceEtudiant;
                 this.serviceGroupe = serviceGroupe;
                 this.serviceHoraire = serviceHoraire;
             this.serviceNotification = serviceNotification;
+            this.serviceConversation = serviceConversation;
         }
         @PostMapping("/etudiants")
         public Etudiant createEtudiant(@RequestBody CreationEtudiantDTO dto) {
@@ -70,7 +70,7 @@ public class TestControlleur {
 
         @PostMapping("/groupes")
         public Groupe createGroup(@RequestBody CreationDeGroupeDTO dto) {
-                return serviceGroupe.creerGroupe(dto);
+                return serviceGroupe.creerGroupe(dto, serviceConversation);
         }
 
         @GetMapping("/groupes")

@@ -10,10 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Document(collection = "conversation")
 @Getter
@@ -23,6 +20,7 @@ import java.util.UUID;
 public class Conversation {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
 
@@ -33,8 +31,25 @@ public class Conversation {
 
     private List<Message> messages;
 
-    public Conversation(UUID chef){
+    private String nom;
+
+    public Conversation(UUID groupeID, UUID chef, String nom) {
         this.chef = chef;
+        this.nom = nom;
+        this.id=groupeID;
+        this.participants = new HashSet<>();
+        this.messages = new ArrayList<>();
+        this.participants.add(chef);
     }
+
+    public Conversation(UUID chef, String nom) {
+        this.chef = chef;
+        this.nom = nom;
+        this.participants = new HashSet<>();
+        this.messages = new ArrayList<>();
+        this.participants.add(chef);
+    }
+
+
 
 }
