@@ -111,6 +111,18 @@ const CALENDRIER_SEMAINE = "Semaine";
 const CALENDRIER_JOUR = "Jour";
 const CALENDRIER_HAUTEUR = "70vh";
 
+/*messagerie */
+const TITRE_MESSAGERIE = "Messagerie du groupe";
+const MESSAGE_CONVERSATION_EXISTE = "Conversation active";
+const MESSAGE_CONVERSATION_ABSENTE = "Aucune conversation pour le moment";
+const MESSAGE_ZONE_CHAT_VIDE = "La partie messages sera ajoutée bientôt";
+const BOUTON_CREER_CONVERSATION = "Créer la conversation";
+const BOUTON_SUPPRIMER_CONVERSATION = "Supprimer la conversation";
+const ERREUR_SEUL_CHEF_GERER_CONVERSATION =
+  "seul le chef peut gérer la conversation";
+const MESSAGE_CONVERSATION_CREEE = "conversation créée";
+const MESSAGE_CONVERSATION_SUPPRIMEE = "conversation supprimée";
+
 /**
  * ce type sert juste pour fullcalendar
  * je garde juste les champ utile
@@ -874,38 +886,51 @@ export default function PageCalendrierGroupe() {
           {afficherBlocAjoutActivite()}
         </div>
 
-        <div className="col-12 col-lg-8 mb-3">
-          <div className="card">
-            <div className="card-body">
-              <h5 className="card-title">{TITRE_CALENDRIER}</h5>
+            <div className="col-12 col-lg-8 mb-3">
+        <div className="card">
+          <div className="card-body">
+            <h5 className="card-title">{TITRE_CALENDRIER}</h5>
 
-              <FullCalendar
-                plugins={[dayGridPlugin, timeGridPlugin]}
-                initialView="dayGridMonth"
-                headerToolbar={{
-                  left: "prev,next today",
-                  center: "title",
-                  right: "dayGridMonth,timeGridWeek,timeGridDay",
-                }}
-                buttonText={{
-                  today: CALENDRIER_AUJOURD_HUI,
-                  month: CALENDRIER_MOIS,
-                  week: CALENDRIER_SEMAINE,
-                  day: CALENDRIER_JOUR,
-                }}
-                events={construireEvenements()}
-                height={CALENDRIER_HAUTEUR}
-              />
-            </div>
-          </div>
-
-          <div className="card mt-3">
-            <div className="card-body">
-              <h5 className="card-title">{TITRE_LISTE_ACTIVITES}</h5>
-              {afficherActivites()}
-            </div>
+            <FullCalendar
+              plugins={[dayGridPlugin, timeGridPlugin]}
+              initialView="dayGridMonth"
+              headerToolbar={{
+                left: "prev,next today",
+                center: "title",
+                right: "dayGridMonth,timeGridWeek,timeGridDay",
+              }}
+              buttonText={{
+                today: CALENDRIER_AUJOURD_HUI,
+                month: CALENDRIER_MOIS,
+                week: CALENDRIER_SEMAINE,
+                day: CALENDRIER_JOUR,
+              }}
+              events={construireEvenements()}
+              height={CALENDRIER_HAUTEUR}
+            />
           </div>
         </div>
+
+        <div className="card mt-3">
+          <div className="card-body">
+            <h5 className="card-title">{TITRE_LISTE_ACTIVITES}</h5>
+            {afficherActivites()}
+          </div>
+        </div>
+
+        <div className="card mt-3">
+          <div className="card-body">
+            <h5 className="card-title">Messagerie du groupe</h5>
+
+            <button
+              type="button"
+              className="btn btn-primary"
+            >
+              Créer la conversation
+            </button>
+          </div>
+        </div>
+      </div>
       </div>
     </div>
   );
