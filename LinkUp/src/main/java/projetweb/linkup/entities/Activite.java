@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.lang.reflect.Constructor;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -45,6 +46,7 @@ public   class Activite {
     this.titre = titre;
     this.tempsDebut = tempsDebut;
     this.tempsFin = tempsFin;
+
 
    }
    }

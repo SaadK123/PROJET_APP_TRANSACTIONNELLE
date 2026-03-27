@@ -8,6 +8,7 @@ import lombok.Setter;
 @Getter
 public enum NotificationType {
     NOUVELLE_GROUPE_INVITATION("Vous avez recu une invitation dans le groupe"),
+    NOUVELLE_CONVERSATION_INVITATION(""),
     ALERTE_SYSTEME("Alerte systeme"); // todo regler le francais
 
           private final String message;

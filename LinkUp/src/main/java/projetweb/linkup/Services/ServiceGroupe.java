@@ -1,6 +1,5 @@
 package projetweb.linkup.Services;
 
-import jakarta.transaction.Synchronization;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import projetweb.linkup.DTO.ACTIONS.*;
@@ -13,12 +12,9 @@ import jakarta.persistence.PersistenceContext;
 import projetweb.linkup.Enumerations.ERREUR_TYPE;
 import projetweb.linkup.entities.Etudiant;
 import projetweb.linkup.entities.Groupe;
-import projetweb.linkup.entities.Horaire;
 import projetweb.linkup.entities.Invitation;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.UUID;
 
 @Service
@@ -54,7 +50,7 @@ public class ServiceGroupe {
     public SucessDTO envoyerRequeteAEtudiant(RequeteInvitationDTO requeteInvitationDTO) {
         // on envoie une requete vers letudiant pour linviter a un groupe
          // 1. on recupere le groupe
-        Groupe groupe = getGroupeById(requeteInvitationDTO.getGroupId());
+        Groupe groupe = getGroupeById(requeteInvitationDTO.getDestination());
         // on recuperer le receeur et lenvoyeur
         Etudiant receveur = serviceEtudiant.getEtudiantByUsername(requeteInvitationDTO.getEtudiantNomUtilisateur());
         Etudiant envoyeur =  serviceEtudiant.getEtudiantById(requeteInvitationDTO.getEnvoyeurId());
@@ -66,6 +62,7 @@ public class ServiceGroupe {
         // sinon alors on creer une invitation par rapport aux deux
         Invitation invitation = new Invitation(groupe,envoyeur,
                 requeteInvitationDTO.getType(), requeteInvitationDTO.getTitre(),requeteInvitationDTO.getMessage());
+
         return serviceNotification.addNotificationToStudent(invitation,receveur);
 
     }
@@ -81,10 +78,7 @@ public class ServiceGroupe {
 
         if (groupe.getEtudiants().isEmpty()) {
             // si la liste est vide alors on supprime le groupe avec
-            SucessDTO sucessDTO = supprimerGroupeInterne(null, groupe);
-            if(sucessDTO.success()) {
-
-            }
+           supprimerGroupeInterne(null, groupe);
         } else if (estUnChef(groupe, etudiant)) {
             // si le gars qui a quitter est le chef on choisi le nouveau chef
             groupe.setChef(groupe.getEtudiantsList().get(0));
@@ -131,7 +125,7 @@ public class ServiceGroupe {
     }
 
   @Transactional
-    public SucessDTO supprimerGroupeInterne(String idGroupe, Groupe groupe) {
+    public void supprimerGroupeInterne(String idGroupe, Groupe groupe) {
      // ici on peut supprimer un groupe soit avec lid soit avec lobjet qui recupere le id
         UUID str = groupe == null ? UUID.fromString(idGroupe):groupe.getId();
 
@@ -139,12 +133,13 @@ public class ServiceGroupe {
             // on tente de supprimer le groupe mais tfacon sa va toujours marcher
             entityManager.createQuery("delete FROM Groupe g where g.id = :id")
                     .setParameter("id",str).executeUpdate();
-            return new SucessDTO(true,"groupe supprimer");
+            new SucessDTO(true, "groupe supprimer");
+            return;
         } catch (Exception ignored) {
 
         }
-        return new SucessDTO(false,"groupe non supprimer");
-    }
+      new SucessDTO(false, "groupe non supprimer");
+  }
 
     @Transactional public SucessDTO supprimerGroupe(SupprimerGroupeDTO supprimerGroupeDTO) {
         try {
@@ -204,7 +199,7 @@ public class ServiceGroupe {
     }
 
     @Transactional
-    public SucessDTO quitterTousLesGroupes(String idEtudiant) {
+    public void quitterTousLesGroupes(String idEtudiant) {
         // permet de quitter tout les groupes le moment de la suppression
         List<Groupe>  groupes = getToutGroupesDeUser(idEtudiant);
         for(var groupe : groupes) {
@@ -212,7 +207,7 @@ public class ServiceGroupe {
            quitterGroupe(dto);
         }
 
-        return new SucessDTO(true,"letudiant a pu quitter");
+        new SucessDTO(true, "letudiant a pu quitter");
     }
 
 
