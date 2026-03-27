@@ -12,6 +12,8 @@ import projetweb.linkup.entities.Horaire;
 import projetweb.linkup.entities.Notification;
 
 import java.util.List;
+import java.util.UUID;
+
 @CrossOrigin(origins = {"http://localhost:3000", "http://127.0.0.1:3000","http://localhost:3001"})
 @RestController
 @RequestMapping("/api")
@@ -146,5 +148,10 @@ public class TestControlleur {
         @DeleteMapping("/groupe/supprimer")
         public SucessDTO retirerGroupe(@RequestBody SupprimerGroupeDTO supprimerGroupeDTO) {
                 return serviceGroupe.supprimerGroupe(supprimerGroupeDTO);
+        }
+
+        @PostMapping("/conversations")
+        public SucessDTO creerConversation(@RequestBody CreationConversationDTO dto, @RequestParam UUID id) {
+                return serviceConversation.creerConversation(dto, id);
         }
 }
