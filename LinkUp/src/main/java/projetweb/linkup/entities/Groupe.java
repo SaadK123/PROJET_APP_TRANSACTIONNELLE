@@ -39,7 +39,7 @@ public class Groupe {
             inverseJoinColumns = @JoinColumn(name = "etudiant_id")
     )
     // id etudiant ; etudiant
-    private Set<Etudiant> etudiants = new HashSet<>();
+    private Set<Etudiant> etudiants = new HashSet<>(); // pour trie auto
 
 
     @JsonIgnore

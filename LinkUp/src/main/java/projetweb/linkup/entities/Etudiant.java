@@ -75,7 +75,7 @@ public class Etudiant  {
         }
     }
     @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true)
-    @JoinColumn(name  = "etudiant_id")
+    @JoinColumn(name  = "notification_id")
     private List<Notification> notifications = new ArrayList<>();
 
 

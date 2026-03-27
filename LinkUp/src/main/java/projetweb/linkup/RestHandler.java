@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 public class RestHandler {
 
     @ExceptionHandler(LinkUpException.class)
-
     public ResponseEntity<GestionErreurDTO> handleLinkUp(LinkUpException ex) {
         GestionErreurDTO body = new GestionErreurDTO(
                 ex.getMessage(),
