@@ -25,6 +25,8 @@ import {
   GotoParametres,
 } from "@/app/ChangerPage";
 
+import { creerConversationPrivee } from "@/app/FetchMethodesConversations";
+
 /**
  * ici je met toute les constante en haut
  * comme sa tout est centraliser
@@ -42,10 +44,13 @@ const ERREUR_IMPOSSIBLE_ACCEPTER_INVITATION =
 const ERREUR_IMPOSSIBLE_CREER_GROUPE = "impossible de creer le groupe";
 const ERREUR_ID_ETUDIANT_INVALIDE = "id etudiant invalide";
 const ERREUR_NOM_GROUPE_OBLIGATOIRE = "le nom du groupe est obligatoire";
+const ERREUR_NOM_UTILISATEUR_CONVERSATION_OBLIGATOIRE = "le nom utilisateur est obligatoire";
+const ERREUR_IMPOSSIBLE_CREER_CONVERSATION = "impossible de creer la conversation";
 
 /* succes */
 const MESSAGE_INVITATION_ACCEPTEE = "invitation acceptee";
 const MESSAGE_GROUPE_CREE = "groupe cree avec succes";
+const MESSAGE_CONVERSATION_CREEE = "conversation creee avec succes";
 
 /* titres */
 const TITRE_CHARGEMENT = "Chargement...";
@@ -54,6 +59,7 @@ const TITRE_MES_GROUPES = "Mes groupes";
 const TITRE_NOTIFICATIONS = "Notifications";
 const TITRE_AUCUN_GROUPE = "Aucun groupe";
 const TITRE_AUCUNE_NOTIFICATION = "Aucune notification";
+const TITRE_CREER_CONVERSATION = "Creer une conversation";
 
 /* boutons */
 const BOUTON_ACCUEIL = "Accueil";
@@ -64,6 +70,7 @@ const BOUTON_CREER_GROUPE = "Creer le groupe";
 const BOUTON_VOIR_TOUT = "Voir tout";
 const BOUTON_ACCEPTER_INVITATION = "Accepter linvitation";
 const BOUTON_SUPPRIMER = "Supprimer";
+const BOUTON_CREER_CONVERSATION = "Creer conversation";
 
 /* labels */
 const LABEL_NOM_UTILISATEUR = "Nom utilisateur :";
@@ -73,9 +80,11 @@ const LABEL_NOM_GROUPE = "Nom du groupe";
 const LABEL_RECHERCHE_GROUPE = "Rechercher un groupe par son nom...";
 const LABEL_CHEF = "Chef :";
 const LABEL_NOMBRE_PERSONNES = "Nombre de personnes :";
+const LABEL_NOM_UTILISATEUR_CONVERSATION = "Nom utilisateur";
 
 /* placeholder */
 const PLACEHOLDER_NOM_GROUPE = "Entre le nom du groupe";
+const PLACEHOLDER_NOM_UTILISATEUR_CONVERSATION = "Entre le nom utilisateur";
 
 /* style */
 const LARGEUR_CARTE = "500px";
@@ -97,6 +106,7 @@ export default function Dashboard() {
   /* state des input */
   const [rechercheGroupe, setRechercheGroupe] = useState<string>("");
   const [nomNouveauGroupe, setNomNouveauGroupe] = useState<string>("");
+  const [nomUtilisateurConversation, setNomUtilisateurConversation] = useState<string>("");
 
   /**
    * ici je vide les messages
@@ -240,6 +250,33 @@ export default function Dashboard() {
     }
   }
 
+  async function soumettreCreationConversation(e: FormEvent<HTMLFormElement>) {
+  e.preventDefault();
+  viderMessages();
+
+  if (!id) {
+    setErreur(ERREUR_ID_ETUDIANT_INVALIDE);
+    return;
+  }
+
+  if (nomUtilisateurConversation.trim() === "") {
+    setErreur(ERREUR_NOM_UTILISATEUR_CONVERSATION_OBLIGATOIRE);
+    return;
+  }
+
+  try {
+    await creerConversationPrivee(
+      id,
+      `Conversation avec ${nomUtilisateurConversation.trim()}`
+    );
+
+    setNomUtilisateurConversation("");
+    setMessage(MESSAGE_CONVERSATION_CREEE);
+  } catch (e: any) {
+    setErreur(retournerErreur(e, ERREUR_IMPOSSIBLE_CREER_CONVERSATION));
+  }
+}
+
   /**
    * ici je filtre les groupes
    * selon le texte taper
@@ -368,6 +405,34 @@ export default function Dashboard() {
           {/* bouton pour creer */}
           <button type="submit" className="btn btn-primary">
             {BOUTON_CREER_GROUPE}
+          </button>
+        </form>
+      </div>
+
+            <div
+        className="card p-4 shadow-sm mb-4"
+        style={{ maxWidth: LARGEUR_CARTE }}
+      >
+        <h4 className="mb-3">{TITRE_CREER_CONVERSATION}</h4>
+
+        <form onSubmit={soumettreCreationConversation}>
+          <div className="mb-3">
+            <label className="form-label">
+              {LABEL_NOM_UTILISATEUR_CONVERSATION}
+            </label>
+            <input
+              type="text"
+              className="form-control"
+              value={nomUtilisateurConversation}
+              onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                setNomUtilisateurConversation(e.target.value)
+              }
+              placeholder={PLACEHOLDER_NOM_UTILISATEUR_CONVERSATION}
+            />
+          </div>
+
+          <button type="submit" className="btn btn-primary">
+            {BOUTON_CREER_CONVERSATION}
           </button>
         </form>
       </div>

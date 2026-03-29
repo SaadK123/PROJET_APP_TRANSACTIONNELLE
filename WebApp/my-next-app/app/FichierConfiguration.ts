@@ -31,4 +31,6 @@ export const URLS = {
   AJOUTER_ACTIVITE_ETUDIANT: `${URL_BASE_API}/api/etudiants/activites/ajouter`,
   SUPPRIMER_ACTIVITE: `${URL_BASE_API}/api/activite/retirer`,
   SUPPRIMER_GROUPE: `${URL_BASE_API}/api/groupe/supprimer`,
+
+  CREER_CONVERSATION: `${URL_BASE_API}/api/conversations`,
 };
