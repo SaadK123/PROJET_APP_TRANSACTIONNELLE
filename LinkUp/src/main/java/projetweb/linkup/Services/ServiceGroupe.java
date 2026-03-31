@@ -4,16 +4,14 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import projetweb.linkup.DTO.ACTIONS.*;
 import projetweb.linkup.DTO.TYPES.RequeteInvitationDTO;
+import projetweb.linkup.Enumerations.NotificationType;
 import projetweb.linkup.Exceptions.LinkUpException;
 import projetweb.linkup.Util.Utilitary;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import projetweb.linkup.Enumerations.ERREUR_TYPE;
-import projetweb.linkup.entities.Conversation;
-import projetweb.linkup.entities.Etudiant;
-import projetweb.linkup.entities.Groupe;
-import projetweb.linkup.entities.Invitation;
+import projetweb.linkup.entities.*;
 
 import java.util.List;
 import java.util.UUID;
@@ -61,6 +59,30 @@ public class ServiceGroupe {
                    Utilitary.MESSAGE_ACTION_DEMANDE_CHEF_INVITATION);
         }
         // sinon alors on creer une invitation par rapport aux deux
+        // verifier que letudiant nest pas deja dans le groupe
+        for (Etudiant membre : groupe.getEtudiants()) {
+            if (membre.getId().equals(receveur.getId())) {
+                throw new LinkUpException(
+                        ERREUR_TYPE.DUPLICATION,
+                        "cet etudiant est deja dans le groupe"
+                );
+            }
+        }
+
+        // verifier quune invitation pour ce groupe nexiste pas deja
+        for (Notification notification : receveur.getNotifications()) {
+            if (notification instanceof Invitation invitationExistante) {
+                if (
+                        invitationExistante.getType() == NotificationType.NOUVELLE_GROUPE_INVITATION
+                                && invitationExistante.getGroupe().getId().equals(groupe.getId())
+                ) {
+                    throw new LinkUpException(
+                            ERREUR_TYPE.DUPLICATION,
+                            "une invitation pour ce groupe a deja ete envoyee"
+                    );
+                }
+            }
+        }
         Invitation invitation = new Invitation(groupe,envoyeur,
                 requeteInvitationDTO.getType(), requeteInvitationDTO.getTitre(),requeteInvitationDTO.getMessage());
 
