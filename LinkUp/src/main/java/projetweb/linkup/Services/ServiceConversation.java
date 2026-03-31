@@ -50,6 +50,7 @@ public class ServiceConversation {
    }
 
 
+
     @Transactional
     public SucessDTO supprimerConversation(String conversationId){
         Conversation conversation = getConversationById(conversationId);
@@ -78,10 +79,15 @@ public class ServiceConversation {
        try{
            UUID conversationId = UUID.fromString(ConversationIdString);
            // Créer la conversation et la retourner en cas de succès
-           return entityManager.createQuery("select c from Groupe c where c.id = :conversationId", Conversation.class)
-                   .setParameter("conversationId", conversationId).getSingleResult();
-       } catch (Exception ex) {
-           throw  new LinkUpException(ERREUR_TYPE.NON_EXISTANT, Utilitary.EXCEPTION_UTILISATEUR_NON_TROUVER);
+           Query query = new Query(
+                   org.springframework.data.mongodb.core.query.Criteria.where("id").is(conversationId)
+           );
+
+           Conversation conversation = mongoTemplate.findOne(query, Conversation.class);
+
+           return conversation;
+       } catch (Exception e) {
+           throw new LinkUpException(ERREUR_TYPE.NON_EXISTANT,"conversation nexiste pas");
        }
    }
 //   public SucessDTO InvitationConversation(RequeteInvitationDTO invitation){
