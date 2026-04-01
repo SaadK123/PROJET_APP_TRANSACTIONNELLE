@@ -6,9 +6,12 @@ import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.BasicQuery;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import projetweb.linkup.DTO.ACTIONS.CreationDeGroupeDTO;
+import projetweb.linkup.DTO.ACTIONS.INVITATION_GROUPE_DTO;
 import projetweb.linkup.DTO.ACTIONS.SucessDTO;
 import projetweb.linkup.DTO.ACTIONS.SupprimerGroupeDTO;
 import projetweb.linkup.DTO.TYPES.RequeteInvitationDTO;
@@ -48,15 +51,18 @@ public class ServiceConversation {
     return new SucessDTO(true, "Success in creerConversation");
    }
     @Transactional
-    public SucessDTO supprimerConversation(String conversationId){
+    public SucessDTO supprimerConversation(String conversationId, ServiceGroupe groupeService){
         Conversation conversation = getConversationById(conversationId);
         // Tenter de supprimer la conversation
         try {
-            mongoTemplate.remove(conversation);
+
+            if(!UUID.fromString(conversationId).equals(groupeService.getGroupeById(conversationId).getId())) {
+                mongoTemplate.remove(conversation);
+            }
         } catch(Exception e){
-            return new SucessDTO(false, "Error in supprimerconversation");
+            return new SucessDTO(false, "Erreur dans creerConversation");
         }
-        return new SucessDTO(true, "Success in supprimerConversation");
+        return new SucessDTO(true, "Succès dans supprimerConversation");
     }
 //   @Transactional
 //   public SucessDTO supprimerConversationAvecDTO(SupprimerGroupeDTO groupe){
@@ -71,12 +77,12 @@ public class ServiceConversation {
 //   }
    @Transactional
    public Conversation getConversationById(String ConversationIdString){
-       // Tenter de trouver une conversation
        try{
+           // Récupérer la conversation et la retourner en cas de succès
            UUID conversationId = UUID.fromString(ConversationIdString);
-           // Créer la conversation et la retourner en cas de succès
-           return entityManager.createQuery("select c from Groupe c where c.id = :conversationId", Conversation.class)
-                   .setParameter("conversationId", conversationId).getSingleResult();
+           Query query = new Query();
+           query.addCriteria(Criteria.where("id").is(conversationId));
+           return mongoTemplate.findOne(query, Conversation.class);
        } catch (Exception ex) {
            throw  new LinkUpException(ERREUR_TYPE.NON_EXISTANT, Utilitary.EXCEPTION_UTILISATEUR_NON_TROUVER);
        }
@@ -91,6 +97,15 @@ public class ServiceConversation {
 //
 //
 //   }
+
+    @Transactional
+    public SucessDTO rejoindreConversation(INVITATION_GROUPE_DTO invitation){
+
+       UUID etudiantId = serviceEtudiant.getEtudiantById((invitation.idEtudiant())).getId();
+       Conversation conversation = getConversationById(invitation.idGroupe());
+       conversation.getParticipants().add(etudiantId);
+        return new SucessDTO(true, invitation.getClass() + " ajouté au groupe " + invitation.idGroupe());
+       }
     @Transactional
     public boolean estUnChef(Conversation conversation, Etudiant etudiant) {
         return conversation.getChef().equals(etudiant.getId());

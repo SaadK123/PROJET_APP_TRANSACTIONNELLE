@@ -27,7 +27,6 @@ public class Conversation {
 
 
     private UUID chef;
-
     private Set<UUID> participants;
 
 
