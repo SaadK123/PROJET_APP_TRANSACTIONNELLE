@@ -106,7 +106,36 @@ public class ServiceConversation {
     return new SucessDTO(true, invitation.getClass() + " ajouté au groupe " + invitation.idGroupe());
 }
     @Transactional
-    public boolean estUnChef(Conversation conversation, Etudiant etudiant) {
-        return conversation.getChef().equals(etudiant.getId());
+    public SucessDTO quitterConversation(QuitterGroupeDTO quitterDto){
+       // Vérifier que la conversation ne fait pas partie d'un groupe
+
+
+       UUID etudiantId = UUID.fromString(quitterDto.idEtudiant());
+       Conversation conversation = getConversationById(quitterDto.idGroupe());
+        if(conversation.isEstConversationGroupe()){
+            return new SucessDTO(false, "Impossible de quitter une conversation dans un groupe");
+        }
+
+
+        // on retire l'etudiant de la conversation
+        conversation.getParticipants().remove(etudiantId);
+
+        if (conversation.getParticipants().isEmpty()) {
+            // si la liste est vide alors on supprime la conversation
+            supprimerConversation(conversation.getId().toString());
+        } else if (estUnChef(conversation, etudiantId)) {
+            // si le gars qui a quitter est le chef on choisi le nouveau chef
+            conversation.setChef(conversation.getParticipants().stream().toList().get(0));
+        }
+
+        return new SucessDTO(true,"vous avez quitter la conversation");
+    }
+    @Transactional
+    public void virerEtudiant(VirerEtudiantDTO virerDto){
+
+    }
+    @Transactional
+    public boolean estUnChef(Conversation conversation, UUID etudiantId) {
+        return conversation.getChef().equals(etudiantId);
     }
 }
