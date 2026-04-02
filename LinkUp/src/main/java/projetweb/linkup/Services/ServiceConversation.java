@@ -10,12 +10,14 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import projetweb.linkup.DTO.ACTIONS.*;
 import projetweb.linkup.DTO.TYPES.RequeteInvitationDTO;
+import projetweb.linkup.DTO.TYPES.RequeteNotificationDTO;
 import projetweb.linkup.Enumerations.ERREUR_TYPE;
 import projetweb.linkup.Exceptions.LinkUpException;
 import projetweb.linkup.Util.Utilitary;
 import projetweb.linkup.entities.Conversation;
 import projetweb.linkup.entities.Etudiant;
 import projetweb.linkup.entities.Groupe;
+import projetweb.linkup.entities.Notification;
 
 import java.util.UUID;
 
@@ -86,16 +88,35 @@ public class ServiceConversation {
            throw new LinkUpException(ERREUR_TYPE.NON_EXISTANT,"conversation nexiste pas");
        }
    }
-//   public SucessDTO InvitationConversation(RequeteInvitationDTO invitation){
-//
-//       Conversation conversation = getConversationById(invitation.getDestination());
-//       Etudiant sender = serviceEtudiant.getEtudiantByUsername(invitation.getEtudiantNomUtilisateur());
-//       Etudiant receiver =  serviceEtudiant.getEtudiantById(invitation.getEnvoyeurId());
-//
-//       
-//
-//
-//   }
+   public SucessDTO invitationConversation(RequeteInvitationDTO invitation, ServiceEtudiant serviceEtudiant, ServiceNotification serviceNotification, RequeteNotificationDTO notificationDTO){
+
+       Conversation conversation = getConversationById(invitation.getDestination());
+       UUID receiver = serviceEtudiant.getEtudiantByUsername(invitation.getEtudiantNomUtilisateur()).getId();
+       UUID sender =  serviceEtudiant.getEtudiantById(invitation.getEnvoyeurId()).getId();
+       // Vérifier si la conversation fait partie d'un groupe
+       if(conversation.isEstConversationGroupe()){
+           return new SucessDTO(false, "Impossible d'inviter à une conversation qui fait partie d'un groupe");
+           // Vérifier si celui qui invite est chef
+       } else if(!estUnChef(conversation, sender)){
+           return new SucessDTO(false, "Impossible d'inviter sans être le chef");
+           // Vérifier si l'étudiant tente de s'inviter lui-même
+       } else if (receiver == sender){
+           return  new SucessDTO(false, "Impossible de s'inviter soi-même à une conversation");
+           // Vérifier si l'étudiant tente d'inviter un étudiant déjà dans la conversation
+       } else if (conversation.getParticipants().contains(receiver)){
+           return  new SucessDTO(false, "impossible d'inviter un étudiant déjà dans la conversation");
+       }
+       // Récupérer l'objet de l'étudiant receiver
+       Etudiant receiverEtudiant = serviceEtudiant.getEtudiantById(receiver.toString());
+       // Créer une notification
+       Notification notification = new Notification(
+               notificationDTO.getMessage(),
+               notificationDTO.getTitre(),
+               notificationDTO.getType());
+       // Envoyer la notification de l'invitation à l'étudiant receiver
+       serviceNotification.addNotificationToStudent(notification, receiverEtudiant);
+       return  new SucessDTO(true, "Étudiant " + invitation.getEtudiantNomUtilisateur() + " invité à la conversation " + conversation.getNom() + " avec succès");
+   }
     @Transactional
     public SucessDTO rejoindreConversation(INVITATION_GROUPE_DTO invitation){
 
