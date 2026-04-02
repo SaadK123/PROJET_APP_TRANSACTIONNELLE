@@ -22,8 +22,7 @@ import java.util.UUID;
 @Service
 public class ServiceConversation {
 
-    @PersistenceContext
-    private EntityManager entityManager;
+
 
    private final MongoTemplate mongoTemplate;
    private final ServiceEtudiant serviceEtudiant;
@@ -37,7 +36,7 @@ public class ServiceConversation {
         try {
             UUID chefId = UUID.fromString(dto.chefId());
 
-            Conversation conversation = id==null ? new Conversation(chefId, dto.nomGroupe()) : new Conversation(id, chefId, dto.nomGroupe());
+            Conversation conversation = id==null ? new Conversation(chefId, dto.nomConversation()) : new Conversation(id, chefId, dto.nomConversation());
             mongoTemplate.insert(conversation);
 
             return new SucessDTO(true, "Success in creerConversation");
