@@ -53,6 +53,7 @@ public class ServiceGroupe {
         Groupe groupe = getGroupeById(requeteInvitationDTO.getDestination());
         // on recuperer le receeur et lenvoyeur
         Etudiant receveur = serviceEtudiant.getEtudiantByUsername(requeteInvitationDTO.getEtudiantNomUtilisateur());
+
         Etudiant envoyeur =  serviceEtudiant.getEtudiantById(requeteInvitationDTO.getEnvoyeurId());
         if (!groupe.getChef().getId().equals(envoyeur.getId())) {
             // si il essaye de sinviter lui meme sa marche pas  (garder tant que ya pas de jwt)
@@ -127,12 +128,12 @@ public class ServiceGroupe {
   @Transactional
     public void supprimerGroupeInterne(String idGroupe, Groupe groupe) {
      // ici on peut supprimer un groupe soit avec lid soit avec lobjet qui recupere le id
-        UUID str = groupe == null ? UUID.fromString(idGroupe):groupe.getId();
+        UUID id = groupe == null ? UUID.fromString(idGroupe):groupe.getId();
 
         try {
             // on tente de supprimer le groupe mais tfacon sa va toujours marcher
             entityManager.createQuery("delete FROM Groupe g where g.id = :id")
-                    .setParameter("id",str).executeUpdate();
+                    .setParameter("id",id).executeUpdate();
             new SucessDTO(true, "groupe supprimer");
             return;
         } catch (Exception ignored) {
