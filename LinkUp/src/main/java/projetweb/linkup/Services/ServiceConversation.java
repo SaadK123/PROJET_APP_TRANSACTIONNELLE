@@ -47,7 +47,6 @@ public class ServiceConversation {
    }
 
 
-
     @Transactional
     public SucessDTO supprimerConversation(String conversationId){
         Conversation conversation = getConversationById(conversationId);
@@ -122,12 +121,15 @@ public class ServiceConversation {
 
         if (conversation.getParticipants().isEmpty()) {
             // si la liste est vide alors on supprime la conversation
-            supprimerConversation(conversation.getId().toString());
+            SucessDTO result = supprimerConversation(conversation.getId().toString());
+            if (!result.success()) {
+                return new SucessDTO(false, "Erreur dans supression de la conversation, alors impossible de quitter la conversation");
+            }
         } else if (estUnChef(conversation, etudiantId)) {
             // si le gars qui a quitter est le chef on choisi le nouveau chef
-            conversation.setChef(conversation.getParticipants().stream().toList().get(0));
+            conversation.getParticipants().stream().findFirst().orElse(null);
         }
-
+        mongoTemplate.save(conversation);
         return new SucessDTO(true,"vous avez quitter la conversation");
     }
     @Transactional
