@@ -8,10 +8,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
-import projetweb.linkup.DTO.ACTIONS.CreationConversationDTO;
-import projetweb.linkup.DTO.ACTIONS.CreationDeGroupeDTO;
-import projetweb.linkup.DTO.ACTIONS.SucessDTO;
-import projetweb.linkup.DTO.ACTIONS.SupprimerGroupeDTO;
+import projetweb.linkup.DTO.ACTIONS.*;
 import projetweb.linkup.DTO.TYPES.RequeteInvitationDTO;
 import projetweb.linkup.Enumerations.ERREUR_TYPE;
 import projetweb.linkup.Exceptions.LinkUpException;
@@ -100,6 +97,14 @@ public class ServiceConversation {
 //
 //
 //   }
+    @Transactional
+    public SucessDTO rejoindreConversation(INVITATION_GROUPE_DTO invitation){
+
+    UUID etudiantId = serviceEtudiant.getEtudiantById((invitation.idEtudiant())).getId();
+    Conversation conversation = getConversationById(invitation.idGroupe());
+    conversation.getParticipants().add(etudiantId);
+    return new SucessDTO(true, invitation.getClass() + " ajouté au groupe " + invitation.idGroupe());
+}
     @Transactional
     public boolean estUnChef(Conversation conversation, Etudiant etudiant) {
         return conversation.getChef().equals(etudiant.getId());
