@@ -28,6 +28,7 @@ public class Conversation {
 
     private Set<UUID> participants;
 
+    private boolean estConversationGroupe;
 
     private List<Message> messages;
 
@@ -40,6 +41,7 @@ public class Conversation {
         this.participants = new HashSet<>();
         this.messages = new ArrayList<>();
         this.participants.add(chef);
+        estConversationGroupe = true;
     }
 
     public Conversation(UUID chef, String nom) {
@@ -48,6 +50,7 @@ public class Conversation {
         this.participants = new HashSet<>();
         this.messages = new ArrayList<>();
         this.participants.add(chef);
+        estConversationGroupe = false;
     }
 
 
