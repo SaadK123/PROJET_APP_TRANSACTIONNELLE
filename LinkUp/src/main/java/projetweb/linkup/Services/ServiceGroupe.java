@@ -4,15 +4,14 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import projetweb.linkup.DTO.ACTIONS.*;
 import projetweb.linkup.DTO.TYPES.RequeteInvitationDTO;
+import projetweb.linkup.Enumerations.NotificationType;
 import projetweb.linkup.Exceptions.LinkUpException;
 import projetweb.linkup.Util.Utilitary;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import projetweb.linkup.Enumerations.ERREUR_TYPE;
-import projetweb.linkup.entities.Etudiant;
-import projetweb.linkup.entities.Groupe;
-import projetweb.linkup.entities.Invitation;
+import projetweb.linkup.entities.*;
 
 import java.util.List;
 import java.util.UUID;
@@ -61,6 +60,30 @@ public class ServiceGroupe {
                    Utilitary.MESSAGE_ACTION_DEMANDE_CHEF_INVITATION);
         }
         // sinon alors on creer une invitation par rapport aux deux
+        // verifier que letudiant nest pas deja dans le groupe
+        for (Etudiant membre : groupe.getEtudiants()) {
+            if (membre.getId().equals(receveur.getId())) {
+                throw new LinkUpException(
+                        ERREUR_TYPE.DUPLICATION,
+                        "cet etudiant est deja dans le groupe"
+                );
+            }
+        }
+
+        // verifier quune invitation pour ce groupe nexiste pas deja
+        for (Notification notification : receveur.getNotifications()) {
+            if (notification instanceof Invitation invitationExistante) {
+                if (
+                        invitationExistante.getType() == NotificationType.NOUVELLE_GROUPE_INVITATION
+                                && invitationExistante.getGroupe().getId().equals(groupe.getId())
+                ) {
+                    throw new LinkUpException(
+                            ERREUR_TYPE.DUPLICATION,
+                            "une invitation pour ce groupe a deja ete envoyee"
+                    );
+                }
+            }
+        }
         Invitation invitation = new Invitation(groupe,envoyeur,
                 requeteInvitationDTO.getType(), requeteInvitationDTO.getTitre(),requeteInvitationDTO.getMessage());
 
@@ -114,10 +137,12 @@ public class ServiceGroupe {
         return new SucessDTO(true,"vous avez ete ajouter dans le groupe");
     }
     @Transactional
-    public Groupe creerGroupe(CreationDeGroupeDTO groupeDTO) {
+    public Groupe creerGroupe(CreationDeGroupeDTO groupeDTO, ServiceConversation serviceConversation){
         // creer un groupe ici fonctionne pratiquement toujours on pourrais faire une limite
         Etudiant chef = serviceEtudiant.getEtudiantById(groupeDTO.chefID());
         Groupe g = new Groupe(chef,groupeDTO.nomGroup());
+        var conversationDTO = new CreationConversationDTO(groupeDTO.chefID(),groupeDTO.nomGroup());
+        serviceConversation.creerConversation(conversationDTO, g.getId());
           // on persiste lentite pour la mettre dans la bd ( pas requis mais safe)
         entityManager.persist(g);
         entityManager.flush();
