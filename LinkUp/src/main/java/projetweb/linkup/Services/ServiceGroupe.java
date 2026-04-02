@@ -132,6 +132,8 @@ public class ServiceGroupe {
        // on ajoute letudiant
         group.getEtudiants().add(etudiant);
 
+        serviceNotification.deleteNotification(invitation);
+
         return new SucessDTO(true,"vous avez ete ajouter dans le groupe");
     }
     @Transactional

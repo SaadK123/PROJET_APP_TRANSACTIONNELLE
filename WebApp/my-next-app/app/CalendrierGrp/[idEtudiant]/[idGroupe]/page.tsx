@@ -472,6 +472,22 @@ export default function PageCalendrierGroupe() {
     }
   }
 
+
+  
+function retournerBoutonQuitterGroupe() {
+  return (
+    <div>
+    <button
+      type="button"
+      className="btn btn-warning w-100"
+      onClick={quitterLeGroupe}
+    >
+      {BOUTON_QUITTER_GROUPE}
+    </button>
+    </div>
+  );
+}
+
   /**
    * ici le chef supprime le groupe
    */
@@ -600,20 +616,23 @@ export default function PageCalendrierGroupe() {
           >
             {BOUTON_SUPPRIMER_GROUPE}
           </button>
+
+          {retournerBoutonQuitterGroupe()}
         </div>
+
+      
+
+        
       );
+
+    
     }
 
     return (
-      <div className="mt-3">
-        <button
-          type="button"
-          className="btn btn-warning w-100"
-          onClick={quitterLeGroupe}
-        >
-          {BOUTON_QUITTER_GROUPE}
-        </button>
-      </div>
+      <div>
+     {retournerBoutonQuitterGroupe()}
+
+     </div>
     );
   }
 
@@ -935,3 +954,5 @@ export default function PageCalendrierGroupe() {
     </div>
   );
 }
+
+

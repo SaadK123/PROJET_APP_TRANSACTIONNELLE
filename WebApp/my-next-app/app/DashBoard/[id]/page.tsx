@@ -214,8 +214,10 @@ export default function Dashboard() {
 
     try {
       await ajouterEtudiantDansGroupe(notification.groupe.id, id);
+      await supprimerNotification(notification.id);
       await chargerEtudiant();
       await chargerGroupes();
+      
       setMessage(MESSAGE_INVITATION_ACCEPTEE);
     } catch (e: any) {
       setErreur(retournerErreur(e, ERREUR_IMPOSSIBLE_ACCEPTER_INVITATION));
