@@ -73,8 +73,7 @@ public class ServiceGroupe {
         for (Notification notification : receveur.getNotifications()) {
             if (notification instanceof Invitation invitationExistante) {
                 if (
-                        invitationExistante.getType() == NotificationType.NOUVELLE_GROUPE_INVITATION
-                                && invitationExistante.getGroupe().getId().equals(groupe.getId())
+                      invitationExistante.getGroupe().getId().equals(groupe.getId())
                 ) {
                     throw new LinkUpException(
                             ERREUR_TYPE.DUPLICATION,
