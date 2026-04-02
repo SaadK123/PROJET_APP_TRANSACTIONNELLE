@@ -131,11 +131,31 @@ public class ServiceConversation {
         return new SucessDTO(true,"vous avez quitter la conversation");
     }
     @Transactional
-    public void virerEtudiant(VirerEtudiantDTO virerDto){
-
+    public SucessDTO virerEtudiant(VirerEtudiantDTO virerDto, ServiceEtudiant serviceEtudiant){
+       // Trouver le l'étudiant viré et l'étudiant qui vire
+       UUID vireur = UUID.fromString(virerDto.etudiantQuiVireId());
+       UUID etudiantVirer = serviceEtudiant.getEtudiantByUsername(virerDto.nomUtilisateur()).getId();
+       // Trouver la conversation
+       Conversation conversation = getConversationById(virerDto.groupid());
+       // Vérifier si la conversation ne fait pas partie d'un groupe
+       if(conversation.isEstConversationGroupe()){
+           return new SucessDTO(false, "Impossible de virer un étudiant d'une conversation dans un groupe");
+           // Vérifer si le vireur est chef
+       } else if(!estUnChef(conversation, vireur)){
+           return new SucessDTO(false, "Impossible de virer un étudiant sans être le chef");
+           // Vérifier si l'étudiant viré existe
+       } else if(serviceEtudiant.etudiantExiste(etudiantVirer.toString())){
+           return new SucessDTO(false, "Impossible de virer un étudiant qui n'existe pas");
+           // Vérifier si le vireur tente de se virer
+       } else if(etudiantVirer == vireur){
+           return  new SucessDTO(false, "Impossible de se virer soi-même");
+       }
+       // Virer l'étudiant
+       conversation.getParticipants().remove(etudiantVirer);
+       return  new SucessDTO(true, "Etudiant " + virerDto.nomUtilisateur() + " Viré avec succès");
     }
     @Transactional
-    public boolean estUnChef(Conversation conversation, UUID etudiantId) {
+    private boolean estUnChef(Conversation conversation, UUID etudiantId) {
         return conversation.getChef().equals(etudiantId);
     }
 }
