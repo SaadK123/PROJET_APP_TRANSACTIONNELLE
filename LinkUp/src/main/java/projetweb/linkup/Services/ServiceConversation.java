@@ -102,7 +102,7 @@ public class ServiceConversation {
     UUID etudiantId = serviceEtudiant.getEtudiantById((invitation.idEtudiant())).getId();
     Conversation conversation = getConversationById(invitation.idGroupe());
     conversation.getParticipants().add(etudiantId);
-    return new SucessDTO(true, invitation.getClass() + " ajouté au groupe " + invitation.idGroupe());
+    return new SucessDTO(true,  " ajouté au groupe " + invitation.idGroupe());
 }
     @Transactional
     public SucessDTO quitterConversation(QuitterGroupeDTO quitterDto){
@@ -130,7 +130,29 @@ public class ServiceConversation {
         return new SucessDTO(true,"vous avez quitter la conversation");
     }
     @Transactional
-    public void virerEtudiant(VirerEtudiantDTO virerDto){
+    public SucessDTO virerEtudiantConversation(VirerEtudiantDTO virerDto){
+
+        UUID idVireur = UUID.fromString(virerDto.etudiantQuiVireId());
+        String nomUtilisateur = virerDto.nomUtilisateur();
+
+        String conversationId = virerDto.groupid();
+
+
+        Etudiant vireur = serviceEtudiant.getEtudiantById(idVireur.toString());
+
+
+        Conversation conversation = getConversationById(conversationId);
+
+        if(!conversation.getChef().equals(idVireur)){
+            throw new LinkUpException(ERREUR_TYPE.ERREUR_METIER_LOGIQUE, "Seul le chef peut virer un etudiant");
+        }else if(vireur.getNomUtilisateur().equals(nomUtilisateur)){
+            throw new LinkUpException(ERREUR_TYPE.ERREUR_METIER_LOGIQUE, "Vous ne pouvez pas vous virer vous meme");
+        }
+
+        conversation.getParticipants().remove(serviceEtudiant.getEtudiantByUsername(nomUtilisateur).getId());
+
+        return new SucessDTO(true, "L'etudiant  a été viré de la conversation ");
+
 
     }
     @Transactional
