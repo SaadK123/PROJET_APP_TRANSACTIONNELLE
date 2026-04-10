@@ -882,6 +882,7 @@ export default function PageCalendrierGroupe() {
                   left: "prev,next today",
                   center: "title",
                   right: "dayGridMonth,timeGridWeek,timeGridDay",
+                  
                 }}
                 buttonText={{
                   today: CALENDRIER_AUJOURD_HUI,
