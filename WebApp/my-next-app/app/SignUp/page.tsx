@@ -25,10 +25,10 @@ import {
 /* erreurs */
 const ERREUR_CREATION_COMPTE = "impossible de creer le compte";
 const ERREUR_NOM_UTILISATEUR_OBLIGATOIRE =
-  "le nom d utilisateur est obligatoire";
-const ERREUR_NOM_OBLIGATOIRE = "le nom est obligatoire";
-const ERREUR_PRENOM_OBLIGATOIRE = "le prenom est obligatoire";
-const ERREUR_ECOLE_OBLIGATOIRE = "l ecole est obligatoire";
+  "Le nom d'utilisateur est obligatoire";
+const ERREUR_NOM_OBLIGATOIRE = "Le nom est obligatoire";
+const ERREUR_PRENOM_OBLIGATOIRE = "Le prenom est obligatoire";
+const ERREUR_ECOLE_OBLIGATOIRE = "L'école est obligatoire";
 const ERREUR_CONDITIONS_OBLIGATOIRES =
   "accepter les conditions d utilisation";
 
@@ -48,17 +48,17 @@ const BOUTON_CONNEXION = "Connection";
 const BOUTON_INSCRIPTION = "Inscription";
 
 /* formulaire */
-const LABEL_NOM_UTILISATEUR = "Nom d utilisateur";
+const LABEL_NOM_UTILISATEUR = "Nom d'utilisateur";
 const LABEL_NOM = "Nom";
-const LABEL_PRENOM = "Prenom";
-const LABEL_ECOLE = "Universite Cegep";
-const LABEL_EMAIL = "Email etudiant";
+const LABEL_PRENOM = "Prénom";
+const LABEL_ECOLE = "Universite Cégep";
+const LABEL_EMAIL = "Courriel etudiant";
 const LABEL_MOT_DE_PASSE = "Mot de passe";
 
 const TEXTE_REGLES_MOT_DE_PASSE =
   "Le mot de passe doit contenir au moins 8 caracteres, une majuscule, un chiffre et un caractere special.";
 
-const TEXTE_CONDITIONS_1 = "J accepte les";
+const TEXTE_CONDITIONS_1 = "J'accepte les";
 const TEXTE_CONDITIONS_2 = "conditions d utilisation";
 const TEXTE_CONDITIONS_3 = "et la";
 const TEXTE_CONDITIONS_4 = "politique de confidentialite";
