@@ -1,0 +1,110 @@
+@import "tailwindcss";
+/* HomePage */
+.homepage-background {
+  background-color: #e7e5ff;
+}
+
+.homepage-logo {
+  width: 80px;
+  padding-left: 20px;
+}
+.h1-WritingHP {
+  font-family: arial;
+}
+
+.btn-startHP {
+  border: black;
+}
+
+.h4-HP {
+  margin-bottom: 0%;
+}
+
+.hp-Border-Blue{
+  --bs-border-opacity: 1 !important;
+  border-style: dashed !important;
+  border-color: rgba(74, 175, 237)!important;
+}
+.hp-Border-Purple{
+    --bs-border-opacity: 1 !important;
+  border-style: dashed !important;
+  border-color: rgba(187, 73, 249)!important;
+}
+.hp-Border-Green{
+    --bs-border-opacity: 1 !important;
+  border-style: dashed !important;
+  border-color: rgba(31, 166, 44)!important;
+}
+.hp-schedule-Blue{
+  --tw-text-opacity: 1!important;
+color: rgba(74, 175, 237, var(--tw-text-opacity)) !important;
+}
+.hp-friends-Purple{
+  --tw-text-opacity: 1!important;
+color: rgba(187, 73, 249, var(--tw-text-opacity)) !important;
+}
+.hp-time-Green{
+--tw-text-opacity: 1!important;
+color: rgba(31, 166, 44, var(--tw-text-opacity)) !important;
+}
+/* SignUp */
+
+.btn-createAcc {
+  background-color: #32cd32;
+  color: white;
+  border: none;
+}
+.btn-createAcc:hover,
+.btn-createAcc:focus,
+.btn-createAcc:active {
+  background-color: #32cd32 !important;
+  color: white !important;
+  box-shadow: none !important;
+}
+.signup-background {
+  background-color: white;
+}
+.signup-form {
+  background-color: rgba(255, 255, 255) !important;
+  border: none;
+}
+
+/* calendar colors */
+
+.fc .fc-button-primary {
+  background-color: #6366F1;
+  border: none;
+}
+
+.fc .fc-button-primary:hover {
+  background-color: #4F46E5;
+}
+
+.fc .fc-daygrid-event {
+  background-color: #6366F1;
+  border: none;
+}
+
+.fc .fc-timegrid-event {
+  background-color: #22C55E;
+  border: none;
+}
+
+.fc-toolbar-title {
+  font-weight: 600;
+}
+.fc .fc-daygrid-day-number {
+  color: black !important;
+  font-weight: 500;
+}
+.fc .fc-col-header-cell-cushion {
+  color: black !important;
+  font-weight: 600;
+}
+
+.fc-event:hover .edit-btn {
+  display: inline-block;
+}
+.fc-event{
+  color: black !important;
+}
