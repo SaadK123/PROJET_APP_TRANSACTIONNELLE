@@ -162,10 +162,16 @@ public class ServiceConversation {
 
         Conversation conversation = getConversationById(conversationId);
 
-        if(!conversation.getChef().equals(idVireur)){
+        // Vérifier si la conversation ne fait pas partie d'un groupe
+        if(conversation.isEstConversationGroupe()) {
+            throw new LinkUpException(ERREUR_TYPE.ERREUR_METIER_LOGIQUE, "Impossible de virer un étudiant d'une conversation dans un groupe");
+        } else if(!conversation.getChef().equals(idVireur)){
             throw new LinkUpException(ERREUR_TYPE.ERREUR_METIER_LOGIQUE, "Seul le chef peut virer un etudiant");
         }else if(vireur.getNomUtilisateur().equals(nomUtilisateur)){
             throw new LinkUpException(ERREUR_TYPE.ERREUR_METIER_LOGIQUE, "Vous ne pouvez pas vous virer vous meme");
+            // Vérifier si l'étudiant viré existe
+        } else if(serviceEtudiant.etudiantExiste(nomUtilisateur)) {
+            throw new LinkUpException(ERREUR_TYPE.ERREUR_METIER_LOGIQUE, "Impossible de virer un étudiant qui n'existe pas");
         }
 
         conversation.getParticipants().remove(serviceEtudiant.getEtudiantByUsername(nomUtilisateur).getId());
