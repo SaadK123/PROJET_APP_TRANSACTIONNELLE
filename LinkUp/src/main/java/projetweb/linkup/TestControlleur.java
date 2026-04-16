@@ -5,16 +5,15 @@ import projetweb.linkup.DTO.ACTIONS.*;
 import projetweb.linkup.DTO.TYPES.RequeteInvitationDTO;
 import projetweb.linkup.DTO.TYPES.MiseAJourEtudiantMotDePasse;
 import projetweb.linkup.DTO.TYPES.MiseAJourEtudiantProfil;
-import projetweb.linkup.Services.ServiceEtudiant;
-import projetweb.linkup.Services.ServiceGroupe;
-import projetweb.linkup.Services.ServiceHoraire;
-import projetweb.linkup.Services.ServiceNotification;
+import projetweb.linkup.Services.*;
 import projetweb.linkup.entities.Etudiant;
 import projetweb.linkup.entities.Groupe;
 import projetweb.linkup.entities.Horaire;
 import projetweb.linkup.entities.Notification;
 
 import java.util.List;
+import java.util.UUID;
+
 @CrossOrigin(origins = {"http://localhost:3000", "http://127.0.0.1:3000","http://localhost:3001"})
 @RestController
 @RequestMapping("/api")
@@ -24,15 +23,18 @@ public class TestControlleur {
         private final ServiceGroupe serviceGroupe;
         private final ServiceHoraire serviceHoraire;
         private final ServiceNotification serviceNotification;
+        private final ServiceConversation serviceConversation;
         public TestControlleur(
                 ServiceEtudiant serviceEtudiant,
                 ServiceGroupe serviceGroupe,
-                ServiceHoraire serviceHoraire, ServiceNotification serviceNotification
+                ServiceHoraire serviceHoraire, ServiceNotification serviceNotification,
+                ServiceConversation serviceConversation
         ) {
                 this.serviceEtudiant = serviceEtudiant;
                 this.serviceGroupe = serviceGroupe;
                 this.serviceHoraire = serviceHoraire;
             this.serviceNotification = serviceNotification;
+            this.serviceConversation = serviceConversation;
         }
         @PostMapping("/etudiants")
         public Etudiant createEtudiant(@RequestBody CreationEtudiantDTO dto) {
@@ -70,7 +72,7 @@ public class TestControlleur {
 
         @PostMapping("/groupes")
         public Groupe createGroup(@RequestBody CreationDeGroupeDTO dto) {
-                return serviceGroupe.creerGroupe(dto);
+                return serviceGroupe.creerGroupe(dto, serviceConversation);
         }
 
         @GetMapping("/groupes")
@@ -146,5 +148,10 @@ public class TestControlleur {
         @DeleteMapping("/groupe/supprimer")
         public SucessDTO retirerGroupe(@RequestBody SupprimerGroupeDTO supprimerGroupeDTO) {
                 return serviceGroupe.supprimerGroupe(supprimerGroupeDTO);
+        }
+
+        @PostMapping("/conversations")
+        public SucessDTO creerConversation(@RequestBody CreationConversationDTO dto, @RequestParam UUID id) {
+                return serviceConversation.creerConversation(dto, id);
         }
 }

@@ -1,5 +1,6 @@
 "use client";
 
+
 import { useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
 import { useRouter } from "next/navigation";
@@ -7,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { creerEtudiant } from "@/app/FetchsMethodesEtudiants";
 import { verifierEmail, verifierMotDePasse } from "@/app/VerificationEmail";
 import { retournerErreur } from "@/app/attraperErreur";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 import {
   GotoHomePage,
@@ -65,8 +67,8 @@ const TEXTE_DEJA_COMPTE = "Tu as deja un compte ?";
 const TEXTE_CONNECTE_TOI = "Connecte-toi";
 
 /* boutons formulaire */
-const BOUTON_VOIR = "Voir";
-const BOUTON_CACHER = "Cacher";
+const BOUTON_VOIR = <FaEye />;
+const BOUTON_CACHER = <FaEyeSlash />;
 const BOUTON_CREER_COMPTE = "Creer mon compte";
 const BOUTON_CREATION_EN_COURS = "Creation...";
 
@@ -368,7 +370,7 @@ export default function SignUpTestPage() {
 
                 <button
                   type="button"
-                  className="btn btn-outline-secondary"
+                  className="btn"
                   onClick={() => setVoirMotDePasse(!voirMotDePasse)}
                 >
                   {voirMotDePasse ? BOUTON_CACHER : BOUTON_VOIR}

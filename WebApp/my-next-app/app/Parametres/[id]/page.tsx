@@ -21,6 +21,7 @@ import {
 } from "@/app/ChangerPage";
 
 import type { Etudiant } from "@/app/TypesObjets";
+import Spinner from "react-bootstrap/Spinner";
 
 export default function Parametres() {
 
@@ -45,7 +46,10 @@ export default function Parametres() {
 
   const [motDePasseSuppression, setMotDePasseSuppression] = useState("");
 
-
+//Animation Chargement
+  function Chargement() {
+  return <Spinner animation="border" />;
+}
   /*
    permet de charger les informations de l'etudiant
    depuis l'api puis remplir les champs du formulaire
@@ -252,8 +256,8 @@ export default function Parametres() {
   if (chargement) {
 
     return (
-      <div className="container p-5">
-        <h2>Chargement...</h2>
+      <div className="container-fluid p-4">
+        {Chargement()}
       </div>
     );
 

@@ -1,12 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import type { FormEvent } from "react";
+import type { FormEvent, ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
 
 import { obtenirEtudiantParAuth } from "../FetchsMethodesEtudiants";
 import { verifierEmail, verifierMotDePasse } from "../VerificationEmail";
 import { retournerErreur } from "../attraperErreur";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 import {
   GotoDashboard,
@@ -44,7 +45,9 @@ const TEXTE_REGLES_MOT_DE_PASSE =
 const TEXTE_PAS_DE_COMPTE = "Pas de compte ?";
 const TEXTE_INSCRIPTION = "Inscris-toi";
 
-/* bouton submit */
+/* bouton formulaire */
+const BOUTON_VOIR = <FaEye />;
+const BOUTON_CACHER = <FaEyeSlash />;
 const BOUTON_CONNEXION_EN_COURS = "Connexion...";
 const BOUTON_CONNEXION_FORM = "Connection";
 
@@ -62,6 +65,7 @@ export default function SignIn() {
   /* state interface */
   const [erreur, setErreur] = useState<string>("");
   const [chargement, setChargement] = useState<boolean>(false);
+  const [voirMotDePasse, setVoirMotDePasse] = useState<boolean>(false);
 
   /**
    * ici je gere lenvoie du formulaire
@@ -92,7 +96,7 @@ export default function SignIn() {
 
       const etudiant: Etudiant = await obtenirEtudiantParAuth(
         email.trim(),
-        password
+        password,
       );
 
       GotoDashboard(router, etudiant.id);
@@ -173,7 +177,10 @@ export default function SignIn() {
         </div>
 
         {/* formulaire de connexion */}
-        <form onSubmit={handleSubmit}>
+        <form
+          className="border rounded signup-form p-5 col-7 mx-auto"
+          onSubmit={handleSubmit}
+        >
           {/* ici je montre lerreur si elle existe */}
           {erreur !== "" ? (
             <div className="alert alert-danger mb-4">{erreur}</div>
@@ -193,12 +200,24 @@ export default function SignIn() {
           {/* champ mot de passe */}
           <div className="mb-3">
             <label>{LABEL_MOT_DE_PASSE}</label>
-            <input
-              value={password}
-              onChange={(e) => setPassword(e.currentTarget.value)}
-              type="password"
-              className="form-control"
-            />
+            <div className="input-group">
+              <input
+                value={password}
+                onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                  setPassword(e.currentTarget.value)
+                }
+                type={voirMotDePasse ? "text" : "password"}
+                className="form-control"
+              />
+
+              <button
+                type="button"
+                className="btn"
+                onClick={() => setVoirMotDePasse(!voirMotDePasse)}
+              >
+                {voirMotDePasse ? BOUTON_CACHER : BOUTON_VOIR}
+              </button>
+            </div>
           </div>
 
           {/* rappel des regles */}
@@ -216,17 +235,18 @@ export default function SignIn() {
               {chargement ? BOUTON_CONNEXION_EN_COURS : BOUTON_CONNEXION_FORM}
             </button>
           </div>
-        </form>
 
-        {/* lien vers inscription */}
-        <div className="col-7 mx-auto text-center">
-          <label>
-            {TEXTE_PAS_DE_COMPTE}{" "}
-            <span>
-              <a href="./SignUp">{TEXTE_INSCRIPTION}</a>
-            </span>
-          </label>
-        </div>
+          {/* lien vers inscription */}
+          <div className="col-7 mx-auto text-center">
+            <label>
+              {TEXTE_PAS_DE_COMPTE}{" "}
+              <span>
+                <a href="./SignUp">{TEXTE_INSCRIPTION}</a>
+              </span>
+            </label>
+          </div>
+        </form>
+        {/* </form>*/}
       </div>
     </div>
   );

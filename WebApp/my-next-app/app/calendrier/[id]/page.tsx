@@ -6,7 +6,7 @@ import { useParams, useRouter } from "next/navigation";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
-
+import Spinner from "react-bootstrap/Spinner";
 import {
   ajouterActivitePourEtudiant,
   retirerActivite,
@@ -120,6 +120,10 @@ export default function CalendrierUtilisateur() {
     setErreur("");
     setMessage("");
   }
+//Animation Chargement
+  function Chargement() {
+  return <Spinner animation="border" />;
+}
 
   /**
    * ici je charge letudiant depuis backend
@@ -325,7 +329,7 @@ export default function CalendrierUtilisateur() {
   if (chargement) {
     return (
       <div className="container-fluid p-4">
-        <h2>{TITRE_CHARGEMENT}</h2>
+        {Chargement()}
       </div>
     );
   }
