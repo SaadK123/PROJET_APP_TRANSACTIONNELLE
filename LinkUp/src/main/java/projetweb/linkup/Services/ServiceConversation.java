@@ -87,6 +87,8 @@ public class ServiceConversation {
            throw new LinkUpException(ERREUR_TYPE.NON_EXISTANT,"conversation nexiste pas");
        }
    }
+
+   @Transactional
     public SucessDTO invitationConversation(RequeteInvitationDTO invitation, ServiceEtudiant serviceEtudiant, ServiceNotification serviceNotification){
 
         Conversation conversation = getConversationById(invitation.getDestination());
