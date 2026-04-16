@@ -2,20 +2,20 @@ export function verifierEmail(email: string): string {
   const emailNettoye = email.trim();
 
   if (emailNettoye === "") {
-    return "l email est obligatoire";
+    return "Le courriel est obligatoire";
   }
 
   const morceaux = emailNettoye.split("@");
 
   if (morceaux.length !== 2) {
-    return "email invalide";
+    return "Courriel invalide";
   }
 
   const partieAvant = morceaux[0].trim();
   const partieApres = morceaux[1].trim();
 
   if (partieAvant === "" || partieApres === "") {
-    return "email invalide";
+    return "Courriel invalide";
   }
 
   return "";
