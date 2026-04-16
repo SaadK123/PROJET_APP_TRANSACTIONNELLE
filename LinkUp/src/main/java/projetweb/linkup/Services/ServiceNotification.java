@@ -107,16 +107,6 @@ public class ServiceNotification {
     }
 
 
-    public boolean  verifierEtudiantDejaInviter(Etudiant aInviter,UUID destinationId) {
-        for(Notification notification : aInviter.getNotifications()) {
-            if(notification instanceof Invitation invitation && invitation.getGroupe()
-                    .getId().equals(destinationId)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
 
 
 
