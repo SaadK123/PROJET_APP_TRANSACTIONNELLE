@@ -9,6 +9,7 @@ import projetweb.linkup.Enumerations.ERREUR_TYPE;
 import projetweb.linkup.Exceptions.LinkUpException;
 import projetweb.linkup.Util.Utilitary;
 import projetweb.linkup.entities.Etudiant;
+import projetweb.linkup.entities.Invitation;
 import projetweb.linkup.entities.Notification;
 
 import java.util.List;
@@ -93,6 +94,16 @@ public class ServiceNotification {
        receveur.getNotifications().add(notification);
 
         return new SucessDTO(true,"Notification ajoutée");
+    }
+
+    public boolean verifierEtudiantDejaInviter(Etudiant aInviter,UUID destinationId) {
+        for(Notification notification : aInviter.getNotifications()) {
+            if(notification instanceof Invitation invitation && invitation.getGroupe()
+                    .getId().equals(destinationId)) {
+                return false;
+            }
+        }
+        return true;
     }
 
 

@@ -23,4 +23,5 @@ public class Message {
     private UUID envoyeurId;
     private String contenu;
     private LocalDateTime tempsEnvoi;
+
 }

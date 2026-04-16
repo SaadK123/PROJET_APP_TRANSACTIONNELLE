@@ -5,8 +5,10 @@ import org.springframework.context.annotation.Lazy;
 import projetweb.linkup.DTO.ACTIONS.CreationEtudiantDTO;
 import projetweb.linkup.DTO.ACTIONS.SupprimerEtudiantDTO;
 import projetweb.linkup.DTO.ACTIONS.SucessDTO;
+import projetweb.linkup.DTO.ACTIONS.VirerEtudiantDTO;
 import projetweb.linkup.DTO.TYPES.MiseAJourEtudiantMotDePasse;
 import projetweb.linkup.DTO.TYPES.MiseAJourEtudiantProfil;
+import projetweb.linkup.Enumerations.TypeDeVirement;
 import projetweb.linkup.Exceptions.LinkUpException;
 import projetweb.linkup.Util.Utilitary;
 import jakarta.persistence.EntityManager;
@@ -194,6 +196,16 @@ public class ServiceEtudiant {
         }
     }
     @Transactional
+    public boolean etudiantExiste(String etudiantId){
+        try {
+            getEtudiantById(etudiantId);
+            return true;
+        }catch (LinkUpException e){
+            return false;
+        }
+
+    }
+    @Transactional
     public SucessDTO miseAJourEtudiantMotDePasse(MiseAJourEtudiantMotDePasse miseAJourEtudiantMotDePasse){
         String etudiantId = miseAJourEtudiantMotDePasse.getEtudiantID();
         Etudiant e =  getEtudiantById(etudiantId);
@@ -207,6 +219,7 @@ public class ServiceEtudiant {
         }
        return new SucessDTO(true,Utilitary.MESSAGE_ETUDIANT_MODIFICATION);
     }
+
 
 
 

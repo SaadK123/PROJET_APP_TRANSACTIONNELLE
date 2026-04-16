@@ -23,12 +23,14 @@ public class ServiceGroupe {
 
    private final ServiceEtudiant serviceEtudiant;
    private final ServiceNotification serviceNotification;
+   private final ServiceConversation serviceConversation;
     @PersistenceContext
     private EntityManager entityManager;
-    public ServiceGroupe( ServiceEtudiant serviceEtudiant,ServiceNotification serviceNotification) {
+    public ServiceGroupe( ServiceEtudiant serviceEtudiant,ServiceNotification serviceNotification, ServiceConversation serviceConversation) {
 
         this.serviceEtudiant = serviceEtudiant;
         this.serviceNotification = serviceNotification;
+        this.serviceConversation = serviceConversation;
     }
    @Transactional
     public Groupe getGroupeById(String groupeIdString) {
@@ -52,6 +54,7 @@ public class ServiceGroupe {
         Groupe groupe = getGroupeById(requeteInvitationDTO.getDestination());
         // on recuperer le receeur et lenvoyeur
         Etudiant receveur = serviceEtudiant.getEtudiantByUsername(requeteInvitationDTO.getEtudiantNomUtilisateur());
+
         Etudiant envoyeur =  serviceEtudiant.getEtudiantById(requeteInvitationDTO.getEnvoyeurId());
         if (!groupe.getChef().getId().equals(envoyeur.getId())) {
             // si il essaye de sinviter lui meme sa marche pas  (garder tant que ya pas de jwt)
@@ -70,18 +73,21 @@ public class ServiceGroupe {
         }
 
         // verifier quune invitation pour ce groupe nexiste pas deja
-        for (Notification notification : receveur.getNotifications()) {
-            if (notification instanceof Invitation invitationExistante) {
-                if (
-                      invitationExistante.getGroupe().getId().equals(groupe.getId())
-                ) {
-                    throw new LinkUpException(
-                            ERREUR_TYPE.DUPLICATION,
-                            "une invitation pour ce groupe a deja ete envoyee"
-                    );
-                }
-            }
-        }
+//        for (Notification notification : receveur.getNotifications()) {
+//            if (notification instanceof Invitation invitationExistante) {
+//                if (
+//                        invitationExistante.getType() == NotificationType.NOUVELLE_GROUPE_INVITATION
+//                                && invitationExistante.getGroupe().getId().equals(groupe.getId())
+//                ) {
+//                    throw new LinkUpException(
+//                            ERREUR_TYPE.DUPLICATION,
+//                            "une invitation pour ce groupe a deja ete envoyee"
+//                    );
+//                }
+//            }
+//        }
+
+        serviceNotification.verifierEtudiantDejaInviter(receveur, groupe.getId());  //verifier  une invitation pour ce groupe a deja ete envoyee
         Invitation invitation = new Invitation(groupe,envoyeur,
                 requeteInvitationDTO.getType(), requeteInvitationDTO.getTitre(),requeteInvitationDTO.getMessage());
 
@@ -153,12 +159,12 @@ public class ServiceGroupe {
   @Transactional
     public void supprimerGroupeInterne(String idGroupe, Groupe groupe) {
      // ici on peut supprimer un groupe soit avec lid soit avec lobjet qui recupere le id
-        UUID str = groupe == null ? UUID.fromString(idGroupe):groupe.getId();
+        UUID id = groupe == null ? UUID.fromString(idGroupe):groupe.getId();
 
         try {
             // on tente de supprimer le groupe mais tfacon sa va toujours marcher
             entityManager.createQuery("delete FROM Groupe g where g.id = :id")
-                    .setParameter("id",str).executeUpdate();
+                    .setParameter("id",id).executeUpdate();
             new SucessDTO(true, "groupe supprimer");
             return;
         } catch (Exception ignored) {
@@ -219,6 +225,7 @@ public class ServiceGroupe {
         }else if(virer.getId().toString().equals(idVireur)) {
                 throw new LinkUpException(ERREUR_TYPE.ERREUR_METIER_LOGIQUE,"vous ne pouvez pas vous virer vous meme");
         }
+        serviceConversation.virerEtudiantConversation(virerEtudiantDTO);
         group.getEtudiants().remove(virer);
 
         return new SucessDTO(true,"letudiant a ete virer");

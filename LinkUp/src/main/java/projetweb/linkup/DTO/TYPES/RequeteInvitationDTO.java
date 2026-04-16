@@ -8,6 +8,7 @@ public class RequeteInvitationDTO extends RequeteNotificationDTO {
     private final String envoyeurId;
     public RequeteInvitationDTO(String etudiantNomUtilisateur, String message, NotificationType type,
                                 String groupId, String titre, String envoyeurId) {
+
         super(etudiantNomUtilisateur, message, type,titre);
         this.destination = groupId;
         this.envoyeurId = envoyeurId;

@@ -20,7 +20,6 @@ import java.util.*;
 public class Conversation {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
 
@@ -28,6 +27,7 @@ public class Conversation {
 
     private Set<UUID> participants;
 
+    private boolean estConversationGroupe;
 
     private List<Message> messages;
 
@@ -40,14 +40,17 @@ public class Conversation {
         this.participants = new HashSet<>();
         this.messages = new ArrayList<>();
         this.participants.add(chef);
+        estConversationGroupe = true;
     }
 
     public Conversation(UUID chef, String nom) {
         this.chef = chef;
         this.nom = nom;
+        this.id =UUID.randomUUID();
         this.participants = new HashSet<>();
         this.messages = new ArrayList<>();
         this.participants.add(chef);
+        estConversationGroupe = false;
     }
 
 
