@@ -70,20 +70,7 @@ public class ServiceGroupe {
             }
         }
 
-        // verifier quune invitation pour ce groupe nexiste pas deja
-        for (Notification notification : receveur.getNotifications()) {
-            if (notification instanceof Invitation invitationExistante) {
-                if (
-                        invitationExistante.getType() == NotificationType.NOUVELLE_GROUPE_INVITATION
-                                && invitationExistante.getGroupe().getId().equals(groupe.getId())
-                ) {
-                    throw new LinkUpException(
-                            ERREUR_TYPE.DUPLICATION,
-                            "une invitation pour ce groupe a deja ete envoyee"
-                    );
-                }
-            }
-        }
+
         Invitation invitation = new Invitation(groupe,envoyeur,
                 requeteInvitationDTO.getType(), requeteInvitationDTO.getTitre(),requeteInvitationDTO.getMessage());
 

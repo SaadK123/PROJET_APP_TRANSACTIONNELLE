@@ -93,7 +93,7 @@ public class ServiceConversation {
 //       Etudiant receiver =  serviceEtudiant.getEtudiantById(invitation.getEnvoyeurId());
 //
 //       
-//
+//    
 //
 //   }
     @Transactional
@@ -130,7 +130,8 @@ public class ServiceConversation {
         return new SucessDTO(true,"vous avez quitter la conversation");
     }
     @Transactional
-    public void virerEtudiant(VirerEtudiantDTO virerDto){
+    public SucessDTO virerEtudiant(VirerEtudiantDTO virerDto){
+       UUID uuidChef =   UUID.fromString(virerDto.etudiantQuiVireId());
 
     }
     @Transactional
