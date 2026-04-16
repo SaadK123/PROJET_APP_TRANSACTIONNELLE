@@ -1,9 +1,6 @@
 package projetweb.linkup.Util;
 
-import jakarta.transaction.Transactional;
 import jdk.jshell.execution.Util;
-import projetweb.linkup.DTO.ACTIONS.SucessDTO;
-import projetweb.linkup.DTO.ACTIONS.VirerEtudiantDTO;
 
 import java.util.List;
 
@@ -29,6 +26,8 @@ public abstract class Utilitary {
     public final static String MESSAGE_ETUDIANT_ENLEVER = "L'etudiant a été enlevé avec succes";
     public final static String MESSAGE_ETUDIANT_MODIFICATION = "Le changement a été effectue avec succès";
     public final static String MESSAGE_ACTION_DEMANDE_CHEF_INVITATION = "Une invitation ne peut etre qu'envoyer par un chef";
+
+
 
 
 

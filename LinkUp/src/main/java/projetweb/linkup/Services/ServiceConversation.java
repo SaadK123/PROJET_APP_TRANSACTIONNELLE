@@ -16,6 +16,7 @@ import projetweb.linkup.Util.Utilitary;
 import projetweb.linkup.entities.Conversation;
 import projetweb.linkup.entities.Etudiant;
 import projetweb.linkup.entities.Groupe;
+import projetweb.linkup.entities.Notification;
 
 import java.util.UUID;
 
@@ -86,23 +87,41 @@ public class ServiceConversation {
            throw new LinkUpException(ERREUR_TYPE.NON_EXISTANT,"conversation nexiste pas");
        }
    }
-//   public SucessDTO InvitationConversation(RequeteInvitationDTO invitation){
-//
-//       Conversation conversation = getConversationById(invitation.getDestination());
-//       Etudiant sender = serviceEtudiant.getEtudiantByUsername(invitation.getEtudiantNomUtilisateur());
-//       Etudiant receiver =  serviceEtudiant.getEtudiantById(invitation.getEnvoyeurId());
-//
-//       
-//    
-//
-//   }
+    public SucessDTO invitationConversation(RequeteInvitationDTO invitation, ServiceEtudiant serviceEtudiant, ServiceNotification serviceNotification){
+
+        Conversation conversation = getConversationById(invitation.getDestination());
+        Etudiant receiver = serviceEtudiant.getEtudiantByUsername(invitation.getEtudiantNomUtilisateur());
+        UUID sender =  UUID.fromString(invitation.getEnvoyeurId());
+        // Vérifier si la conversation fait partie d'un groupe
+        if(conversation.isEstConversationGroupe()){
+            return new SucessDTO(false, "Impossible d'inviter à une conversation qui fait partie d'un groupe");
+            // Vérifier si celui qui invite est chef
+        } else if(!estUnChef(conversation, sender)){
+            return new SucessDTO(false, "Impossible d'inviter sans être le chef");
+            // Vérifier si l'étudiant tente de s'inviter lui-même
+        } else if (receiver.getId() == sender){
+            return  new SucessDTO(false, "Impossible de s'inviter soi-même à une conversation");
+            // Vérifier si l'étudiant tente d'inviter un étudiant déjà dans la conversation
+        } else if (conversation.getParticipants().contains(receiver)){
+            return  new SucessDTO(false, "impossible d'inviter un étudiant déjà dans la conversation");
+        }
+
+        // Créer une notification
+        Notification notification = new Notification(
+                invitation.getMessage(),
+                invitation.getTitre(),
+                invitation.getType());
+        // Envoyer la notification de l'invitation à l'étudiant receiver
+        serviceNotification.addNotificationToStudent(notification, receiver);
+        return  new SucessDTO(true, "Étudiant " + invitation.getEtudiantNomUtilisateur() + " invité à la conversation " + conversation.getNom() + " avec succès");
+    }
     @Transactional
     public SucessDTO rejoindreConversation(INVITATION_GROUPE_DTO invitation){
 
     UUID etudiantId = serviceEtudiant.getEtudiantById((invitation.idEtudiant())).getId();
     Conversation conversation = getConversationById(invitation.idGroupe());
     conversation.getParticipants().add(etudiantId);
-    return new SucessDTO(true, invitation.getClass() + " ajouté au groupe " + invitation.idGroupe());
+    return new SucessDTO(true,  " ajouté au groupe " + invitation.idGroupe());
 }
     @Transactional
     public SucessDTO quitterConversation(QuitterGroupeDTO quitterDto){
@@ -130,8 +149,35 @@ public class ServiceConversation {
         return new SucessDTO(true,"vous avez quitter la conversation");
     }
     @Transactional
-    public SucessDTO virerEtudiant(VirerEtudiantDTO virerDto){
-       UUID uuidChef =   UUID.fromString(virerDto.etudiantQuiVireId());
+    public SucessDTO virerEtudiantConversation(VirerEtudiantDTO virerDto){
+
+        UUID idVireur = UUID.fromString(virerDto.etudiantQuiVireId());
+        String nomUtilisateur = virerDto.nomUtilisateur();
+
+        String conversationId = virerDto.groupid();
+
+
+        Etudiant vireur = serviceEtudiant.getEtudiantById(idVireur.toString());
+
+
+        Conversation conversation = getConversationById(conversationId);
+
+        // Vérifier si la conversation ne fait pas partie d'un groupe
+        if(conversation.isEstConversationGroupe()) {
+            throw new LinkUpException(ERREUR_TYPE.ERREUR_METIER_LOGIQUE, "Impossible de virer un étudiant d'une conversation dans un groupe");
+        } else if(!conversation.getChef().equals(idVireur)){
+            throw new LinkUpException(ERREUR_TYPE.ERREUR_METIER_LOGIQUE, "Seul le chef peut virer un etudiant");
+        }else if(vireur.getNomUtilisateur().equals(nomUtilisateur)){
+            throw new LinkUpException(ERREUR_TYPE.ERREUR_METIER_LOGIQUE, "Vous ne pouvez pas vous virer vous meme");
+            // Vérifier si l'étudiant viré existe
+        } else if(serviceEtudiant.etudiantExiste(nomUtilisateur)) {
+            throw new LinkUpException(ERREUR_TYPE.ERREUR_METIER_LOGIQUE, "Impossible de virer un étudiant qui n'existe pas");
+        }
+
+        conversation.getParticipants().remove(serviceEtudiant.getEtudiantByUsername(nomUtilisateur).getId());
+
+        return new SucessDTO(true, "L'etudiant  a été viré de la conversation ");
+
 
     }
     @Transactional

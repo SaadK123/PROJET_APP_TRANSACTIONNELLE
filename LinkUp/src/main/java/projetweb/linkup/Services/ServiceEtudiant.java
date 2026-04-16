@@ -196,6 +196,16 @@ public class ServiceEtudiant {
         }
     }
     @Transactional
+    public boolean etudiantExiste(String etudiantId){
+        try {
+            getEtudiantById(etudiantId);
+            return true;
+        }catch (LinkUpException e){
+            return false;
+        }
+
+    }
+    @Transactional
     public SucessDTO miseAJourEtudiantMotDePasse(MiseAJourEtudiantMotDePasse miseAJourEtudiantMotDePasse){
         String etudiantId = miseAJourEtudiantMotDePasse.getEtudiantID();
         Etudiant e =  getEtudiantById(etudiantId);
