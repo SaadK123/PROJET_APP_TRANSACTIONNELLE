@@ -23,6 +23,7 @@ import {
   GotoHomePage,
   GotoLogin,
   GotoParametres,
+  GoToConversations
 } from "@/app/ChangerPage";
 
 import { creerConversationPrivee } from "@/app/FetchMethodesConversations";
@@ -71,6 +72,7 @@ const BOUTON_VOIR_TOUT = "Voir tout";
 const BOUTON_ACCEPTER_INVITATION = "Accepter linvitation";
 const BOUTON_SUPPRIMER = "Supprimer";
 const BOUTON_CREER_CONVERSATION = "Creer conversation";
+const BOUTON_CONVERSATIONS = "Conversations";
 
 /* labels */
 const LABEL_NOM_UTILISATEUR = "Nom utilisateur :";
@@ -86,13 +88,6 @@ const LABEL_NOM_UTILISATEUR_CONVERSATION = "Nom utilisateur";
 const PLACEHOLDER_NOM_GROUPE = "Entre le nom du groupe";
 const PLACEHOLDER_NOM_UTILISATEUR_CONVERSATION = "Entre le nom utilisateur";
 
-// constants pour conversation
-
-const TITRE_MESSAGERIE = "Messagerie";
-const SOUS_TITRE_CONVERSATIONS = "Conversations";
-const TEXTE_PARTICIPANTS = "participants";
-const PLACEHOLDER_MESSAGE = "Ecris ton message...";
-const BOUTON_ENVOYER = "Envoyer";
 
 /* style */
 const LARGEUR_CARTE = "500px";
@@ -302,26 +297,6 @@ export default function Dashboard() {
   }
 }
 
-  function envoyerMessageDemo() {
-    if (messageTexte.trim() === "") return;
-
-    setMessagesDemo((anciens) => [
-      ...anciens,
-      {
-        id: Date.now(),
-        auteur: "Moi",
-        contenu: messageTexte.trim(),
-        heure: new Date().toLocaleTimeString([], {
-          hour: "2-digit",
-          minute: "2-digit",
-        }),
-        moi: true,
-      },
-    ]);
-
-    setMessageTexte("");
-  }
-
   /**
    * ici je filtre les groupes
    * selon le texte taper
@@ -374,6 +349,13 @@ export default function Dashboard() {
           onClick={() => GotoCalendar(router, id)}
         >
           {BOUTON_CALENDRIER}
+        </button>
+
+        <button
+          className="btn btn-secondary"
+          onClick={() => GoToConversations(router, id)}
+        >
+          {BOUTON_CONVERSATIONS}
         </button>
 
         <button
@@ -481,163 +463,6 @@ export default function Dashboard() {
           </button>
         </form>
       </div>
-
-
-      <h4 className="mb-3">{TITRE_MESSAGERIE}</h4>
-
-<div className="row g-4 mb-5">
-  {/* colonne gauche : liste conversations */}
-  <div className="col-lg-4">
-    <div
-      className="card border-0 shadow-sm h-100"
-      style={{ borderRadius: "20px", overflow: "hidden" }}
-    >
-      <div className="p-3 border-bottom bg-light">
-        <h5 className="mb-0">{SOUS_TITRE_CONVERSATIONS}</h5>
-      </div>
-
-      <div className="p-2">
-        {[
-          { nom: "Projet équipe", membres: 3, actif: true },
-          { nom: "Frontend UI", membres: 4, actif: false },
-          { nom: "Discussion générale", membres: 6, actif: false },
-        ].map((conv, index) => (
-          <button
-            key={index}
-            type="button"
-            onClick={() => setConversationSelectionnee(conv.nom)}
-            className={`w-100 text-start border-0 mb-2 p-3 ${
-              conversationSelectionnee === conv.nom ? "bg-primary text-white" : "bg-white"
-            }`}
-            style={{
-              borderRadius: "16px",
-              transition: "0.2s",
-              boxShadow:
-                conversationSelectionnee === conv.nom
-                  ? "0 8px 20px rgba(13, 110, 253, 0.25)"
-                  : "0 2px 10px rgba(0,0,0,0.05)",
-            }}
-          >
-            <div className="fw-semibold">{conv.nom}</div>
-            <small className={conversationSelectionnee === conv.nom ? "text-white" : "text-muted"}>
-              {conv.membres} {TEXTE_PARTICIPANTS}
-            </small>
-          </button>
-        ))}
-      </div>
-    </div>
-  </div>
-
-  {/* colonne droite : conversation active */}
-  <div className="col-lg-8">
-    <div
-      className="card border-0 shadow-sm"
-      style={{ borderRadius: "20px", overflow: "hidden", minHeight: "520px" }}
-    >
-      {/* header */}
-      <div className="d-flex justify-content-between align-items-center p-3 border-bottom bg-white">
-        <div>
-          <h5 className="mb-1">{conversationSelectionnee}</h5>
-          <small className="text-muted">3 participants</small>
-        </div>
-
-        <div className="d-flex align-items-center gap-2">
-          <span className="badge rounded-pill text-bg-light px-3 py-2">
-            En ligne
-          </span>
-        </div>
-      </div>
-
-      {/* messages */}
-      <div
-        className="p-3 d-flex flex-column"
-        style={{
-          background: "linear-gradient(180deg, #f8f9fa 0%, #eef2f7 100%)",
-          flex: 1,
-          minHeight: "360px",
-          maxHeight: "360px",
-          overflowY: "auto",
-        }}
-      >
-        {messagesDemo.map((msg) => (
-          <div
-            key={msg.id}
-            className={`d-flex mb-3 ${msg.moi ? "justify-content-end" : "justify-content-start"}`}
-          >
-          <div
-              style={{
-                maxWidth: "75%",
-                background: msg.moi ? "#0d6efd" : "#ffffff",
-                color: msg.moi ? "white" : "#212529",
-                padding: "12px 14px",
-                borderRadius: msg.moi
-                  ? "18px 18px 4px 18px"
-                  : "18px 18px 18px 4px",
-                boxShadow: "0 4px 14px rgba(0,0,0,0.08)",
-              }}
-            >
-              {!msg.moi ? (
-                <div className="fw-semibold mb-1" style={{ fontSize: "0.9rem" }}>
-                  {msg.auteur}
-                </div>
-              ) : null}
-
-              <div>{msg.contenu}</div>
-
-              <div
-                className="mt-1 text-end"
-                style={{
-                  fontSize: "0.75rem",
-                  opacity: 0.8,
-                }}
-              >
-                {msg.heure}
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* input */}
-      <div className="p-3 border-top bg-white">
-        <div className="d-flex gap-2">
-          <input
-            type="text"
-            className="form-control"
-            value={messageTexte}
-            onChange={(e: ChangeEvent<HTMLInputElement>) =>
-              setMessageTexte(e.target.value)
-            }
-            placeholder={PLACEHOLDER_MESSAGE}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-                envoyerMessageDemo();
-              }
-            }}
-            style={{
-              borderRadius: "14px",
-              padding: "12px 14px",
-              border: "1px solid #dee2e6",
-            }}
-          />
-
-          <button
-            type="button"
-            className="btn btn-primary px-4"
-            onClick={envoyerMessageDemo}
-            style={{
-              borderRadius: "14px",
-              fontWeight: 600,
-            }}
-          >
-            {BOUTON_ENVOYER}
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
 
       {/* ici cest la section des groupes */}
       <h4 className="mb-3">{TITRE_MES_GROUPES}</h4>
