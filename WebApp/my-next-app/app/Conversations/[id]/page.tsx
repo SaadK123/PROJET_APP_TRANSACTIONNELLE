@@ -21,6 +21,10 @@ export default function ConversationsPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
 
+  const [nomConversation, setNomConversation] = useState<string>("");
+  const [messageSucces, setMessageSucces] = useState<string>("");
+  const [messageErreur, setMessageErreur] = useState<string>("");
+
   const [conversationSelectionnee, setConversationSelectionnee] =
     useState<string>("Projet équipe");
 
@@ -33,7 +37,20 @@ export default function ConversationsPage() {
 
   ]);
 
-  function envoyerMessageDemo() {
+  function creerConversationUI() {
+  setMessageSucces("");
+  setMessageErreur("");
+
+  if (nomConversation.trim() === "") {
+    setMessageErreur("Le nom de la conversation est obligatoire.");
+    return;
+  }
+
+  setMessageSucces("Conversation créée avec succès.");
+  setNomConversation("");
+}
+
+  function envoyerMessage() {
     if (messageTexte.trim() === "") return;
 
     setMessages((anciens) => [
@@ -65,6 +82,41 @@ export default function ConversationsPage() {
       </div>
 
       <h2 className="mb-4">Conversations</h2>
+
+        {messageSucces !== "" ? (
+    <div className="alert alert-success">{messageSucces}</div>
+    ) : null}
+
+    {messageErreur !== "" ? (
+    <div className="alert alert-danger">{messageErreur}</div>
+    ) : null}
+
+    <div className="card p-3 shadow-sm mb-4">
+    <h4 className="mb-3">Créer une conversation</h4>
+
+    <div className="row g-2">
+        <div className="col-md-9">
+        <input
+            type="text"
+            className="form-control"
+            placeholder="Nom de la conversation"
+            value={nomConversation}
+            onChange={(e) => setNomConversation(e.target.value)}
+        />
+        </div>
+
+        <div className="col-md-3">
+        <button
+            className="btn btn-primary w-100"
+            type="button"
+            onClick={creerConversationUI}
+        >
+            Créer
+        </button>
+        </div>
+    </div>
+    </div>
+
 
       <div className="row">
         <div className="col-md-4 mb-4">
@@ -133,7 +185,7 @@ export default function ConversationsPage() {
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
                     e.preventDefault();
-                    envoyerMessageDemo();
+                    envoyerMessage();
                   }
                 }}
               />
@@ -141,7 +193,7 @@ export default function ConversationsPage() {
               <button
                 className="btn btn-primary"
                 type="button"
-                onClick={envoyerMessageDemo}
+                onClick={envoyerMessage}
               >
                 Envoyer
               </button>
