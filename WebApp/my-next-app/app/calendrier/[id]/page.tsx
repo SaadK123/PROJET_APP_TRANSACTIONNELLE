@@ -130,7 +130,7 @@ export default function CalendrierUtilisateur() {
     viderMessages();
 
     try {
-      const etudiantCharge = await API.getEtudiantById({id:idEtudiant}) as Required<Etudiant>;
+      const etudiantCharge = await API.getEtudiantById({id:idEtudiant});
       setEtudiant(etudiantCharge);
     } catch (erreurCapturee: any) {
       setEtudiant(null);
