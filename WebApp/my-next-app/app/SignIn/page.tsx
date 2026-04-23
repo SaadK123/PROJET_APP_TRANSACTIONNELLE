@@ -4,7 +4,7 @@ import { useState } from "react";
 import type { FormEvent, ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
 
-import { obtenirEtudiantParAuth } from "../FetchsMethodesEtudiants";
+import { API } from "../../Api";
 import { verifierEmail, verifierMotDePasse } from "../VerificationEmail";
 import { retournerErreur } from "../attraperErreur";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
@@ -15,8 +15,6 @@ import {
   GotoLogin,
   GotoSignUp,
 } from "../ChangerPage";
-
-import type { Etudiant } from "../TypesObjets";
 
 /**
  * ici je met toute les constante en haut
@@ -94,12 +92,14 @@ export default function SignIn() {
     try {
       setChargement(true);
 
-      const etudiant: Etudiant = await obtenirEtudiantParAuth(
-        email.trim(),
-        password,
-      );
-
-      GotoDashboard(router, etudiant.id);
+      const etudiant = await API.getEtudiantByAuth({
+        authentificationDTO: {
+          courriel: email.trim(),
+          motDePasse: password,
+        },
+      });
+      localStorage.setItem("idEtudiant", etudiant.id!);
+      GotoDashboard(router, etudiant.id!);
     } catch (e: any) {
       setErreur(retournerErreur(e, ERREUR_CONNEXION));
     } finally {

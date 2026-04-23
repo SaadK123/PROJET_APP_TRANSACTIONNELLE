@@ -4,15 +4,7 @@ import { useEffect, useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
 import { useParams, useRouter } from "next/navigation";
 
-import type { Etudiant, Groupe, Invitation } from "@/app/TypesObjets";
-
-import { obtenirEtudiantParId } from "@/app/FetchsMethodesEtudiants";
-import {
-  obtenirGroupesDeEtudiant,
-  ajouterEtudiantDansGroupe,
-  creerGroupe,
-} from "@/app/FetchMethodesGroupes";
-import { supprimerNotification } from "@/app/FetchMethodesNotifications";
+import { API } from "../../../Api";
 
 import { retournerErreur } from "@/app/attraperErreur";
 //npm install react-bootstrap bootstrap
@@ -24,8 +16,7 @@ import {
   GotoLogin,
   GotoParametres,
 } from "@/app/ChangerPage";
-
-import { creerConversationPrivee } from "@/app/FetchMethodesConversations";
+import { Etudiant, Groupe, Notification } from "@/src/api";
 
 /**
  * ici je met toute les constante en haut
@@ -44,8 +35,10 @@ const ERREUR_IMPOSSIBLE_ACCEPTER_INVITATION =
 const ERREUR_IMPOSSIBLE_CREER_GROUPE = "impossible de creer le groupe";
 const ERREUR_ID_ETUDIANT_INVALIDE = "id etudiant invalide";
 const ERREUR_NOM_GROUPE_OBLIGATOIRE = "le nom du groupe est obligatoire";
-const ERREUR_NOM_UTILISATEUR_CONVERSATION_OBLIGATOIRE = "le nom utilisateur est obligatoire";
-const ERREUR_IMPOSSIBLE_CREER_CONVERSATION = "impossible de creer la conversation";
+const ERREUR_NOM_UTILISATEUR_CONVERSATION_OBLIGATOIRE =
+  "le nom utilisateur est obligatoire";
+const ERREUR_IMPOSSIBLE_CREER_CONVERSATION =
+  "impossible de creer la conversation";
 
 /* succes */
 const MESSAGE_INVITATION_ACCEPTEE = "invitation acceptee";
@@ -100,13 +93,14 @@ export default function Dashboard() {
   const [message, setMessage] = useState<string>("");
 
   /* state des donnees */
-  const [etudiant, setEtudiant] = useState<Etudiant | null>(null);
-  const [groupes, setGroupes] = useState<Groupe[]>([]);
+  const [etudiant, setEtudiant] = useState<Etudiant | null>();
+  const [groupes, setGroupes] = useState<Groupe[] | null>([]);
 
   /* state des input */
   const [rechercheGroupe, setRechercheGroupe] = useState<string>("");
   const [nomNouveauGroupe, setNomNouveauGroupe] = useState<string>("");
-  const [nomUtilisateurConversation, setNomUtilisateurConversation] = useState<string>("");
+  const [nomUtilisateurConversation, setNomUtilisateurConversation] =
+    useState<string>("");
 
   /**
    * ici je vide les messages
@@ -117,10 +111,10 @@ export default function Dashboard() {
     setMessage("");
   }
 
-//Animation Chargement
+  //Animation Chargement
   function Chargement() {
-  return <Spinner animation="border" />;
-}
+    return <Spinner animation="border" />;
+  }
 
   /**
    * ici je charge letudiant
@@ -133,7 +127,7 @@ export default function Dashboard() {
         return;
       }
 
-      const etudiantCharge = await obtenirEtudiantParId(id);
+      const etudiantCharge = await API.getEtudiantById({ id });
       setEtudiant(etudiantCharge);
     } catch (e: any) {
       setEtudiant(null);
@@ -153,7 +147,9 @@ export default function Dashboard() {
         return;
       }
 
-      const groupesCharges = await obtenirGroupesDeEtudiant(id);
+      const groupesCharges = await API.getGroupsFromEtudiant({
+        idEtudiant: id,
+      });
       setGroupes(groupesCharges);
     } catch (e: any) {
       setGroupes([]);
@@ -198,26 +194,35 @@ export default function Dashboard() {
     viderMessages();
 
     try {
-      await supprimerNotification(notificationId);
+      await API.deleteNotification({ idNotification: notificationId! });
       await chargerEtudiant();
     } catch (e: any) {
       setErreur(retournerErreur(e, ERREUR_IMPOSSIBLE_SUPPRIMER_NOTIFICATION));
     }
   }
 
+  type Invitation = Notification & {
+    groupe?: Groupe;
+    envoyeur?: Etudiant;
+  };
+
   /**
    * ici jaccepte une invitation
    * puis je recharge tout
    */
-  async function accepterInvitation(notification: Invitation) {
+  async function accepterInvitation(notification: Notification) {
     viderMessages();
-
+    const invitation = notification as any;
     try {
-      await ajouterEtudiantDansGroupe(notification.groupe.id, id);
-      await supprimerNotification(notification.id);
+      await API.ajouterEtudiantDansGroupe({
+        iNVITATIONGROUPEDTO: {
+          idGroupe: invitation.groupe.id,
+          idEtudiant: id,
+        },
+      });
+      await supprimerNotif(notification.id!);
       await chargerEtudiant();
       await chargerGroupes();
-      
       setMessage(MESSAGE_INVITATION_ACCEPTEE);
     } catch (e: any) {
       setErreur(retournerErreur(e, ERREUR_IMPOSSIBLE_ACCEPTER_INVITATION));
@@ -253,49 +258,45 @@ export default function Dashboard() {
   }
 
   async function soumettreCreationConversation(e: FormEvent<HTMLFormElement>) {
-  e.preventDefault();
-  viderMessages();
+    e.preventDefault();
+    viderMessages();
 
-  if (!id) {
-    setErreur(ERREUR_ID_ETUDIANT_INVALIDE);
-    return;
+    if (!id) {
+      setErreur(ERREUR_ID_ETUDIANT_INVALIDE);
+      return;
+    }
+
+    if (nomUtilisateurConversation.trim() === "") {
+      setErreur(ERREUR_NOM_UTILISATEUR_CONVERSATION_OBLIGATOIRE);
+      return;
+    }
+
+    try {
+      await creerConversationPrivee(
+        id,
+        `Conversation avec ${nomUtilisateurConversation.trim()}`,
+      );
+
+      setNomUtilisateurConversation("");
+      setMessage(MESSAGE_CONVERSATION_CREEE);
+    } catch (e: any) {
+      setErreur(retournerErreur(e, ERREUR_IMPOSSIBLE_CREER_CONVERSATION));
+    }
   }
-
-  if (nomUtilisateurConversation.trim() === "") {
-    setErreur(ERREUR_NOM_UTILISATEUR_CONVERSATION_OBLIGATOIRE);
-    return;
-  }
-
-  try {
-    await creerConversationPrivee(
-      id,
-      `Conversation avec ${nomUtilisateurConversation.trim()}`
-    );
-
-    setNomUtilisateurConversation("");
-    setMessage(MESSAGE_CONVERSATION_CREEE);
-  } catch (e: any) {
-    setErreur(retournerErreur(e, ERREUR_IMPOSSIBLE_CREER_CONVERSATION));
-  }
-}
 
   /**
    * ici je filtre les groupes
    * selon le texte taper
    */
-  const groupesFiltres: Groupe[] = groupes.filter((groupe) =>
-    groupe.nomGroupe.toLowerCase().includes(rechercheGroupe.toLowerCase())
+  const groupesFiltres: Groupe[] = groupes!.filter((groupe) =>
+    groupe.nomGroupe!.toLowerCase().includes(rechercheGroupe.toLowerCase()),
   );
 
   /**
    * si sa charge je montre juste sa
    */
   if (load) {
-    return (
-      <div className="container-fluid p-4">
-        {Chargement()}
-      </div>
-    );
+    return <div className="container-fluid p-4">{Chargement()}</div>;
   }
 
   /**
@@ -362,22 +363,22 @@ export default function Dashboard() {
       >
         {/* ici je montre le nom complet */}
         <h2 className="mb-3">
-          {etudiant.prenom} {etudiant.nom}
+          {etudiant!.prenom} {etudiant!.nom}
         </h2>
 
         <hr />
 
         {/* ici je montre les info de base */}
         <div className="mb-2">
-          <b>{LABEL_NOM_UTILISATEUR}</b> {etudiant.nomUtilisateur}
+          <b>{LABEL_NOM_UTILISATEUR}</b> {etudiant!.nomUtilisateur}
         </div>
 
         <div className="mb-2">
-          <b>{LABEL_COURRIEL}</b> {etudiant.courriel}
+          <b>{LABEL_COURRIEL}</b> {etudiant!.courriel}
         </div>
 
         <div className="mb-2">
-          <b>{LABEL_ECOLE}</b> {etudiant.ecole}
+          <b>{LABEL_ECOLE}</b> {etudiant!.ecole}
         </div>
       </div>
 
@@ -411,7 +412,7 @@ export default function Dashboard() {
         </form>
       </div>
 
-            <div
+      <div
         className="card p-4 shadow-sm mb-4"
         style={{ maxWidth: LARGEUR_CARTE }}
       >
@@ -469,18 +470,18 @@ export default function Dashboard() {
 
                 {/* chef du groupe */}
                 <div>
-                  <b>{LABEL_CHEF}</b> {groupe.chef.prenom} {groupe.chef.nom}
+                  <b>{LABEL_CHEF}</b> {groupe.chef!.prenom} {groupe.chef!.nom}
                 </div>
 
                 {/* nombre de personnes dans le groupe */}
                 <div>
-                  <b>{LABEL_NOMBRE_PERSONNES}</b> {groupe.etudiants.length}
+                  <b>{LABEL_NOMBRE_PERSONNES}</b> {groupe.etudiants!.size}
                 </div>
 
                 {/* bouton pour ouvrir le groupe */}
                 <button
                   className="btn btn-primary btn-sm mt-2"
-                  onClick={() => GotoCalendarGroupe(router, id, groupe.id)}
+                  onClick={() => GotoCalendarGroupe(router, id, groupe.id!)}
                 >
                   {BOUTON_VOIR_TOUT}
                 </button>
@@ -494,11 +495,11 @@ export default function Dashboard() {
       <h4 className="mt-5 mb-3">{TITRE_NOTIFICATIONS}</h4>
 
       {/* ici soit je montre aucune notification soit la liste */}
-      {etudiant.notifications.length === 0 ? (
+      {etudiant!.notifications!.length === 0 ? (
         <p>{TITRE_AUCUNE_NOTIFICATION}</p>
       ) : (
         <div className="row">
-          {etudiant.notifications.map((notification) => {
+          {etudiant!.notifications!.map((notification) => {
             const estInvitation =
               notification.type === "NOUVELLE_GROUPE_INVITATION";
 
@@ -513,13 +514,17 @@ export default function Dashboard() {
                   <p>{notification.message}</p>
 
                   {/* date de creation */}
-                  <p>{new Date(notification.tempsCreation).toLocaleString()}</p>
+                  <p>
+                    {new Date(notification.tempsCreation!).toLocaleString()}
+                  </p>
 
                   {/* si cest une invitation je montre le bouton accepter */}
                   {estInvitation ? (
                     <button
                       className="btn btn-success btn-sm me-2"
-                      onClick={() => accepterInvitation(notification as Invitation)}
+                      onClick={() =>
+                        accepterInvitation(notification as Invitation)
+                      }
                     >
                       {BOUTON_ACCEPTER_INVITATION}
                     </button>
@@ -528,7 +533,7 @@ export default function Dashboard() {
                   {/* bouton pour supprimer la notification */}
                   <button
                     className="btn btn-danger btn-sm"
-                    onClick={() => supprimerNotif(notification.id)}
+                    onClick={() => supprimerNotif(notification.id!)}
                   >
                     {BOUTON_SUPPRIMER}
                   </button>
