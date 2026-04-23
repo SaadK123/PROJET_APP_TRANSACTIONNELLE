@@ -25,6 +25,7 @@ import {
   GotoDashboard,
   GotoHomePage,
   GotoLogin,
+  GoToConversations,
 } from "@/app/ChangerPage";
 
 import { retournerErreur } from "@/app/attraperErreur";
@@ -99,6 +100,7 @@ const BOUTON_ENVOYER_INVITATION = "Envoyer invitation";
 const BOUTON_AJOUTER_ACTIVITE = "Ajouter activité";
 const BOUTON_SUPPRIMER = "Supprimer";
 const BOUTON_VIRER = "Virer";
+const BOUTON_CONVERSATION = "Conversation";
 
 /* roles */
 const ROLE_CHEF = "Chef";
@@ -156,10 +158,10 @@ export default function PageCalendrierGroupe() {
   const [nomUtilisateurInvitation, setNomUtilisateurInvitation] =
     useState<string>("");
   const [titreInvitation, setTitreInvitation] = useState<string>(
-    "Invitation de groupe"
+    "Invitation de groupe",
   );
   const [messageInvitation, setMessageInvitation] = useState<string>(
-    "Tu as recu une invitation dans le groupe"
+    "Tu as recu une invitation dans le groupe",
   );
 
   /* state formulaire activite */
@@ -177,10 +179,10 @@ export default function PageCalendrierGroupe() {
     setErreur("");
     setMessage("");
   }
-//Animation Chargement
+  //Animation Chargement
   function Chargement() {
-  return <Spinner animation="border" />;
-}
+    return <Spinner animation="border" />;
+  }
   /**
    * ici je charge le groupe depuis backend
    * je reutilise sa au debut et apres les action
@@ -327,7 +329,7 @@ export default function PageCalendrierGroupe() {
         TYPES_NOTIFICATION.NOUVELLE_GROUPE_INVITATION.valeur,
         groupe.id,
         titreInvitation,
-        idEtudiant
+        idEtudiant,
       );
 
       setNomUtilisateurInvitation("");
@@ -399,7 +401,7 @@ export default function PageCalendrierGroupe() {
         tempsDebut,
         tempsFin,
         groupe.horaire.id,
-        duree
+        duree,
       );
 
       setTitreActivite("");
@@ -472,21 +474,19 @@ export default function PageCalendrierGroupe() {
     }
   }
 
-
-  
-function retournerBoutonQuitterGroupe() {
-  return (
-    <div>
-    <button
-      type="button"
-      className="btn btn-warning w-100"
-      onClick={quitterLeGroupe}
-    >
-      {BOUTON_QUITTER_GROUPE}
-    </button>
-    </div>
-  );
-}
+  function retournerBoutonQuitterGroupe() {
+    return (
+      <div>
+        <button
+          type="button"
+          className="btn btn-warning w-100"
+          onClick={quitterLeGroupe}
+        >
+          {BOUTON_QUITTER_GROUPE}
+        </button>
+      </div>
+    );
+  }
 
   /**
    * ici le chef supprime le groupe
@@ -574,8 +574,12 @@ function retournerBoutonQuitterGroupe() {
                   <div>
                     <h6 className="mb-2">{activite.titre}</h6>
                     <div className="mb-2">{activite.description}</div>
-                    <div>{LABEL_DEBUT + formaterDateHeure(activite.tempsDebut)}</div>
-                    <div>{LABEL_FIN + formaterDateHeure(activite.tempsFin)}</div>
+                    <div>
+                      {LABEL_DEBUT + formaterDateHeure(activite.tempsDebut)}
+                    </div>
+                    <div>
+                      {LABEL_FIN + formaterDateHeure(activite.tempsFin)}
+                    </div>
                   </div>
 
                   {utilisateurEstChef() && (
@@ -619,21 +623,10 @@ function retournerBoutonQuitterGroupe() {
 
           {retournerBoutonQuitterGroupe()}
         </div>
-
-      
-
-        
       );
-
-    
     }
 
-    return (
-      <div>
-     {retournerBoutonQuitterGroupe()}
-
-     </div>
-    );
+    return <div>{retournerBoutonQuitterGroupe()}</div>;
   }
 
   /**
@@ -790,11 +783,7 @@ function retournerBoutonQuitterGroupe() {
    * si sa charge je montre juste sa
    */
   if (chargement) {
-    return (
-      <div className="container-fluid p-4">
-        {Chargement()}
-      </div>
-    );
+    return <div className="container-fluid p-4">{Chargement()}</div>;
   }
 
   /**
@@ -851,6 +840,13 @@ function retournerBoutonQuitterGroupe() {
           >
             {BOUTON_CALENDRIER_PERSO}
           </button>
+          <button
+            type="button"
+            className="btn btn-secondary me-2"
+            onClick={() => GoToConversations(router, idEtudiant, idGroupe)}
+          >
+            {BOUTON_CONVERSATION}
+          </button>
         </div>
 
         <div className="col-12 col-md-4 text-md-center mb-2 mb-md-0">
@@ -870,7 +866,9 @@ function retournerBoutonQuitterGroupe() {
 
       <div className="row p-3">
         <div className="col-12">
-          {message !== "" && <div className="alert alert-success">{message}</div>}
+          {message !== "" && (
+            <div className="alert alert-success">{message}</div>
+          )}
           {erreur !== "" && <div className="alert alert-danger">{erreur}</div>}
         </div>
 
@@ -879,7 +877,9 @@ function retournerBoutonQuitterGroupe() {
             <div className="card-body">
               <h4 className="card-title">{groupe.nomGroupe}</h4>
               <p className="mb-2">{LABEL_CHEF + lireNomChef()}</p>
-              <p className="mb-2">{LABEL_NOMBRE_MEMBRES + lireNombreMembres()}</p>
+              <p className="mb-2">
+                {LABEL_NOMBRE_MEMBRES + lireNombreMembres()}
+              </p>
               <p className="mb-2">{LABEL_MON_ROLE + lireRole()}</p>
 
               <button
@@ -905,54 +905,49 @@ function retournerBoutonQuitterGroupe() {
           {afficherBlocAjoutActivite()}
         </div>
 
-            <div className="col-12 col-lg-8 mb-3">
-        <div className="card">
-          <div className="card-body">
-            <h5 className="card-title">{TITRE_CALENDRIER}</h5>
+        <div className="col-12 col-lg-8 mb-3">
+          <div className="card">
+            <div className="card-body">
+              <h5 className="card-title">{TITRE_CALENDRIER}</h5>
 
-            <FullCalendar
-              plugins={[dayGridPlugin, timeGridPlugin]}
-              initialView="dayGridMonth"
-              headerToolbar={{
-                left: "prev,next today",
-                center: "title",
-                right: "dayGridMonth,timeGridWeek,timeGridDay",
-              }}
-              buttonText={{
-                today: CALENDRIER_AUJOURD_HUI,
-                month: CALENDRIER_MOIS,
-                week: CALENDRIER_SEMAINE,
-                day: CALENDRIER_JOUR,
-              }}
-              events={construireEvenements()}
-              height={CALENDRIER_HAUTEUR}
-            />
+              <FullCalendar
+                plugins={[dayGridPlugin, timeGridPlugin]}
+                initialView="dayGridMonth"
+                headerToolbar={{
+                  left: "prev,next today",
+                  center: "title",
+                  right: "dayGridMonth,timeGridWeek,timeGridDay",
+                }}
+                buttonText={{
+                  today: CALENDRIER_AUJOURD_HUI,
+                  month: CALENDRIER_MOIS,
+                  week: CALENDRIER_SEMAINE,
+                  day: CALENDRIER_JOUR,
+                }}
+                events={construireEvenements()}
+                height={CALENDRIER_HAUTEUR}
+              />
+            </div>
+          </div>
+
+          <div className="card mt-3">
+            <div className="card-body">
+              <h5 className="card-title">{TITRE_LISTE_ACTIVITES}</h5>
+              {afficherActivites()}
+            </div>
+          </div>
+
+          <div className="card mt-3">
+            <div className="card-body">
+              <h5 className="card-title">Messagerie du groupe</h5>
+
+              <button type="button" className="btn btn-primary">
+                Créer la conversation
+              </button>
+            </div>
           </div>
         </div>
-
-        <div className="card mt-3">
-          <div className="card-body">
-            <h5 className="card-title">{TITRE_LISTE_ACTIVITES}</h5>
-            {afficherActivites()}
-          </div>
-        </div>
-
-        <div className="card mt-3">
-          <div className="card-body">
-            <h5 className="card-title">Messagerie du groupe</h5>
-
-            <button
-              type="button"
-              className="btn btn-primary"
-            >
-              Créer la conversation
-            </button>
-          </div>
-        </div>
-      </div>
       </div>
     </div>
   );
 }
-
-

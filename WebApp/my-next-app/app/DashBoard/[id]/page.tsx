@@ -23,7 +23,7 @@ import {
   GotoHomePage,
   GotoLogin,
   GotoParametres,
-  GoToConversations
+  GoToConversations,
 } from "@/app/ChangerPage";
 
 import { creerConversationPrivee } from "@/app/FetchMethodesConversations";
@@ -45,8 +45,10 @@ const ERREUR_IMPOSSIBLE_ACCEPTER_INVITATION =
 const ERREUR_IMPOSSIBLE_CREER_GROUPE = "impossible de creer le groupe";
 const ERREUR_ID_ETUDIANT_INVALIDE = "id etudiant invalide";
 const ERREUR_NOM_GROUPE_OBLIGATOIRE = "le nom du groupe est obligatoire";
-const ERREUR_NOM_UTILISATEUR_CONVERSATION_OBLIGATOIRE = "le nom utilisateur est obligatoire";
-const ERREUR_IMPOSSIBLE_CREER_CONVERSATION = "impossible de creer la conversation";
+const ERREUR_NOM_UTILISATEUR_CONVERSATION_OBLIGATOIRE =
+  "le nom utilisateur est obligatoire";
+const ERREUR_IMPOSSIBLE_CREER_CONVERSATION =
+  "impossible de creer la conversation";
 
 /* succes */
 const MESSAGE_INVITATION_ACCEPTEE = "invitation acceptee";
@@ -88,7 +90,6 @@ const LABEL_NOM_UTILISATEUR_CONVERSATION = "Nom utilisateur";
 const PLACEHOLDER_NOM_GROUPE = "Entre le nom du groupe";
 const PLACEHOLDER_NOM_UTILISATEUR_CONVERSATION = "Entre le nom utilisateur";
 
-
 /* style */
 const LARGEUR_CARTE = "500px";
 const LARGEUR_RECHERCHE = "400px";
@@ -109,21 +110,44 @@ export default function Dashboard() {
   /* state des input */
   const [rechercheGroupe, setRechercheGroupe] = useState<string>("");
   const [nomNouveauGroupe, setNomNouveauGroupe] = useState<string>("");
-  const [nomUtilisateurConversation, setNomUtilisateurConversation] = useState<string>("");
+  const [nomUtilisateurConversation, setNomUtilisateurConversation] =
+    useState<string>("");
 
   /* state des conversation */
-  const [conversationSelectionnee, setConversationSelectionnee] = useState<string>("Projet équipe");
+  const [conversationSelectionnee, setConversationSelectionnee] =
+    useState<string>("Projet équipe");
   const [messageTexte, setMessageTexte] = useState<string>("");
 
-
-
-
   const [messagesDemo, setMessagesDemo] = useState<
-  { id: number; auteur: string; contenu: string; heure: string; moi: boolean }[]
+    {
+      id: number;
+      auteur: string;
+      contenu: string;
+      heure: string;
+      moi: boolean;
+    }[]
   >([
-    { id: 1, auteur: "Alex", contenu: "Salut, vous êtes dispo pour avancer le projet ?", heure: "18:42", moi: false },
-    { id: 2, auteur: "Moi", contenu: "Oui, je suis là. On commence par la messagerie.", heure: "18:43", moi: true },
-    { id: 3, auteur: "Sarah", contenu: "Parfait, on peut faire le design d’abord.", heure: "18:44", moi: false },
+    {
+      id: 1,
+      auteur: "Alex",
+      contenu: "Salut, vous êtes dispo pour avancer le projet ?",
+      heure: "18:42",
+      moi: false,
+    },
+    {
+      id: 2,
+      auteur: "Moi",
+      contenu: "Oui, je suis là. On commence par la messagerie.",
+      heure: "18:43",
+      moi: true,
+    },
+    {
+      id: 3,
+      auteur: "Sarah",
+      contenu: "Parfait, on peut faire le design d’abord.",
+      heure: "18:44",
+      moi: false,
+    },
   ]);
 
   /**
@@ -135,10 +159,10 @@ export default function Dashboard() {
     setMessage("");
   }
 
-//Animation Chargement
+  //Animation Chargement
   function Chargement() {
-  return <Spinner animation="border" />;
-}
+    return <Spinner animation="border" />;
+  }
 
   /**
    * ici je charge letudiant
@@ -235,7 +259,7 @@ export default function Dashboard() {
       await supprimerNotification(notification.id);
       await chargerEtudiant();
       await chargerGroupes();
-      
+
       setMessage(MESSAGE_INVITATION_ACCEPTEE);
     } catch (e: any) {
       setErreur(retournerErreur(e, ERREUR_IMPOSSIBLE_ACCEPTER_INVITATION));
@@ -271,49 +295,45 @@ export default function Dashboard() {
   }
 
   async function soumettreCreationConversation(e: FormEvent<HTMLFormElement>) {
-  e.preventDefault();
-  viderMessages();
+    e.preventDefault();
+    viderMessages();
 
-  if (!id) {
-    setErreur(ERREUR_ID_ETUDIANT_INVALIDE);
-    return;
+    if (!id) {
+      setErreur(ERREUR_ID_ETUDIANT_INVALIDE);
+      return;
+    }
+
+    if (nomUtilisateurConversation.trim() === "") {
+      setErreur(ERREUR_NOM_UTILISATEUR_CONVERSATION_OBLIGATOIRE);
+      return;
+    }
+
+    try {
+      await creerConversationPrivee(
+        id,
+        `Conversation avec ${nomUtilisateurConversation.trim()}`,
+      );
+
+      setNomUtilisateurConversation("");
+      setMessage(MESSAGE_CONVERSATION_CREEE);
+    } catch (e: any) {
+      setErreur(retournerErreur(e, ERREUR_IMPOSSIBLE_CREER_CONVERSATION));
+    }
   }
-
-  if (nomUtilisateurConversation.trim() === "") {
-    setErreur(ERREUR_NOM_UTILISATEUR_CONVERSATION_OBLIGATOIRE);
-    return;
-  }
-
-  try {
-    await creerConversationPrivee(
-      id,
-      `Conversation avec ${nomUtilisateurConversation.trim()}`
-    );
-
-    setNomUtilisateurConversation("");
-    setMessage(MESSAGE_CONVERSATION_CREEE);
-  } catch (e: any) {
-    setErreur(retournerErreur(e, ERREUR_IMPOSSIBLE_CREER_CONVERSATION));
-  }
-}
 
   /**
    * ici je filtre les groupes
    * selon le texte taper
    */
   const groupesFiltres: Groupe[] = groupes.filter((groupe) =>
-    groupe.nomGroupe.toLowerCase().includes(rechercheGroupe.toLowerCase())
+    groupe.nomGroupe.toLowerCase().includes(rechercheGroupe.toLowerCase()),
   );
 
   /**
    * si sa charge je montre juste sa
    */
   if (load) {
-    return (
-      <div className="container-fluid p-4">
-        {Chargement()}
-      </div>
-    );
+    return <div className="container-fluid p-4">{Chargement()}</div>;
   }
 
   /**
@@ -353,7 +373,7 @@ export default function Dashboard() {
 
         <button
           className="btn btn-secondary"
-          onClick={() => GoToConversations(router, id)}
+          onClick={() => GoToConversations(router, id, "")}
         >
           {BOUTON_CONVERSATIONS}
         </button>
@@ -436,7 +456,7 @@ export default function Dashboard() {
         </form>
       </div>
 
-            <div
+      <div
         className="card p-4 shadow-sm mb-4"
         style={{ maxWidth: LARGEUR_CARTE }}
       >
@@ -544,7 +564,9 @@ export default function Dashboard() {
                   {estInvitation ? (
                     <button
                       className="btn btn-success btn-sm me-2"
-                      onClick={() => accepterInvitation(notification as Invitation)}
+                      onClick={() =>
+                        accepterInvitation(notification as Invitation)
+                      }
                     >
                       {BOUTON_ACCEPTER_INVITATION}
                     </button>

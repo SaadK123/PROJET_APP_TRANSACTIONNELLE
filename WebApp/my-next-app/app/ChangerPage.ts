@@ -14,8 +14,8 @@ export function GotoParametres(router: any, idEtudiant: string) {
 }
 
 // aller aux conversations
-export function GoToConversations(router: any, idEtudiant: string) {
-    router.push(`/Conversations/${idEtudiant}`)
+export function GoToConversations(router: any, idEtudiant: string, idConversation: string) {
+    router.push(`/Conversations/${idEtudiant}/${idConversation}`)
 }
 // aller a la page d'accueil
 export function GotoHomePage(router: any) {
