@@ -7,21 +7,12 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import Spinner from "react-bootstrap/Spinner";
-import {
-  ajouterActivitePourEtudiant,
-  retirerActivite,
-} from "@/app/FetchMethodesActivites";
+import { API } from "../../../Api";
 
-import { obtenirEtudiantParId } from "@/app/FetchsMethodesEtudiants";
-
-import {
-  GotoDashboard,
-  GotoHomePage,
-  GotoLogin,
-} from "@/app/ChangerPage";
+import { GotoDashboard, GotoHomePage, GotoLogin } from "@/app/ChangerPage";
 
 import { retournerErreur } from "@/app/attraperErreur";
-import type { Activite, Etudiant } from "@/app/TypesObjets";
+import { Activite, Etudiant } from "@/src/api";
 
 /**
  * ici je met toute les constante en haut
@@ -120,10 +111,10 @@ export default function CalendrierUtilisateur() {
     setErreur("");
     setMessage("");
   }
-//Animation Chargement
+  //Animation Chargement
   function Chargement() {
-  return <Spinner animation="border" />;
-}
+    return <Spinner animation="border" />;
+  }
 
   /**
    * ici je charge letudiant depuis backend
@@ -134,7 +125,7 @@ export default function CalendrierUtilisateur() {
     viderMessages();
 
     try {
-      const etudiantCharge = await obtenirEtudiantParId(idEtudiant);
+      const etudiantCharge = await API.getEtudiantById({ id: idEtudiant });
       setEtudiant(etudiantCharge);
     } catch (erreurCapturee: any) {
       setEtudiant(null);
@@ -169,14 +160,14 @@ export default function CalendrierUtilisateur() {
       return evenements;
     }
 
-    for (let i = 0; i < etudiant.horaire.activites.length; i++) {
-      const activite = etudiant.horaire.activites[i];
+    for (let i = 0; i < etudiant.horaire!.activites!.length; i++) {
+      const activite = etudiant.horaire!.activites![i];
 
       evenements.push({
-        id: activite.id,
-        title: activite.titre,
-        start: activite.tempsDebut,
-        end: activite.tempsFin,
+        id: activite.id!,
+        title: activite.titre!,
+        start: activite.tempsDebut!.toString(),
+        end: activite.tempsFin!.toString(),
       });
     }
 
@@ -232,14 +223,17 @@ export default function CalendrierUtilisateur() {
     try {
       setAjoutEnCours(true);
 
-      await ajouterActivitePourEtudiant(
-        descriptionActivite,
-        tempsDebut,
-        tempsFin,
-        titreActivite,
-        idEtudiant
-      );
-
+      await API.ajouterActivitePourEtudiant({
+        ajouterActiviteDTOEtudiant: {
+          etudiantId: idEtudiant,
+          activite: {
+            titre: titreActivite,
+            description: descriptionActivite,
+            tempsDebut: new Date(tempsDebut),
+            tempsFin: new Date(tempsFin),
+          },
+        },
+      });
       setTitreActivite("");
       setDescriptionActivite("");
       setTempsDebut("");
@@ -268,7 +262,7 @@ export default function CalendrierUtilisateur() {
     viderMessages();
 
     try {
-      await retirerActivite(activiteId);
+      await API.retirerActivite({ activiteId });
       setMessage(MESSAGE_ACTIVITE_SUPPRIMEE);
       await chargerEtudiant();
     } catch (erreurCapturee: any) {
@@ -289,13 +283,13 @@ export default function CalendrierUtilisateur() {
       return <p className="mb-0">{TITRE_AUCUNE_ACTIVITE}</p>;
     }
 
-    if (etudiant.horaire.activites.length === 0) {
+    if (etudiant.horaire!.activites!.length === 0) {
       return <p className="mb-0">{TITRE_AUCUNE_ACTIVITE}</p>;
     }
 
     return (
       <div className="d-flex flex-column gap-3">
-        {etudiant.horaire.activites.map((activite: Activite) => {
+        {etudiant.horaire!.activites!.map((activite: Activite) => {
           return (
             <div key={activite.id} className="card">
               <div className="card-body">
@@ -303,14 +297,20 @@ export default function CalendrierUtilisateur() {
                   <div>
                     <h6 className="mb-2">{activite.titre}</h6>
                     <div className="mb-2">{activite.description}</div>
-                    <div>{LABEL_DEBUT + formaterDateHeure(activite.tempsDebut)}</div>
-                    <div>{LABEL_FIN + formaterDateHeure(activite.tempsFin)}</div>
+                    <div>
+                      {LABEL_DEBUT +
+                        formaterDateHeure(activite.tempsDebut!.toISOString())}
+                    </div>
+                    <div>
+                      {LABEL_FIN +
+                        formaterDateHeure(activite.tempsFin!.toISOString())}
+                    </div>
                   </div>
 
                   <button
                     type="button"
                     className="btn btn-sm btn-danger"
-                    onClick={() => supprimerUneActivite(activite.id)}
+                    onClick={() => supprimerUneActivite(activite.id!)}
                   >
                     {BOUTON_SUPPRIMER}
                   </button>
@@ -327,11 +327,7 @@ export default function CalendrierUtilisateur() {
    * si sa charge je montre juste sa
    */
   if (chargement) {
-    return (
-      <div className="container-fluid p-4">
-        {Chargement()}
-      </div>
-    );
+    return <div className="container-fluid p-4">{Chargement()}</div>;
   }
 
   /**
@@ -377,15 +373,12 @@ export default function CalendrierUtilisateur() {
           <button
             type="button"
             className="btn btn-secondary me-2"
-            onClick={() => GotoDashboard(router, etudiant.id)}
+            onClick={() => GotoDashboard(router, etudiant.id!)}
           >
             {BOUTON_DASHBOARD}
           </button>
 
-          <button
-            type="button"
-            className="btn btn-secondary me-2"
-          >
+          <button type="button" className="btn btn-secondary me-2">
             {BOUTON_CALENDRIER}
           </button>
         </div>
@@ -407,7 +400,9 @@ export default function CalendrierUtilisateur() {
 
       <div className="row p-3">
         <div className="col-12">
-          {message !== "" && <div className="alert alert-success">{message}</div>}
+          {message !== "" && (
+            <div className="alert alert-success">{message}</div>
+          )}
           {erreur !== "" && <div className="alert alert-danger">{erreur}</div>}
         </div>
 
@@ -504,7 +499,9 @@ export default function CalendrierUtilisateur() {
                   className="btn btn-primary w-100"
                   disabled={ajoutEnCours}
                 >
-                  {ajoutEnCours ? BOUTON_AJOUT_EN_COURS : BOUTON_AJOUTER_ACTIVITE}
+                  {ajoutEnCours
+                    ? BOUTON_AJOUT_EN_COURS
+                    : BOUTON_AJOUTER_ACTIVITE}
                 </button>
               </form>
             </div>

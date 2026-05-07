@@ -8,30 +8,19 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 
 import {
-  ajouterActivitePourGroupe,
-  retirerActivite,
-} from "@/app/FetchMethodesActivites";
-
-import {
-  obtenirGroupeParId,
-  envoyerInvitationGroupe,
-  quitterGroupe,
-  supprimerGroupe,
-  virerEtudiantDuGroupe,
-} from "@/app/FetchMethodesGroupes";
-
-import {
   GotoCalendar,
   GotoDashboard,
   GotoHomePage,
   GotoLogin,
-  GoToConversations,
 } from "@/app/ChangerPage";
 
 import { retournerErreur } from "@/app/attraperErreur";
-import { TYPES_NOTIFICATION } from "@/app/TypesObjets";
-import type { Activite, Groupe } from "@/app/TypesObjets";
+
 import Spinner from "react-bootstrap/Spinner";
+import { Activite, Groupe, INVITATIONGROUPEDTO } from "@/src/api";
+
+import { RequeteInvitationDTOTypeEnum } from "@/src/api";
+import { API } from "@/Api";
 
 /**
  * ici je met toute les constante en haut
@@ -100,7 +89,6 @@ const BOUTON_ENVOYER_INVITATION = "Envoyer invitation";
 const BOUTON_AJOUTER_ACTIVITE = "Ajouter activité";
 const BOUTON_SUPPRIMER = "Supprimer";
 const BOUTON_VIRER = "Virer";
-const BOUTON_CONVERSATION = "Conversation";
 
 /* roles */
 const ROLE_CHEF = "Chef";
@@ -192,7 +180,7 @@ export default function PageCalendrierGroupe() {
     viderMessages();
 
     try {
-      const groupeCharge = await obtenirGroupeParId(idGroupe);
+      const groupeCharge = await API.getGroupById({ idGroupe });
       setGroupe(groupeCharge);
     } catch (erreurCapturee: any) {
       setGroupe(null);
@@ -221,7 +209,7 @@ export default function PageCalendrierGroupe() {
       return false;
     }
 
-    return groupe.chef.id === idEtudiant;
+    return groupe.chef!.id === idEtudiant;
   }
 
   /**
@@ -232,7 +220,7 @@ export default function PageCalendrierGroupe() {
       return "";
     }
 
-    return groupe.chef.prenom + " " + groupe.chef.nom;
+    return groupe.chef!.prenom + " " + groupe.chef!.nom;
   }
 
   /**
@@ -243,7 +231,7 @@ export default function PageCalendrierGroupe() {
       return 0;
     }
 
-    return groupe.etudiants.length;
+    return groupe.etudiants!.size;
   }
 
   /**
@@ -272,14 +260,14 @@ export default function PageCalendrierGroupe() {
       return evenements;
     }
 
-    for (let i = 0; i < groupe.horaire.activites.length; i++) {
-      const activite = groupe.horaire.activites[i];
+    for (let i = 0; i < groupe.horaire!.activites!.length; i++) {
+      const activite = groupe.horaire!.activites![i];
 
       evenements.push({
-        id: activite.id,
-        title: activite.titre,
-        start: activite.tempsDebut,
-        end: activite.tempsFin,
+        id: activite.id!,
+        title: activite.titre!,
+        start: activite.tempsDebut!.toISOString(),
+        end: activite.tempsFin!.toISOString(),
       });
     }
 
@@ -323,14 +311,16 @@ export default function PageCalendrierGroupe() {
     }
 
     try {
-      await envoyerInvitationGroupe(
-        nomUtilisateurInvitation,
-        messageInvitation,
-        TYPES_NOTIFICATION.NOUVELLE_GROUPE_INVITATION.valeur,
-        groupe.id,
-        titreInvitation,
-        idEtudiant,
-      );
+      await API.envoyerInvitationGroupe({
+        requeteInvitationDTO: {
+          etudiantNomUtilisateur: nomUtilisateurInvitation,
+          message: messageInvitation,
+          type: RequeteInvitationDTOTypeEnum.NouvelleGroupeInvitation,
+          titre: titreInvitation,
+          destination: groupe.id!,
+          envoyeurId: idEtudiant,
+        },
+      });
 
       setNomUtilisateurInvitation("");
       setMessage(MESSAGE_INVITATION_ENVOYEE);
@@ -395,14 +385,16 @@ export default function PageCalendrierGroupe() {
     }
 
     try {
-      await ajouterActivitePourGroupe(
-        descriptionActivite,
-        titreActivite,
-        tempsDebut,
-        tempsFin,
-        groupe.horaire.id,
-        duree,
-      );
+      await API.ajouterActivite({
+        requeteActiviteGroupeDTO: {
+          description: descriptionActivite,
+          titre: titreActivite,
+          tempsDebut: new Date(tempsDebut),
+          tempsFin: new Date(tempsFin),
+          horaireId: groupe.horaire!.id!,
+          dureeEnMinute: duree,
+        },
+      });
 
       setTitreActivite("");
       setDescriptionActivite("");
@@ -425,7 +417,7 @@ export default function PageCalendrierGroupe() {
     viderMessages();
 
     try {
-      await retirerActivite(activiteId);
+      await API.retirerActivite({ activiteId });
       setMessage(MESSAGE_ACTIVITE_SUPPRIMEE);
       await chargerGroupe();
     } catch (erreurCapturee: any) {
@@ -452,7 +444,13 @@ export default function PageCalendrierGroupe() {
     }
 
     try {
-      await virerEtudiantDuGroupe(nomUtilisateurEtudiant, idEtudiant, idGroupe);
+      await API.virerEtudiantDunGroupe({
+        virerEtudiantDTO: {
+          nomUtilisateur: nomUtilisateurEtudiant,
+          etudiantQuiVireId: idEtudiant,
+          groupid: idGroupe,
+        },
+      });
       setMessage(MESSAGE_MEMBRE_RETIRE);
       await chargerGroupe();
     } catch (erreurCapturee: any) {
@@ -467,7 +465,12 @@ export default function PageCalendrierGroupe() {
     viderMessages();
 
     try {
-      await quitterGroupe(idGroupe, idEtudiant);
+      await API.quitterGroupe({
+        quitterGroupeDTO: {
+          idGroupe: idGroupe,
+          idEtudiant: idEtudiant,
+        },
+      });
       GotoDashboard(router, idEtudiant);
     } catch (erreurCapturee: any) {
       setErreur(retournerErreur(erreurCapturee, ERREUR_SERVEUR));
@@ -495,7 +498,12 @@ export default function PageCalendrierGroupe() {
     viderMessages();
 
     try {
-      await supprimerGroupe(idGroupe, idEtudiant);
+      await API.retirerGroupe({
+        supprimerGroupeDTO: {
+          groupeId: idGroupe,
+          chefId: idEtudiant,
+        },
+      });
       GotoDashboard(router, idEtudiant);
     } catch (erreurCapturee: any) {
       setErreur(retournerErreur(erreurCapturee, ERREUR_SERVEUR));
@@ -511,13 +519,13 @@ export default function PageCalendrierGroupe() {
       return <p className="mb-0">{TITRE_AUCUN_MEMBRE}</p>;
     }
 
-    if (groupe.etudiants.length === 0) {
+    if (groupe.etudiants!.size === 0) {
       return <p className="mb-0">{TITRE_AUCUN_MEMBRE}</p>;
     }
 
     return (
       <div className="list-group">
-        {groupe.etudiants.map((etudiant) => {
+        {Array.from(groupe.etudiants!).map((etudiant) => {
           return (
             <div
               key={etudiant.nomUtilisateur}
@@ -531,11 +539,11 @@ export default function PageCalendrierGroupe() {
               </div>
 
               {utilisateurEstChef() &&
-                etudiant.nomUtilisateur !== groupe.chef.nomUtilisateur && (
+                etudiant.nomUtilisateur !== groupe.chef!.nomUtilisateur && (
                   <button
                     type="button"
                     className="btn btn-sm btn-danger"
-                    onClick={() => retirerMembre(etudiant.nomUtilisateur)}
+                    onClick={() => retirerMembre(etudiant.nomUtilisateur!)}
                   >
                     {BOUTON_VIRER}
                   </button>
@@ -560,13 +568,13 @@ export default function PageCalendrierGroupe() {
       return <p className="mb-0">{TITRE_AUCUNE_ACTIVITE}</p>;
     }
 
-    if (groupe.horaire.activites.length === 0) {
+    if (groupe.horaire!.activites!.length === 0) {
       return <p className="mb-0">{TITRE_AUCUNE_ACTIVITE}</p>;
     }
 
     return (
       <div className="d-flex flex-column gap-3">
-        {groupe.horaire.activites.map((activite: Activite) => {
+        {groupe.horaire!.activites!.map((activite: Activite) => {
           return (
             <div key={activite.id} className="card">
               <div className="card-body">
@@ -575,10 +583,12 @@ export default function PageCalendrierGroupe() {
                     <h6 className="mb-2">{activite.titre}</h6>
                     <div className="mb-2">{activite.description}</div>
                     <div>
-                      {LABEL_DEBUT + formaterDateHeure(activite.tempsDebut)}
+                      {LABEL_DEBUT +
+                        formaterDateHeure(activite!.tempsDebut!.toISOString())}
                     </div>
                     <div>
-                      {LABEL_FIN + formaterDateHeure(activite.tempsFin)}
+                      {LABEL_FIN +
+                        formaterDateHeure(activite.tempsFin!.toISOString())}
                     </div>
                   </div>
 
@@ -586,7 +596,7 @@ export default function PageCalendrierGroupe() {
                     <button
                       type="button"
                       className="btn btn-sm btn-danger"
-                      onClick={() => supprimerUneActivite(activite.id)}
+                      onClick={() => supprimerUneActivite(activite.id!)}
                     >
                       {BOUTON_SUPPRIMER}
                     </button>
@@ -839,13 +849,6 @@ export default function PageCalendrierGroupe() {
             onClick={() => GotoCalendar(router, idEtudiant)}
           >
             {BOUTON_CALENDRIER_PERSO}
-          </button>
-          <button
-            type="button"
-            className="btn btn-secondary me-2"
-            onClick={() => GoToConversations(router, idEtudiant, idGroupe)}
-          >
-            {BOUTON_CONVERSATION}
           </button>
         </div>
 

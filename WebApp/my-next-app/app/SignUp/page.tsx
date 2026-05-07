@@ -1,20 +1,16 @@
 "use client";
 
-
 import { useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 
-import { creerEtudiant } from "@/app/FetchsMethodesEtudiants";
 import { verifierEmail, verifierMotDePasse } from "@/app/VerificationEmail";
 import { retournerErreur } from "@/app/attraperErreur";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
-import {
-  GotoHomePage,
-  GotoLogin,
-  GotoSignUp,
-} from "@/app/ChangerPage";
+import { API } from "../../Api";
+
+import { GotoHomePage, GotoLogin, GotoSignUp } from "@/app/ChangerPage";
 
 /**
  * ici je met toute les constante en haut
@@ -29,8 +25,7 @@ const ERREUR_NOM_UTILISATEUR_OBLIGATOIRE =
 const ERREUR_NOM_OBLIGATOIRE = "le nom est obligatoire";
 const ERREUR_PRENOM_OBLIGATOIRE = "le prenom est obligatoire";
 const ERREUR_ECOLE_OBLIGATOIRE = "l ecole est obligatoire";
-const ERREUR_CONDITIONS_OBLIGATOIRES =
-  "accepter les conditions d utilisation";
+const ERREUR_CONDITIONS_OBLIGATOIRES = "accepter les conditions d utilisation";
 
 /* succes */
 const MESSAGE_COMPTE_CREE = "compte cree avec succes";
@@ -106,7 +101,7 @@ const ECOLES: string[] = [
   "Universite du Quebec a Chicoutimi (UQAC)",
 ];
 
-export default function SignUpTestPage() {
+export default function SignUpPage() {
   const router = useRouter();
 
   /* state des champs */
@@ -175,14 +170,16 @@ export default function SignUpTestPage() {
     try {
       setChargement(true);
 
-      await creerEtudiant(
-        firstName.trim(),
-        name.trim(),
-        username.trim(),
-        uni.trim(),
-        password,
-        email.trim()
-      );
+      await API.createEtudiant({
+        creationEtudiantDTO: {
+          prenom: firstName.trim(),
+          nom: name.trim(),
+          nomUtilisateur: username.trim(),
+          ecole: uni.trim(),
+          motDePasse: password,
+          courriel: email.trim(),
+        },
+      });
 
       setMessage(MESSAGE_COMPTE_CREE);
       GotoLogin(router);

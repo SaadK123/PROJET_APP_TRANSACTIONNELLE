@@ -4,15 +4,7 @@ import { useEffect, useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
 import { useParams, useRouter } from "next/navigation";
 
-import type { Etudiant, Groupe, Invitation } from "@/app/TypesObjets";
-
-import { obtenirEtudiantParId } from "@/app/FetchsMethodesEtudiants";
-import {
-  obtenirGroupesDeEtudiant,
-  ajouterEtudiantDansGroupe,
-  creerGroupe,
-} from "@/app/FetchMethodesGroupes";
-import { supprimerNotification } from "@/app/FetchMethodesNotifications";
+import { API } from "../../../Api";
 
 import { retournerErreur } from "@/app/attraperErreur";
 //npm install react-bootstrap bootstrap
@@ -23,10 +15,8 @@ import {
   GotoHomePage,
   GotoLogin,
   GotoParametres,
-  GoToConversations,
 } from "@/app/ChangerPage";
-
-import { creerConversationPrivee } from "@/app/FetchMethodesConversations";
+import { Etudiant, Groupe, Notification } from "@/src/api";
 
 /**
  * ici je met toute les constante en haut
@@ -74,7 +64,6 @@ const BOUTON_VOIR_TOUT = "Voir tout";
 const BOUTON_ACCEPTER_INVITATION = "Accepter linvitation";
 const BOUTON_SUPPRIMER = "Supprimer";
 const BOUTON_CREER_CONVERSATION = "Creer conversation";
-const BOUTON_CONVERSATIONS = "Conversations";
 
 /* labels */
 const LABEL_NOM_UTILISATEUR = "Nom utilisateur :";
@@ -104,51 +93,14 @@ export default function Dashboard() {
   const [message, setMessage] = useState<string>("");
 
   /* state des donnees */
-  const [etudiant, setEtudiant] = useState<Etudiant | null>(null);
-  const [groupes, setGroupes] = useState<Groupe[]>([]);
+  const [etudiant, setEtudiant] = useState<Etudiant | null>();
+  const [groupes, setGroupes] = useState<Groupe[] | null>([]);
 
   /* state des input */
   const [rechercheGroupe, setRechercheGroupe] = useState<string>("");
   const [nomNouveauGroupe, setNomNouveauGroupe] = useState<string>("");
   const [nomUtilisateurConversation, setNomUtilisateurConversation] =
     useState<string>("");
-
-  /* state des conversation */
-  const [conversationSelectionnee, setConversationSelectionnee] =
-    useState<string>("Projet équipe");
-  const [messageTexte, setMessageTexte] = useState<string>("");
-
-  const [messagesDemo, setMessagesDemo] = useState<
-    {
-      id: number;
-      auteur: string;
-      contenu: string;
-      heure: string;
-      moi: boolean;
-    }[]
-  >([
-    {
-      id: 1,
-      auteur: "Alex",
-      contenu: "Salut, vous êtes dispo pour avancer le projet ?",
-      heure: "18:42",
-      moi: false,
-    },
-    {
-      id: 2,
-      auteur: "Moi",
-      contenu: "Oui, je suis là. On commence par la messagerie.",
-      heure: "18:43",
-      moi: true,
-    },
-    {
-      id: 3,
-      auteur: "Sarah",
-      contenu: "Parfait, on peut faire le design d’abord.",
-      heure: "18:44",
-      moi: false,
-    },
-  ]);
 
   /**
    * ici je vide les messages
@@ -175,7 +127,7 @@ export default function Dashboard() {
         return;
       }
 
-      const etudiantCharge = await obtenirEtudiantParId(id);
+      const etudiantCharge = await API.getEtudiantById({ id });
       setEtudiant(etudiantCharge);
     } catch (e: any) {
       setEtudiant(null);
@@ -195,7 +147,9 @@ export default function Dashboard() {
         return;
       }
 
-      const groupesCharges = await obtenirGroupesDeEtudiant(id);
+      const groupesCharges = await API.getGroupsFromEtudiant({
+        idEtudiant: id,
+      });
       setGroupes(groupesCharges);
     } catch (e: any) {
       setGroupes([]);
@@ -240,26 +194,35 @@ export default function Dashboard() {
     viderMessages();
 
     try {
-      await supprimerNotification(notificationId);
+      await API.deleteNotification({ idNotification: notificationId! });
       await chargerEtudiant();
     } catch (e: any) {
       setErreur(retournerErreur(e, ERREUR_IMPOSSIBLE_SUPPRIMER_NOTIFICATION));
     }
   }
 
+  type Invitation = Notification & {
+    groupe?: Groupe;
+    envoyeur?: Etudiant;
+  };
+
   /**
    * ici jaccepte une invitation
    * puis je recharge tout
    */
-  async function accepterInvitation(notification: Invitation) {
+  async function accepterInvitation(notification: Notification) {
     viderMessages();
-
+    const invitation = notification as any;
     try {
-      await ajouterEtudiantDansGroupe(notification.groupe.id, id);
-      await supprimerNotification(notification.id);
+      await API.ajouterEtudiantDansGroupe({
+        iNVITATIONGROUPEDTO: {
+          idGroupe: invitation.groupe.id,
+          idEtudiant: id,
+        },
+      });
+      await supprimerNotif(notification.id!);
       await chargerEtudiant();
       await chargerGroupes();
-
       setMessage(MESSAGE_INVITATION_ACCEPTEE);
     } catch (e: any) {
       setErreur(retournerErreur(e, ERREUR_IMPOSSIBLE_ACCEPTER_INVITATION));
@@ -285,7 +248,12 @@ export default function Dashboard() {
     }
 
     try {
-      await creerGroupe(id, nomNouveauGroupe.trim());
+      await API.createGroup({
+        creationDeGroupeDTO: {
+          chefID: id,
+          nomGroup: nomNouveauGroupe.trim(),
+        },
+      });
       setNomNouveauGroupe("");
       setMessage(MESSAGE_GROUPE_CREE);
       await chargerGroupes();
@@ -309,10 +277,12 @@ export default function Dashboard() {
     }
 
     try {
-      await creerConversationPrivee(
-        id,
-        `Conversation avec ${nomUtilisateurConversation.trim()}`,
-      );
+      await API.creerConversation({
+        creationConversationDTO: {
+          chefId: id,
+          nomConversation: `Conversation avec ${nomUtilisateurConversation.trim()}`,
+        },
+      });
 
       setNomUtilisateurConversation("");
       setMessage(MESSAGE_CONVERSATION_CREEE);
@@ -325,8 +295,8 @@ export default function Dashboard() {
    * ici je filtre les groupes
    * selon le texte taper
    */
-  const groupesFiltres: Groupe[] = groupes.filter((groupe) =>
-    groupe.nomGroupe.toLowerCase().includes(rechercheGroupe.toLowerCase()),
+  const groupesFiltres: Groupe[] = groupes!.filter((groupe) =>
+    groupe.nomGroupe!.toLowerCase().includes(rechercheGroupe.toLowerCase()),
   );
 
   /**
@@ -373,13 +343,6 @@ export default function Dashboard() {
 
         <button
           className="btn btn-secondary"
-          onClick={() => GoToConversations(router, id, "")}
-        >
-          {BOUTON_CONVERSATIONS}
-        </button>
-
-        <button
-          className="btn btn-secondary"
           onClick={() => GotoParametres(router, id)}
         >
           {BOUTON_PARAMETRES}
@@ -407,22 +370,22 @@ export default function Dashboard() {
       >
         {/* ici je montre le nom complet */}
         <h2 className="mb-3">
-          {etudiant.prenom} {etudiant.nom}
+          {etudiant!.prenom} {etudiant!.nom}
         </h2>
 
         <hr />
 
         {/* ici je montre les info de base */}
         <div className="mb-2">
-          <b>{LABEL_NOM_UTILISATEUR}</b> {etudiant.nomUtilisateur}
+          <b>{LABEL_NOM_UTILISATEUR}</b> {etudiant!.nomUtilisateur}
         </div>
 
         <div className="mb-2">
-          <b>{LABEL_COURRIEL}</b> {etudiant.courriel}
+          <b>{LABEL_COURRIEL}</b> {etudiant!.courriel}
         </div>
 
         <div className="mb-2">
-          <b>{LABEL_ECOLE}</b> {etudiant.ecole}
+          <b>{LABEL_ECOLE}</b> {etudiant!.ecole}
         </div>
       </div>
 
@@ -514,18 +477,18 @@ export default function Dashboard() {
 
                 {/* chef du groupe */}
                 <div>
-                  <b>{LABEL_CHEF}</b> {groupe.chef.prenom} {groupe.chef.nom}
+                  <b>{LABEL_CHEF}</b> {groupe.chef!.prenom} {groupe.chef!.nom}
                 </div>
 
                 {/* nombre de personnes dans le groupe */}
                 <div>
-                  <b>{LABEL_NOMBRE_PERSONNES}</b> {groupe.etudiants.length}
+                  <b>{LABEL_NOMBRE_PERSONNES}</b> {groupe.etudiants!.size}
                 </div>
 
                 {/* bouton pour ouvrir le groupe */}
                 <button
                   className="btn btn-primary btn-sm mt-2"
-                  onClick={() => GotoCalendarGroupe(router, id, groupe.id)}
+                  onClick={() => GotoCalendarGroupe(router, id, groupe.id!)}
                 >
                   {BOUTON_VOIR_TOUT}
                 </button>
@@ -539,11 +502,11 @@ export default function Dashboard() {
       <h4 className="mt-5 mb-3">{TITRE_NOTIFICATIONS}</h4>
 
       {/* ici soit je montre aucune notification soit la liste */}
-      {etudiant.notifications.length === 0 ? (
+      {etudiant!.notifications!.length === 0 ? (
         <p>{TITRE_AUCUNE_NOTIFICATION}</p>
       ) : (
         <div className="row">
-          {etudiant.notifications.map((notification) => {
+          {etudiant!.notifications!.map((notification) => {
             const estInvitation =
               notification.type === "NOUVELLE_GROUPE_INVITATION";
 
@@ -558,7 +521,9 @@ export default function Dashboard() {
                   <p>{notification.message}</p>
 
                   {/* date de creation */}
-                  <p>{new Date(notification.tempsCreation).toLocaleString()}</p>
+                  <p>
+                    {new Date(notification.tempsCreation!).toLocaleString()}
+                  </p>
 
                   {/* si cest une invitation je montre le bouton accepter */}
                   {estInvitation ? (
@@ -575,7 +540,7 @@ export default function Dashboard() {
                   {/* bouton pour supprimer la notification */}
                   <button
                     className="btn btn-danger btn-sm"
-                    onClick={() => supprimerNotif(notification.id)}
+                    onClick={() => supprimerNotif(notification.id!)}
                   >
                     {BOUTON_SUPPRIMER}
                   </button>
