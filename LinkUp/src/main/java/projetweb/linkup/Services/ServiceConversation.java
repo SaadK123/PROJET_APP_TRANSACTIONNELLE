@@ -118,11 +118,14 @@ public class ServiceConversation {
         return  new SucessDTO(true, "Étudiant " + invitation.getEtudiantNomUtilisateur() + " invité à la conversation " + conversation.getNom() + " avec succès");
     }
     @Transactional
-    public SucessDTO rejoindreConversation(INVITATION_GROUPE_DTO invitation){
+    public SucessDTO rejoindreConversation(INVITATION_GROUPE_DTO invitation,ServiceNotification serviceNotification){
 
     UUID etudiantId = serviceEtudiant.getEtudiantById((invitation.idEtudiant())).getId();
     Conversation conversation = getConversationById(invitation.idGroupe());
     conversation.getParticipants().add(etudiantId);
+    serviceNotification.supprimerInvitationParDestination(invitation.idGroupe(), etudiantId);
+
+
     return new SucessDTO(true,  " ajouté au groupe " + invitation.idGroupe());
 }
     @Transactional
