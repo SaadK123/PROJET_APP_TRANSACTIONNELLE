@@ -106,6 +106,21 @@ public class ServiceNotification {
         return true;
     }
 
+    public void supprimerInvitationParDestination(String destination,UUID idEtudiant) {
+        Etudiant etudiant = serviceEtudiant.getEtudiantById(idEtudiant.toString());
+        List<Notification> notifications = etudiant.getNotifications();
+        for (Notification notification : notifications) {
+            if(notification instanceof Invitation invitation && invitation.getGroupe()
+                    .getId().toString().equals(destination)) {
+                deleteNotification(notification.getId().toString());
+            }
+        }
+
+    }
+
+
+
+
 
 
 
