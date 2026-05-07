@@ -248,7 +248,12 @@ export default function Dashboard() {
     }
 
     try {
-      await creerGroupe(id, nomNouveauGroupe.trim());
+      await API.createGroup({
+        creationDeGroupeDTO: {
+          chefID: id,
+          nomGroup: nomNouveauGroupe.trim(),
+        },
+      });
       setNomNouveauGroupe("");
       setMessage(MESSAGE_GROUPE_CREE);
       await chargerGroupes();
@@ -272,10 +277,12 @@ export default function Dashboard() {
     }
 
     try {
-      await creerConversationPrivee(
-        id,
-        `Conversation avec ${nomUtilisateurConversation.trim()}`,
-      );
+      await API.creerConversation({
+        creationConversationDTO: {
+          chefId: id,
+          nomConversation: `Conversation avec ${nomUtilisateurConversation.trim()}`,
+        },
+      });
 
       setNomUtilisateurConversation("");
       setMessage(MESSAGE_CONVERSATION_CREEE);

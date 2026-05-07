@@ -151,7 +151,7 @@ public class TestControlleur {
         }
 
         @PostMapping("/conversations")
-        public SucessDTO creerConversation(@RequestBody CreationConversationDTO dto, @RequestParam UUID id) {
-                return serviceConversation.creerConversation(dto, id);
+        public SucessDTO creerConversation(@RequestBody CreationConversationDTO dto) {
+                return serviceConversation.creerConversation(dto, null);
         }
 }
