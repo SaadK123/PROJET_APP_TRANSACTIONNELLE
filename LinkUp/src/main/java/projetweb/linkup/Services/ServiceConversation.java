@@ -13,10 +13,7 @@ import projetweb.linkup.DTO.TYPES.RequeteInvitationDTO;
 import projetweb.linkup.Enumerations.ERREUR_TYPE;
 import projetweb.linkup.Exceptions.LinkUpException;
 import projetweb.linkup.Util.Utilitary;
-import projetweb.linkup.entities.Conversation;
-import projetweb.linkup.entities.Etudiant;
-import projetweb.linkup.entities.Groupe;
-import projetweb.linkup.entities.Notification;
+import projetweb.linkup.entities.*;
 
 import java.util.UUID;
 
@@ -184,6 +181,12 @@ public class ServiceConversation {
         return new SucessDTO(true, "L'etudiant  a été viré de la conversation ");
 
 
+    }
+    @Transactional
+    public SucessDTO EnvoyerMessage(Message message, String conversationId){
+       Conversation conversation = getConversationById(conversationId);
+       conversation.getMessages().add(message);
+       return  new SucessDTO(true, "Message envoyé avec succès");
     }
     @Transactional
     public boolean estUnChef(Conversation conversation, UUID etudiantId) {
