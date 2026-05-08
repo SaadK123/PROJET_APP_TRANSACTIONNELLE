@@ -27,7 +27,6 @@ public class ServiceConversation {
 
    private final MongoTemplate mongoTemplate;
    private final ServiceEtudiant serviceEtudiant;
-    private final MongoClient mongo;
 
     public ServiceConversation(MongoTemplate mongoTemplate, ServiceEtudiant serviceEtudiant, MongoClient mongo) {
        this.mongoTemplate = mongoTemplate;
@@ -200,7 +199,7 @@ public class ServiceConversation {
 
     public List<Conversation> getConversationsParEtudiant(String idEtudiant) {
         UUID uuidEtudiant = UUID.fromString(idEtudiant);
-        
+
         Query query = new Query();
         query.addCriteria(Criteria.where("etudiants").is(uuidEtudiant));
 

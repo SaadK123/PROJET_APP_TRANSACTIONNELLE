@@ -187,6 +187,10 @@ public class TestControlleur {
                 return serviceConversation.envoyerMessage(dto);
         }
 
+        @GetMapping("/conversations")
+        public List<Conversation> getConversationsParEtudiant(@RequestParam String idEtudiant) {
+                return serviceConversation.getConversationsParEtudiant(idEtudiant);
+        }
 
 
 }
