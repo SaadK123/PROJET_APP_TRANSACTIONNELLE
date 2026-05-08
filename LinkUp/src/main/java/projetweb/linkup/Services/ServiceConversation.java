@@ -201,7 +201,7 @@ public class ServiceConversation {
         UUID uuidEtudiant = UUID.fromString(idEtudiant);
 
         Query query = new Query();
-        query.addCriteria(Criteria.where("etudiants").is(uuidEtudiant));
+        query.addCriteria(Criteria.where("participants").is(uuidEtudiant));
 
         return mongoTemplate.find(query, Conversation.class);
     }

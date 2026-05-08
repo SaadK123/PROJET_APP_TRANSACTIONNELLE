@@ -153,12 +153,12 @@ public class TestControlleur {
                 return serviceConversation.creerConversation(dto, null);
         }
 
-        @GetMapping("conversations/{id}")
+        @GetMapping("/conversation")
         public Conversation getConversationById(@RequestParam String id) {
                 return serviceConversation.getConversationById(id);
         }
 
-        @DeleteMapping("/conversations/{id}")
+        @DeleteMapping("/conversations")
         public SucessDTO supprimerConversation(@RequestParam String id) {
                 return serviceConversation.supprimerConversation(id);
         }
