@@ -77,9 +77,7 @@ public class ServiceConversation {
                    org.springframework.data.mongodb.core.query.Criteria.where("id").is(conversationId)
            );
 
-           Conversation conversation = mongoTemplate.findOne(query, Conversation.class);
-
-           return conversation;
+           return mongoTemplate.findOne(query, Conversation.class);
        } catch (Exception e) {
            throw new LinkUpException(ERREUR_TYPE.NON_EXISTANT,"conversation nexiste pas");
        }
@@ -183,13 +181,13 @@ public class ServiceConversation {
 
     }
     @Transactional
-    public SucessDTO EnvoyerMessage(Message message, String conversationId){
-       Conversation conversation = getConversationById(conversationId);
-       conversation.getMessages().add(message);
+    public SucessDTO envoyerMessage(EnvoyerMessageDTO envoyerMessageDTO){
+       Conversation conversation = getConversationById(envoyerMessageDTO.conversationId());
+       conversation.getMessages().add(envoyerMessageDTO.message());
        return  new SucessDTO(true, "Message envoyé avec succès");
     }
     @Transactional
-    public boolean estUnChef(Conversation conversation, UUID etudiantId) {
+    private boolean estUnChef(Conversation conversation, UUID etudiantId) {
         return conversation.getChef().equals(etudiantId);
     }
 }

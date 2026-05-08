@@ -182,6 +182,10 @@ public class TestControlleur {
         public SucessDTO virerEtudiantConversation(@RequestBody VirerEtudiantDTO dto) {
                 return serviceConversation.virerEtudiantConversation(dto);
         }
+        @PostMapping("conversation/envoyerMessage")
+        public SucessDTO envoyerMessage(@RequestBody EnvoyerMessageDTO dto){
+                return serviceConversation.envoyerMessage(dto);
+        }
 
 
 
