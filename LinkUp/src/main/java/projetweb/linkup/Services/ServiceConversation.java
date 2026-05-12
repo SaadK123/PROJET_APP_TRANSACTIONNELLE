@@ -1,11 +1,13 @@
 package projetweb.linkup.Services;
 
 
+import com.mongodb.client.MongoClient;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import projetweb.linkup.DTO.ACTIONS.*;
@@ -13,11 +15,9 @@ import projetweb.linkup.DTO.TYPES.RequeteInvitationDTO;
 import projetweb.linkup.Enumerations.ERREUR_TYPE;
 import projetweb.linkup.Exceptions.LinkUpException;
 import projetweb.linkup.Util.Utilitary;
-import projetweb.linkup.entities.Conversation;
-import projetweb.linkup.entities.Etudiant;
-import projetweb.linkup.entities.Groupe;
-import projetweb.linkup.entities.Notification;
+import projetweb.linkup.entities.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -28,7 +28,7 @@ public class ServiceConversation {
    private final MongoTemplate mongoTemplate;
    private final ServiceEtudiant serviceEtudiant;
 
-   public ServiceConversation(MongoTemplate mongoTemplate, ServiceEtudiant serviceEtudiant) {
+    public ServiceConversation(MongoTemplate mongoTemplate, ServiceEtudiant serviceEtudiant, MongoClient mongo) {
        this.mongoTemplate = mongoTemplate;
        this.serviceEtudiant = serviceEtudiant;
    }
@@ -37,12 +37,13 @@ public class ServiceConversation {
         try {
             UUID chefId = UUID.fromString(dto.chefId());
 
-            Conversation conversation = id==null ? new Conversation(chefId, dto.nomConversation()) : new Conversation(id, chefId, dto.nomConversation());
+            Conversation conversation = id==null ? new Conversation(chefId, dto.nomConversation()) :
+                    new Conversation(id, chefId, dto.nomConversation());
             mongoTemplate.insert(conversation);
 
             return new SucessDTO(true, "Success in creerConversation");
         } catch (Exception e) {
-            return new SucessDTO(false, "Error in creerConversation");
+            return new SucessDTO(false, e.getMessage());
         }
    }
 
@@ -80,9 +81,7 @@ public class ServiceConversation {
                    org.springframework.data.mongodb.core.query.Criteria.where("id").is(conversationId)
            );
 
-           Conversation conversation = mongoTemplate.findOne(query, Conversation.class);
-
-           return conversation;
+           return mongoTemplate.findOne(query, Conversation.class);
        } catch (Exception e) {
            throw new LinkUpException(ERREUR_TYPE.NON_EXISTANT,"conversation nexiste pas");
        }
@@ -186,7 +185,24 @@ public class ServiceConversation {
 
     }
     @Transactional
-    public boolean estUnChef(Conversation conversation, UUID etudiantId) {
+    public SucessDTO envoyerMessage(EnvoyerMessageDTO envoyerMessageDTO){
+       Conversation conversation = getConversationById(envoyerMessageDTO.conversationId());
+       conversation.getMessages().add(envoyerMessageDTO.message());
+       return  new SucessDTO(true, "Message envoyé avec succès");
+    }
+    @Transactional
+    protected boolean estUnChef(Conversation conversation, UUID etudiantId) {
         return conversation.getChef().equals(etudiantId);
+    }
+
+
+
+    public List<Conversation> getConversationsParEtudiant(String idEtudiant) {
+        UUID uuidEtudiant = UUID.fromString(idEtudiant);
+
+        Query query = new Query();
+        query.addCriteria(Criteria.where("participants").is(uuidEtudiant));
+
+        return mongoTemplate.find(query, Conversation.class);
     }
 }
