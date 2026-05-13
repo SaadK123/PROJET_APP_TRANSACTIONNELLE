@@ -15,6 +15,7 @@ import {
   GotoHomePage,
   GotoLogin,
   GotoParametres,
+  GoToConversations,
 } from "@/app/ChangerPage";
 import { Etudiant, Groupe, Notification } from "@/src/api";
 
@@ -64,6 +65,7 @@ const BOUTON_VOIR_TOUT = "Voir tout";
 const BOUTON_ACCEPTER_INVITATION = "Accepter linvitation";
 const BOUTON_SUPPRIMER = "Supprimer";
 const BOUTON_CREER_CONVERSATION = "Creer conversation";
+const BOUTON_MESSAGERIE = "Messagerie";
 
 /* labels */
 const LABEL_NOM_UTILISATEUR = "Nom utilisateur :";
@@ -351,6 +353,10 @@ export default function Dashboard() {
         <button className="btn btn-dark" onClick={() => GotoLogin(router)}>
           {BOUTON_DECONNEXION}
         </button>
+
+        <button className="btn btn-secondary" onClick={() => GoToConversations(router, id)}>
+          {BOUTON_MESSAGERIE}
+        </button>
       </div>
 
       {/* ici je montre le message succes si il existe */}
@@ -424,27 +430,6 @@ export default function Dashboard() {
         style={{ maxWidth: LARGEUR_CARTE }}
       >
         <h4 className="mb-3">{TITRE_CREER_CONVERSATION}</h4>
-
-        <form onSubmit={soumettreCreationConversation}>
-          <div className="mb-3">
-            <label className="form-label">
-              {LABEL_NOM_UTILISATEUR_CONVERSATION}
-            </label>
-            <input
-              type="text"
-              className="form-control"
-              value={nomUtilisateurConversation}
-              onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                setNomUtilisateurConversation(e.target.value)
-              }
-              placeholder={PLACEHOLDER_NOM_UTILISATEUR_CONVERSATION}
-            />
-          </div>
-
-          <button type="submit" className="btn btn-primary">
-            {BOUTON_CREER_CONVERSATION}
-          </button>
-        </form>
       </div>
 
       {/* ici cest la section des groupes */}

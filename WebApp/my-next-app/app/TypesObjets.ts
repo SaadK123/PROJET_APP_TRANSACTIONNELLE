@@ -3,6 +3,7 @@
 export type TypeNotification =
   | "NOUVELLE_GROUPE_INVITATION"
   | "ALERTE_SYSTEME"
+  | "NOUVELLE_CONVERSATION_INVITATION"
   | string;
 
 export type InfoTypeNotification = {
@@ -18,6 +19,10 @@ export const TYPES_NOTIFICATION = {
   ALERTE_SYSTEME: {
     valeur: "ALERTE_SYSTEME",
     message: "Alerte systeme",
+  },
+  NOUVELLE_CONVERSATION_INVITATION: {
+    valeur: "NOUVELLE_CONVERSATION_INVITATION",
+    message: "Vous avez recu une invitation dans une conversation",
   },
 } as const;
 
@@ -75,4 +80,20 @@ export type Groupe = {
 export type Invitation = Notification & {
   groupe: Groupe;
   envoyeur: Etudiant | null;
+};
+
+export type MessageConversation = {
+  id: string;
+  envoyeurId: string;
+  contenu: string;
+  tempsEnvoi: string;
+};
+
+export type Conversation = {
+  id: string;
+  chef: string;
+  participants: string[];
+  estConversationGroupe: boolean;
+  messages: MessageConversation[];
+  nom: string;
 };

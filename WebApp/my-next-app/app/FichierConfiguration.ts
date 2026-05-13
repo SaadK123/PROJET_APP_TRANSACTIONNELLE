@@ -33,4 +33,12 @@ export const URLS = {
   SUPPRIMER_GROUPE: `${URL_BASE_API}/api/groupe/supprimer`,
 
   CREER_CONVERSATION: `${URL_BASE_API}/api/conversations`,
+  OBTENIR_CONVERSATIONS_ETUDIANT: `${URL_BASE_API}/api/conversations`,
+  OBTENIR_CONVERSATION_PAR_ID: `${URL_BASE_API}/api/conversation`,
+  SUPPRIMER_CONVERSATION: `${URL_BASE_API}/api/conversations`,
+  ENVOYER_INVITATION_CONVERSATION: `${URL_BASE_API}/api/invitation`,
+  REJOINDRE_CONVERSATION: `${URL_BASE_API}/api/rejoindre`,
+  QUITTER_CONVERSATION: `${URL_BASE_API}/api/quitter`,
+  VIRER_ETUDIANT_CONVERSATION: `${URL_BASE_API}/api/virer`,
+  ENVOYER_MESSAGE: `${URL_BASE_API}/api/conversation/envoyerMessage`,
 };
