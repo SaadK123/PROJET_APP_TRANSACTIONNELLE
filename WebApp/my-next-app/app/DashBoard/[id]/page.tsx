@@ -280,6 +280,7 @@ export default function Dashboard() {
 
     try {
       await API.creerConversation({
+        id:id,
         creationConversationDTO: {
           chefId: id,
           nomConversation: `Conversation avec ${nomUtilisateurConversation.trim()}`,
