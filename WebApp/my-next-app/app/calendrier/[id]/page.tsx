@@ -74,6 +74,23 @@ const CALENDRIER_HAUTEUR = "75vh";
  * ce type sert juste pour fullcalendar
  * je garde juste les champ utile
  */
+type PrevisionJour = {
+  date: string;
+  temperatureMax: number;
+  temperatureMin: number;
+  code: number;
+};
+
+function obtenirEmojiMeteo(code: number): string {
+  if (code === 0) return "☀️";
+  if (code <= 2) return "⛅";
+  if (code === 3) return "☁️";
+  if (code <= 67) return "🌧️";
+  if (code <= 79) return "❄️";
+  if (code <= 99) return "⛈️";
+  return "🌡️";
+}
+
 type EvenementCalendrier = {
   id: string;
   title: string;
@@ -104,6 +121,12 @@ export default function CalendrierUtilisateur() {
   const [tempsFin, setTempsFin] = useState<string>("");
   const [ajoutEnCours, setAjoutEnCours] = useState<boolean>(false);
 
+  /* state meteo */
+  const [survolDate, setSurvolDate] = useState<string | null>(null);
+  const [previsions, setPrevisions] = useState<Map<string, PrevisionJour>>(
+    new Map(),
+  );
+
   /**
    * je vide les message avant une action
    */
@@ -111,6 +134,33 @@ export default function CalendrierUtilisateur() {
     setErreur("");
     setMessage("");
   }
+
+  async function chargerPrevisions(lat: number, lon: number) {
+    try {
+      const url =
+        `https://api.open-meteo.com/v1/forecast` +
+        `?latitude=${lat}&longitude=${lon}` +
+        `&daily=temperature_2m_max,temperature_2m_min,weathercode` +
+        `&temperature_unit=celsius&timezone=auto&forecast_days=16`;
+
+      const reponse = await fetch(url);
+      const donnees = await reponse.json();
+
+      const map = new Map<string, PrevisionJour>();
+      donnees.daily.time.forEach((date: string, i: number) => {
+        map.set(date, {
+          date,
+          temperatureMax: Math.round(donnees.daily.temperature_2m_max[i]),
+          temperatureMin: Math.round(donnees.daily.temperature_2m_min[i]),
+          code: donnees.daily.weathercode[i],
+        });
+      });
+      setPrevisions(map);
+    } catch {
+      setPrevisions(new Map());
+    }
+  }
+
   //Animation Chargement
   function Chargement() {
     return <Spinner animation="border" />;
@@ -144,6 +194,18 @@ export default function CalendrierUtilisateur() {
       chargerEtudiant();
     }
   }, [idEtudiant]);
+  /**
+   * des que la page ouvre je charge la page
+   * charge la localisation
+   */
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => chargerPrevisions(pos.coords.latitude, pos.coords.longitude),
+        () => {},
+      );
+    }
+  }, []);
 
   /**
    * ici je transforme les activite
@@ -186,6 +248,13 @@ export default function CalendrierUtilisateur() {
     }
 
     return date.toLocaleString("fr-CA");
+  }
+
+  function formaterDateLocale(date: Date): string {
+    const annee = date.getFullYear();
+    const mois = String(date.getMonth() + 1).padStart(2, "0");
+    const jour = String(date.getDate()).padStart(2, "0");
+    return `${annee}-${mois}-${jour}`;
   }
 
   /**
@@ -428,6 +497,65 @@ export default function CalendrierUtilisateur() {
                 }}
                 events={construireEvenements()}
                 height={CALENDRIER_HAUTEUR}
+                dayCellContent={(arg) => {
+                  const dateKey = formaterDateLocale(arg.date);
+                  const prevision = previsions.get(dateKey);
+
+                  return (
+                    <div
+                      className="position-relative"
+                      onMouseEnter={() => setSurvolDate(dateKey)}
+                      onMouseLeave={() => setSurvolDate(null)}
+                    >
+                      <span className="fc-daygrid-day-number">
+                        {arg.date.getDate()}
+                      </span>
+
+                      {prevision !== undefined && (
+                        <small
+                          style={{
+                            fontSize: "0.65rem",
+                            color: "#555",
+                            display: "block",
+                            textAlign: "center",
+                          }}
+                        >
+                          {obtenirEmojiMeteo(prevision.code)}
+                        </small>
+                      )}
+
+                      {survolDate === dateKey && prevision !== undefined && (
+                        <div
+                          className="card position-absolute shadow"
+                          style={{
+                            top: "100%",
+                            left: 0,
+                            minWidth: "150px",
+                            zIndex: 1050,
+                          }}
+                        >
+                          <div className="card-body p-2">
+                            <small className="d-block fw-semibold mb-1">
+                              {dateKey}
+                            </small>
+                            <small className="d-block">
+                              {obtenirEmojiMeteo(prevision.code)}
+                            </small>
+                            <small className="d-block">
+                              <span style={{ color: "#c0392b" }}>
+                                {prevision.temperatureMax}°C
+                              </span>
+                              {" / "}
+                              <span style={{ color: "#2980b9" }}>
+                                {prevision.temperatureMin}°C
+                              </span>
+                            </small>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                }}
               />
             </div>
           </div>

@@ -85,6 +85,29 @@ const PLACEHOLDER_NOM_UTILISATEUR_CONVERSATION = "Entre le nom utilisateur";
 const LARGEUR_CARTE = "500px";
 const LARGEUR_RECHERCHE = "400px";
 
+type MeteoData = {
+  temperature: number;
+  code: number;
+};
+
+type PrevisionJour = {
+  date: string;
+  nomJour: string;
+  temperatureMax: number;
+  temperatureMin: number;
+  code: number;
+};
+
+function obtenirEmojiMeteo(code: number): string {
+  if (code === 0) return "☀️";
+  if (code <= 2) return "⛅";
+  if (code === 3) return "☁️";
+  if (code <= 67) return "🌧️";
+  if (code <= 79) return "❄️";
+  if (code <= 99) return "⛈️";
+  return "🌡️";
+}
+
 export default function Dashboard() {
   const id = useParams<{ id: string }>().id;
   const router = useRouter();
@@ -103,6 +126,11 @@ export default function Dashboard() {
   const [nomNouveauGroupe, setNomNouveauGroupe] = useState<string>("");
   const [nomUtilisateurConversation, setNomUtilisateurConversation] =
     useState<string>("");
+
+    /* state de meteo */
+  const [meteo, setMeteo] = useState<MeteoData | null>(null);
+  const [previsions, setPrevisions] = useState<PrevisionJour[]>([]);
+  const [survol, setSurvol] = useState<boolean>(false);
 
   /**
    * ici je vide les messages
@@ -178,6 +206,13 @@ export default function Dashboard() {
     await chargerEtudiant();
     await chargerGroupes();
 
+    if (navigator.geolocation) {
+  navigator.geolocation.getCurrentPosition(
+    (pos) => chargerMeteo(pos.coords.latitude, pos.coords.longitude),
+    () => {},
+  );
+}
+
     setLoad(false);
   }
 
@@ -187,6 +222,39 @@ export default function Dashboard() {
   useEffect(() => {
     chargerDashboard();
   }, [id]);
+
+  async function chargerMeteo(lat: number, lon: number) {
+  try {
+    const url =
+      `https://api.open-meteo.com/v1/forecast` +
+      `?latitude=${lat}&longitude=${lon}` +
+      `&current=temperature_2m,weathercode` +
+      `&daily=temperature_2m_max,temperature_2m_min,weathercode` +
+      `&temperature_unit=celsius&timezone=auto&forecast_days=7`;
+
+    const reponse = await fetch(url);
+    const donnees = await reponse.json();
+
+    setMeteo({
+      temperature: Math.round(donnees.current.temperature_2m),
+      code: donnees.current.weathercode,
+    });
+
+    const joursAbr = ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"];
+
+    setPrevisions(
+      donnees.daily.time.map((date: string, i: number) => ({
+        date,
+        nomJour: i === 0 ? "Auj." : joursAbr[new Date(date + "T12:00:00").getDay()],
+        temperatureMax: Math.round(donnees.daily.temperature_2m_max[i]),
+        temperatureMin: Math.round(donnees.daily.temperature_2m_min[i]),
+        code: donnees.daily.weathercode[i],
+      }))
+    );
+  } catch {
+    setMeteo(null);
+  }
+}
 
   /**
    * ici je supprime une notification
@@ -350,13 +418,45 @@ export default function Dashboard() {
           {BOUTON_PARAMETRES}
         </button>
 
+        <button className="btn btn-secondary" onClick={() => GoToConversations(router, id)}>
+          {BOUTON_MESSAGERIE}
+        </button>
+
+        <div className="ms-auto d-flex align-items-center gap-2">
+    {meteo !== null && (
+      <div
+        className="position-relative"
+        onMouseEnter={() => setSurvol(true)}
+        onMouseLeave={() => setSurvol(false)}
+      >
+        <span className="badge bg-light text-dark border" style={{ fontSize: "0.9rem", padding: "6px 10px", cursor: "default" }}>
+          {obtenirEmojiMeteo(meteo.code)} {meteo.temperature}°C
+        </span>
+
+        {survol && (
+          <div className="card position-absolute shadow" style={{ top: "calc(100% + 6px)", right: 0, minWidth: "200px", zIndex: 1050 }}>
+            <div className="card-body p-2">
+              {previsions.map((jour) => (
+                <div key={jour.date} className="d-flex justify-content-between align-items-center px-1 py-1">
+                  <small className="fw-semibold" style={{ minWidth: "36px" }}>{jour.nomJour}</small>
+                  <small>{obtenirEmojiMeteo(jour.code)}</small>
+                  <small>
+                    <span style={{ color: "#c0392b" }}>{jour.temperatureMax}°</span>
+                    {" / "}
+                    <span style={{ color: "#2980b9" }}>{jour.temperatureMin}°</span>
+                  </small>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    )}
         <button className="btn btn-dark" onClick={() => GotoLogin(router)}>
           {BOUTON_DECONNEXION}
         </button>
 
-        <button className="btn btn-secondary" onClick={() => GoToConversations(router, id)}>
-          {BOUTON_MESSAGERIE}
-        </button>
+        
       </div>
 
       {/* ici je montre le message succes si il existe */}
