@@ -332,35 +332,6 @@ export default function Dashboard() {
     }
   }
 
-  async function soumettreCreationConversation(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    viderMessages();
-
-    if (!id) {
-      setErreur(ERREUR_ID_ETUDIANT_INVALIDE);
-      return;
-    }
-
-    if (nomUtilisateurConversation.trim() === "") {
-      setErreur(ERREUR_NOM_UTILISATEUR_CONVERSATION_OBLIGATOIRE);
-      return;
-    }
-
-    try {
-      await API.creerConversation({
-        creationConversationDTO: {
-          chefId: id,
-          nomConversation: `Conversation avec ${nomUtilisateurConversation.trim()}`,
-        },
-      });
-
-      setNomUtilisateurConversation("");
-      setMessage(MESSAGE_CONVERSATION_CREEE);
-    } catch (e: any) {
-      setErreur(retournerErreur(e, ERREUR_IMPOSSIBLE_CREER_CONVERSATION));
-    }
-  }
-
   /**
    * ici je filtre les groupes
    * selon le texte taper
@@ -458,6 +429,7 @@ export default function Dashboard() {
 
         
       </div>
+    </div>
 
       {/* ici je montre le message succes si il existe */}
       {message !== "" ? (
@@ -638,3 +610,4 @@ export default function Dashboard() {
     </div>
   );
 }
+

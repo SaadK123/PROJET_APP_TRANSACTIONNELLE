@@ -43,8 +43,8 @@ const TITRE_PAGE = "Mon calendrier";
 const TITRE_CHARGEMENT = "Chargement...";
 const TITRE_AJOUT_ACTIVITE = "Ajouter une activite";
 const TITRE_CALENDRIER = "Calendrier";
-const TITRE_LISTE_ACTIVITES = "Liste des activites";
-const TITRE_AUCUNE_ACTIVITE = "Aucune activite";
+const TITRE_LISTE_ACTIVITES = "Liste des activités";
+const TITRE_AUCUNE_ACTIVITE = "Aucune activité";
 
 /* boutons */
 const BOUTON_ACCUEIL = "Accueil";
@@ -455,7 +455,7 @@ export default function CalendrierUtilisateur() {
         <div className="col-12 col-md-4 text-md-center mb-2 mb-md-0">
           <h3 className="mb-0">{TITRE_PAGE}</h3>
         </div>
-
+    
         <div className="col-12 col-md-4 text-md-end">
           <button
             type="button"
@@ -466,7 +466,6 @@ export default function CalendrierUtilisateur() {
           </button>
         </div>
       </div>
-
       <div className="row p-3">
         <div className="col-12">
           {message !== "" && (
