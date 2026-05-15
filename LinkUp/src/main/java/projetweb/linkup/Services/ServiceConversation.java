@@ -33,12 +33,14 @@ public class ServiceConversation {
        this.serviceEtudiant = serviceEtudiant;
    }
     @Transactional
-   public SucessDTO creerConversation(CreationConversationDTO dto, UUID id) {
+   public SucessDTO creerConversation(CreationConversationDTO dto) {
         try {
             UUID chefId = UUID.fromString(dto.chefId());
 
-            Conversation conversation = id==null ? new Conversation(chefId, dto.nomConversation()) :
-                    new Conversation(id, chefId, dto.nomConversation());
+
+            UUID idConversation =  dto.idConversation() == null ?  null : UUID.fromString(dto.idConversation());
+            Conversation conversation = dto.idConversation() == null ? new Conversation(chefId, dto.nomConversation()) :
+                    new Conversation(idConversation, chefId, dto.nomConversation());
             mongoTemplate.insert(conversation);
 
             return new SucessDTO(true, "Success in creerConversation");
