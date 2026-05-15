@@ -23,7 +23,7 @@ import {
  */
 
 /* erreurs */
-const ERREUR_CONNEXION = "impossible de se connecter";
+const ERREUR_CONNEXION = "Impossible de se connecter";
 
 /* titres */
 const TITRE_PAGE = "Connecte toi !";

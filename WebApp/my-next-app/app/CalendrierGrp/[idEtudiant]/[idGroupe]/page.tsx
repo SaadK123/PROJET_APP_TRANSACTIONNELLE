@@ -29,27 +29,27 @@ import { API } from "@/Api";
  */
 
 /* erreurs */
-const ERREUR_SERVEUR = "erreur serveur";
-const ERREUR_GROUPE_INTROUVABLE = "groupe introuvable";
-const ERREUR_HORAIRE_GROUPE_INTROUVABLE = "horaire du groupe introuvable";
-const ERREUR_SEUL_CHEF_INVITER = "seul le chef peut inviter";
+const ERREUR_SERVEUR = "Erreur serveur";
+const ERREUR_GROUPE_INTROUVABLE = "Groupe introuvable";
+const ERREUR_HORAIRE_GROUPE_INTROUVABLE = "Horaire du groupe introuvable";
+const ERREUR_SEUL_CHEF_INVITER = "Seul le chef peut inviter";
 const ERREUR_SEUL_CHEF_AJOUTER_ACTIVITE =
-  "seul le chef peut ajouter une activité";
-const ERREUR_SEUL_CHEF_VIRER = "seul le chef peut virer un membre";
-const ERREUR_NOM_UTILISATEUR_OBLIGATOIRE = "nom utilisateur obligatoire";
-const ERREUR_TITRE_OBLIGATOIRE = "titre obligatoire";
-const ERREUR_DESCRIPTION_OBLIGATOIRE = "description obligatoire";
-const ERREUR_TEMPS_DEBUT_OBLIGATOIRE = "temps début obligatoire";
-const ERREUR_TEMPS_FIN_OBLIGATOIRE = "temps fin obligatoire";
-const ERREUR_DUREE_INVALIDE = "durée invalide";
+  "Seul le chef peut ajouter une activité";
+const ERREUR_SEUL_CHEF_VIRER = "Seul le chef peut virer un membre";
+const ERREUR_NOM_UTILISATEUR_OBLIGATOIRE = "Nom utilisateur obligatoire";
+const ERREUR_TITRE_OBLIGATOIRE = "Titre obligatoire";
+const ERREUR_DESCRIPTION_OBLIGATOIRE = "Description obligatoire";
+const ERREUR_TEMPS_DEBUT_OBLIGATOIRE = "Temps début obligatoire";
+const ERREUR_TEMPS_FIN_OBLIGATOIRE = "Temps fin obligatoire";
+const ERREUR_DUREE_INVALIDE = "Durée invalide";
 const ERREUR_FIN_AVANT_DEBUT =
-  "le temps de fin doit être après le temps de début";
+  "Le temps de fin doit être après le temps de début";
 
 /* succes */
-const MESSAGE_INVITATION_ENVOYEE = "invitation envoyée";
-const MESSAGE_ACTIVITE_AJOUTEE = "activité ajoutée";
-const MESSAGE_ACTIVITE_SUPPRIMEE = "activité supprimée";
-const MESSAGE_MEMBRE_RETIRE = "membre viré du groupe";
+const MESSAGE_INVITATION_ENVOYEE = "Invitation envoyée";
+const MESSAGE_ACTIVITE_AJOUTEE = "Activité ajoutée";
+const MESSAGE_ACTIVITE_SUPPRIMEE = "Activité supprimée";
+const MESSAGE_MEMBRE_RETIRE = "Membre viré du groupe";
 
 /* titres */
 const TITRE_PAGE = "Calendrier de groupe";
@@ -60,7 +60,7 @@ const TITRE_CALENDRIER = "Calendrier";
 const TITRE_LISTE_ACTIVITES = "Liste des activités";
 const TITRE_CHARGEMENT = "Chargement...";
 const TITRE_AUCUN_MEMBRE = "aucun membre";
-const TITRE_AUCUNE_ACTIVITE = "aucune activité";
+const TITRE_AUCUNE_ACTIVITE = "Aucune activité";
 
 /* labels */
 const LABEL_CHEF = "Chef : ";
@@ -109,9 +109,9 @@ const MESSAGE_ZONE_CHAT_VIDE = "La partie messages sera ajoutée bientôt";
 const BOUTON_CREER_CONVERSATION = "Créer la conversation";
 const BOUTON_SUPPRIMER_CONVERSATION = "Supprimer la conversation";
 const ERREUR_SEUL_CHEF_GERER_CONVERSATION =
-  "seul le chef peut gérer la conversation";
-const MESSAGE_CONVERSATION_CREEE = "conversation créée";
-const MESSAGE_CONVERSATION_SUPPRIMEE = "conversation supprimée";
+  "Seul le chef peut gérer la conversation";
+const MESSAGE_CONVERSATION_CREEE = "Conversation créée";
+const MESSAGE_CONVERSATION_SUPPRIMEE = "Conversation supprimée";
 
 type PrevisionJour = {
   date: string;
