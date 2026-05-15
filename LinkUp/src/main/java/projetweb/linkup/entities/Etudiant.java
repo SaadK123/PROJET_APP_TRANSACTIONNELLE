@@ -63,8 +63,9 @@ public class Etudiant  {
     private String ecole;
 
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY,orphanRemoval = true)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER,orphanRemoval = true)
     @JoinColumn(name = "horaire_id")
+    @JsonIgnore
     private Horaire horaire = new Horaire();
 
     @JsonIgnore
@@ -74,6 +75,7 @@ public class Etudiant  {
             horaire = new Horaire();
         }
     }
+    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true)
     @JoinColumn(name  = "etudiant_id")
     private List<Notification> notifications = new ArrayList<>();
