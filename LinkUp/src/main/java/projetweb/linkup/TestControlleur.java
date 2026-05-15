@@ -1,15 +1,13 @@
 package projetweb.linkup;
 
+import com.sun.net.httpserver.Authenticator;
 import org.springframework.web.bind.annotation.*;
 import projetweb.linkup.DTO.ACTIONS.*;
 import projetweb.linkup.DTO.TYPES.RequeteInvitationDTO;
 import projetweb.linkup.DTO.TYPES.MiseAJourEtudiantMotDePasse;
 import projetweb.linkup.DTO.TYPES.MiseAJourEtudiantProfil;
 import projetweb.linkup.Services.*;
-import projetweb.linkup.entities.Etudiant;
-import projetweb.linkup.entities.Groupe;
-import projetweb.linkup.entities.Horaire;
-import projetweb.linkup.entities.Notification;
+import projetweb.linkup.entities.*;
 
 import java.util.List;
 import java.util.UUID;
@@ -151,7 +149,48 @@ public class TestControlleur {
         }
 
         @PostMapping("/conversations")
-        public SucessDTO creerConversation(@RequestBody CreationConversationDTO dto, @RequestParam UUID id) {
-                return serviceConversation.creerConversation(dto, id);
+        public SucessDTO creerConversation(@RequestBody CreationConversationDTO dto) {
+                return serviceConversation.creerConversation(dto);
         }
+
+        @GetMapping("/conversation")
+        public Conversation getConversationById(@RequestParam String id) {
+                return serviceConversation.getConversationById(id);
+        }
+
+        @DeleteMapping("/conversations")
+        public SucessDTO supprimerConversation(@RequestParam String id) {
+                return serviceConversation.supprimerConversation(id);
+        }
+
+        @PostMapping("/invitation")
+        public SucessDTO envoyerInvitationConversation(@RequestBody RequeteInvitationDTO dto) {
+                return serviceConversation.invitationConversation(dto, serviceEtudiant, serviceNotification);
+        }
+
+        @PostMapping("/rejoindre")
+        public SucessDTO rejoindreConversation(@RequestBody INVITATION_GROUPE_DTO dto) {
+                return serviceConversation.rejoindreConversation(dto, serviceNotification);
+        }
+
+        @PostMapping("/quitter")
+        public SucessDTO quitterConversation(@RequestBody QuitterGroupeDTO dto) {
+                return serviceConversation.quitterConversation(dto);
+        }
+
+        @PostMapping("/virer")
+        public SucessDTO virerEtudiantConversation(@RequestBody VirerEtudiantDTO dto) {
+                return serviceConversation.virerEtudiantConversation(dto);
+        }
+        @PostMapping("conversation/envoyerMessage")
+        public SucessDTO envoyerMessage(@RequestBody EnvoyerMessageDTO dto){
+                return serviceConversation.envoyerMessage(dto);
+        }
+
+        @GetMapping("/conversations")
+        public List<Conversation> getConversationsParEtudiant(@RequestParam String idEtudiant) {
+                return serviceConversation.getConversationsParEtudiant(idEtudiant);
+        }
+
+
 }
