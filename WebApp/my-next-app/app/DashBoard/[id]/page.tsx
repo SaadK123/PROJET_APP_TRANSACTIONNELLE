@@ -26,25 +26,25 @@ import { Etudiant, Groupe, Notification } from "@/src/api";
  */
 
 /* erreurs */
-const ERREUR_SERVEUR = "erreur serveur";
-const ERREUR_IMPOSSIBLE_CHARGER_CLIENT = "impossible de charger le client";
-const ERREUR_IMPOSSIBLE_CHARGER_GROUPES = "impossible de charger les groupes";
+const ERREUR_SERVEUR = "Erreur serveur";
+const ERREUR_IMPOSSIBLE_CHARGER_CLIENT = "Impossible de charger le client";
+const ERREUR_IMPOSSIBLE_CHARGER_GROUPES = "Impossible de charger les groupes";
 const ERREUR_IMPOSSIBLE_SUPPRIMER_NOTIFICATION =
-  "la notification na pas pu etre supprimer";
+  "La notification na pas pu etre supprimer";
 const ERREUR_IMPOSSIBLE_ACCEPTER_INVITATION =
-  "impossible daccepter linvitation";
-const ERREUR_IMPOSSIBLE_CREER_GROUPE = "impossible de creer le groupe";
-const ERREUR_ID_ETUDIANT_INVALIDE = "id etudiant invalide";
-const ERREUR_NOM_GROUPE_OBLIGATOIRE = "le nom du groupe est obligatoire";
+  "Impossible daccepter linvitation";
+const ERREUR_IMPOSSIBLE_CREER_GROUPE = "Impossible de creer le groupe";
+const ERREUR_ID_ETUDIANT_INVALIDE = "Id etudiant invalide";
+const ERREUR_NOM_GROUPE_OBLIGATOIRE = "Le nom du groupe est obligatoire";
 const ERREUR_NOM_UTILISATEUR_CONVERSATION_OBLIGATOIRE =
-  "le nom utilisateur est obligatoire";
+  "Le nom utilisateur est obligatoire";
 const ERREUR_IMPOSSIBLE_CREER_CONVERSATION =
-  "impossible de creer la conversation";
+  "Impossible de creer la conversation";
 
 /* succes */
-const MESSAGE_INVITATION_ACCEPTEE = "invitation acceptee";
-const MESSAGE_GROUPE_CREE = "groupe cree avec succes";
-const MESSAGE_CONVERSATION_CREEE = "conversation creee avec succes";
+const MESSAGE_INVITATION_ACCEPTEE = "Invitation acceptée";
+const MESSAGE_GROUPE_CREE = "Groupe crée avec succes";
+const MESSAGE_CONVERSATION_CREEE = "Conversation crée avec succes";
 
 /* titres */
 const TITRE_CHARGEMENT = "Chargement...";
@@ -68,9 +68,9 @@ const BOUTON_CREER_CONVERSATION = "Creer conversation";
 const BOUTON_MESSAGERIE = "Messagerie";
 
 /* labels */
-const LABEL_NOM_UTILISATEUR = "Nom utilisateur :";
+const LABEL_NOM_UTILISATEUR = "Nom d'utilisateur :";
 const LABEL_COURRIEL = "Courriel :";
-const LABEL_ECOLE = "Ecole :";
+const LABEL_ECOLE = "École :";
 const LABEL_NOM_GROUPE = "Nom du groupe";
 const LABEL_RECHERCHE_GROUPE = "Rechercher un groupe par son nom...";
 const LABEL_CHEF = "Chef :";
