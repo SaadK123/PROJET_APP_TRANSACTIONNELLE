@@ -150,7 +150,7 @@ public class TestControlleur {
 
         @PostMapping("/conversations")
         public SucessDTO creerConversation(@RequestBody CreationConversationDTO dto) {
-                return serviceConversation.creerConversation(dto, null);
+                return serviceConversation.creerConversation(dto);
         }
 
         @GetMapping("/conversation")

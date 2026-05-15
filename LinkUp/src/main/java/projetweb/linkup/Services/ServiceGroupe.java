@@ -145,8 +145,8 @@ public class ServiceGroupe {
         // creer un groupe ici fonctionne pratiquement toujours on pourrais faire une limite
         Etudiant chef = serviceEtudiant.getEtudiantById(groupeDTO.chefID());
         Groupe g = new Groupe(chef,groupeDTO.nomGroup());
-        var conversationDTO = new CreationConversationDTO(groupeDTO.chefID(),groupeDTO.nomGroup());
-        serviceConversation.creerConversation(conversationDTO, g.getId());
+        var conversationDTO = new CreationConversationDTO(groupeDTO.chefID(),groupeDTO.nomGroup(),g.getId().toString());
+        serviceConversation.creerConversation(conversationDTO);
           // on persiste lentite pour la mettre dans la bd ( pas requis mais safe)
         entityManager.persist(g);
         entityManager.flush();
