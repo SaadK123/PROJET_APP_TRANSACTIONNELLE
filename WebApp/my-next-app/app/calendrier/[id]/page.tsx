@@ -21,37 +21,37 @@ import { Activite, Etudiant } from "@/src/api";
  */
 
 /* erreurs */
-const ERREUR_SERVEUR = "erreur serveur";
-const ERREUR_ETUDIANT_INTROUVABLE = "aucun etudiant trouve";
-const ERREUR_TITRE_OBLIGATOIRE = "titre obligatoire";
-const ERREUR_DESCRIPTION_OBLIGATOIRE = "description obligatoire";
-const ERREUR_TEMPS_DEBUT_OBLIGATOIRE = "temps debut obligatoire";
-const ERREUR_TEMPS_FIN_OBLIGATOIRE = "temps fin obligatoire";
+const ERREUR_SERVEUR = "Erreur serveur";
+const ERREUR_ETUDIANT_INTROUVABLE = "Aucun étudiant trouvé";
+const ERREUR_TITRE_OBLIGATOIRE = "Titre obligatoire";
+const ERREUR_DESCRIPTION_OBLIGATOIRE = "Description obligatoire";
+const ERREUR_TEMPS_DEBUT_OBLIGATOIRE = "Temps début obligatoire";
+const ERREUR_TEMPS_FIN_OBLIGATOIRE = "Temps fin obligatoire";
 const ERREUR_FIN_AVANT_DEBUT =
-  "le temps de fin doit etre apres le temps de debut";
+  "Le temps de fin doit être après le temps de début";
 
 /* succes */
-const MESSAGE_ACTIVITE_AJOUTEE = "activite ajoutee";
-const MESSAGE_ACTIVITE_SUPPRIMEE = "activite supprimee";
+const MESSAGE_ACTIVITE_AJOUTEE = "Activité ajoutée";
+const MESSAGE_ACTIVITE_SUPPRIMEE = "Activité supprimée";
 
 /* confirmation */
 const MESSAGE_CONFIRMATION_SUPPRESSION =
-  "veux tu vraiment supprimer cette activite ?";
+  "Voulez-vous vraiment supprimer cette activité?";
 
 /* titres */
 const TITRE_PAGE = "Mon calendrier";
 const TITRE_CHARGEMENT = "Chargement...";
-const TITRE_AJOUT_ACTIVITE = "Ajouter une activite";
+const TITRE_AJOUT_ACTIVITE = "Ajouter une activitée";
 const TITRE_CALENDRIER = "Calendrier";
-const TITRE_LISTE_ACTIVITES = "Liste des activites";
-const TITRE_AUCUNE_ACTIVITE = "aucune activite";
+const TITRE_LISTE_ACTIVITES = "Liste des activités";
+const TITRE_AUCUNE_ACTIVITE = "Aucune activitée";
 
 /* boutons */
 const BOUTON_ACCUEIL = "Accueil";
 const BOUTON_DASHBOARD = "Tableau de bord";
 const BOUTON_CALENDRIER = "Calendrier";
 const BOUTON_DECONNEXION = "Deconnexion";
-const BOUTON_AJOUTER_ACTIVITE = "Ajouter activite";
+const BOUTON_AJOUTER_ACTIVITE = "Ajouter activité";
 const BOUTON_AJOUT_EN_COURS = "Ajout...";
 const BOUTON_SUPPRIMER = "Supprimer";
 

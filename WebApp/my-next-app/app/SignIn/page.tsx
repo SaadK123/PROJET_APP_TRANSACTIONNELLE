@@ -36,7 +36,7 @@ const BOUTON_CONNEXION = "Connection";
 const BOUTON_INSCRIPTION = "Inscription";
 
 /* formulaire */
-const LABEL_EMAIL = "Email etudiant";
+const LABEL_EMAIL = "Email étudiant";
 const LABEL_MOT_DE_PASSE = "Mot de passe";
 const TEXTE_REGLES_MOT_DE_PASSE =
   "Le mot de passe doit contenir au moins 8 caracteres, une majuscule, un chiffre et un caractere special.";
