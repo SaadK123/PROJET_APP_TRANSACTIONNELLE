@@ -32,8 +32,8 @@ const ERREUR_IMPOSSIBLE_CHARGER_GROUPES = "impossible de charger les groupes";
 const ERREUR_IMPOSSIBLE_SUPPRIMER_NOTIFICATION =
   "la notification na pas pu etre supprimer";
 const ERREUR_IMPOSSIBLE_ACCEPTER_INVITATION =
-  "impossible daccepter linvitation";
-const ERREUR_IMPOSSIBLE_CREER_GROUPE = "impossible de creer le groupe";
+  "impossible daccepter l'invitation";
+const ERREUR_IMPOSSIBLE_CREER_GROUPE = "Impossible de creer le groupe";
 const ERREUR_ID_ETUDIANT_INVALIDE = "id etudiant invalide";
 const ERREUR_NOM_GROUPE_OBLIGATOIRE = "le nom du groupe est obligatoire";
 const ERREUR_NOM_UTILISATEUR_CONVERSATION_OBLIGATOIRE =
@@ -207,11 +207,11 @@ export default function Dashboard() {
     await chargerGroupes();
 
     if (navigator.geolocation) {
-  navigator.geolocation.getCurrentPosition(
-    (pos) => chargerMeteo(pos.coords.latitude, pos.coords.longitude),
-    () => {},
-  );
-}
+      navigator.geolocation.getCurrentPosition(
+      (pos) => chargerMeteo(pos.coords.latitude, pos.coords.longitude),
+      () => {},
+    );
+  }
 
     setLoad(false);
   }
