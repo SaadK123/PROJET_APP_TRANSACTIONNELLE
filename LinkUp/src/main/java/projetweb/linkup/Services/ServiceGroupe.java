@@ -34,17 +34,20 @@ public class ServiceGroupe {
     }
    @Transactional
     public Groupe getGroupeById(String groupeIdString) {
+       try {
+           // on tente de recuperer letudiant sinon on renvoie un message inexistant
+           UUID groupeId = UUID.fromString(groupeIdString);
+           return entityManager
+                   .createQuery("select g from Groupe g where g.id = :groupeId", Groupe.class)
+                   .setParameter("groupeId", groupeId)
+                   .getSingleResult();
 
-        try {
-            // on tente de recuperer letudiant sinon on renvoie un message inexistant
-            UUID groupeId = UUID.fromString(groupeIdString);
-            return  entityManager.
-              createQuery("select g from Groupe g where g.id = :groupeId", Groupe.class)
-                    .setParameter("groupeId", groupeId).getSingleResult();
-        } catch (NoResultException ex) {
-        throw  new LinkUpException(ERREUR_TYPE.NON_EXISTANT, Utilitary.EXCEPTION_UTILISATEUR_NON_TROUVER);
-        }
-
+       } catch (NoResultException ex) {
+           throw new LinkUpException(
+                   ERREUR_TYPE.NON_EXISTANT,
+                   Utilitary.EXCEPTION_UTILISATEUR_NON_TROUVER
+           );
+       }
     }
 
     @Transactional
@@ -147,11 +150,12 @@ public class ServiceGroupe {
         // creer un groupe ici fonctionne pratiquement toujours on pourrais faire une limite
         Etudiant chef = serviceEtudiant.getEtudiantById(groupeDTO.chefID());
         Groupe g = new Groupe(chef,groupeDTO.nomGroup());
+
+        entityManager.persist(g);
+        entityManager.flush();
         var conversationDTO = new CreationConversationDTO(groupeDTO.chefID(),groupeDTO.nomGroup(),g.getId().toString());
         serviceConversation.creerConversation(conversationDTO);
           // on persiste lentite pour la mettre dans la bd ( pas requis mais safe)
-        entityManager.persist(g);
-        entityManager.flush();
 
         return g;
     }
@@ -202,8 +206,13 @@ public class ServiceGroupe {
     @Transactional
     public List<Groupe> getToutGroupesDeUser(String utilisateurID) {
         // permet de retourner tout les groupe ou un user est dedans
-        return entityManager.createQuery("select g from  Groupe g  join g.etudiants e where e.id = :utilisateurID", Groupe.class).
-                setParameter("utilisateurID",UUID.fromString(utilisateurID)).getResultList();
+        return entityManager
+                .createQuery(
+                        "select g from Groupe g join g.etudiants e where e.id = :utilisateurID",
+                        Groupe.class
+                )
+                .setParameter("utilisateurID", UUID.fromString(utilisateurID))
+                .getResultList();
     }
 
 

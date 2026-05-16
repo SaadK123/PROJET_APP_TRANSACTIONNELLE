@@ -23,7 +23,7 @@ public class Groupe {
      * les inclusions de propriete permettent de limiter la portee
      * des choses envoyer vers le front end
      */
-    @JsonIncludeProperties({"nomUtilisateur", "nom", "prenom", "courriel", "ecole","id"})
+    @JsonIncludeProperties({"id", "nom", "prenom", "nomUtilisateur", "courriel", "ecole"})
     @ManyToOne
     @JoinColumn(name = "chef_id", nullable = false)
     private Etudiant chef;
@@ -31,8 +31,9 @@ public class Groupe {
     @Column(name = "nom_du_groupe",nullable = false)
     private String nomGroupe;
 
-    @JsonIncludeProperties({"nomUtilisateur", "nom", "prenom", "courriel", "ecole"})
-    @ManyToMany(fetch = FetchType.LAZY)
+
+    @JsonIncludeProperties({"id", "nom", "prenom", "nomUtilisateur", "courriel", "ecole"})
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "groupe_etudiants",
             joinColumns = @JoinColumn(name = "groupe_id"),
@@ -42,14 +43,16 @@ public class Groupe {
     private Set<Etudiant> etudiants = new HashSet<>();
 
 
+
     @JsonIgnore
     public List<Etudiant> getEtudiantsList() {
         return new ArrayList<>(etudiants);
     }
 
-    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-    @JoinColumn(name = "horaire_id",unique = true)
+
     @JsonIncludeProperties({"id", "activites"})
+    @OneToOne(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    @JoinColumn(name = "horaire_id",unique = true)
     private Horaire horaire;
     public Groupe(Etudiant chef, String nomGroupe) {
         setChef(chef);

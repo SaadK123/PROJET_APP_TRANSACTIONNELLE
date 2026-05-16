@@ -130,6 +130,7 @@ export default function Dashboard() {
       }
 
       const etudiantCharge = await API.getEtudiantById({ id });
+      etudiantCharge.notifications = etudiantCharge.notifications ?? [];
       setEtudiant(etudiantCharge);
     } catch (e: any) {
       setEtudiant(null);
