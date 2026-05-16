@@ -76,7 +76,7 @@ public class Etudiant  {
         }
     }
     @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL,orphanRemoval = true)
     @JoinColumn(name  = "etudiant_id")
     private List<Notification> notifications = new ArrayList<>();
 

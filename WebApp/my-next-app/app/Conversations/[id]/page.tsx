@@ -4,10 +4,7 @@ import { useEffect, useState } from "react";
 import type { FormEvent } from "react";
 import { useParams, useRouter } from "next/navigation";
 
-import {
-  creerConversation,
-  getConversationsParEtudiant,
-} from "@/app/FetchMethodesConversations";
+import { API } from "../../../Api";
 import type { Conversation } from "@/app/TypesObjets";
 import { GoToConversation } from "@/app/ChangerPage";
 
@@ -26,7 +23,7 @@ export default function ListeConversationsPage() {
       setChargement(true);
       setErreur("");
 
-      const data = await getConversationsParEtudiant(id);
+      const data = await API.getConversationsParEtudiant({ idEtudiant: id });
       setConversations(data);
     } catch (e: any) {
       setErreur(e.message || "Impossible de charger les conversations");
@@ -50,7 +47,7 @@ export default function ListeConversationsPage() {
     }
 
     try {
-      await creerConversation(id, nomConversation.trim());
+      await API.creerConversation(id, nomConversation.trim());
       setNomConversation("");
       setMessage("Conversation créée avec succès.");
       await chargerConversations();

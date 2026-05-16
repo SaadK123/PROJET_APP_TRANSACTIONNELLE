@@ -324,9 +324,19 @@ export default function PageCalendrierGroupe() {
 
       setNomUtilisateurInvitation("");
       setMessage(MESSAGE_INVITATION_ENVOYEE);
-    } catch (erreurCapturee: any) {
-      setErreur(retournerErreur(erreurCapturee, ERREUR_SERVEUR));
-    }
+} catch (erreurCapturee: any) {
+  console.error("ERREUR INVITATION COMPLETE:", erreurCapturee);
+
+  if (erreurCapturee.response) {
+    const data = await erreurCapturee.response.json().catch(() => null);
+    console.error("REPONSE BACKEND INVITATION:", data);
+
+    setErreur(data?.message || ERREUR_SERVEUR);
+    return;
+  }
+
+  setErreur(erreurCapturee.message || ERREUR_SERVEUR);
+}
   }
 
   /**

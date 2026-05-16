@@ -26,6 +26,7 @@ public class ServiceNotification {
         this.serviceEtudiant = serviceEtudiant;
     }
 
+
     public List<Notification> getToutNotificationsDeUser(String idEtudiant) {
    // ici on recupere tout less notifications  de lutilisateur
      try {

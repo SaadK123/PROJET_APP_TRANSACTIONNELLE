@@ -97,6 +97,7 @@ export default function Dashboard() {
   /* state des donnees */
   const [etudiant, setEtudiant] = useState<Etudiant | null>();
   const [groupes, setGroupes] = useState<Groupe[] | null>([]);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
 
   /* state des input */
   const [rechercheGroupe, setRechercheGroupe] = useState<string>("");
@@ -160,6 +161,25 @@ export default function Dashboard() {
     }
   }
 
+
+  async function chargerNotifications() {
+  try {
+    if (!id) {
+      setNotifications([]);
+      return;
+    }
+
+    const notificationsChargees = await API.getAllNotificationsFromEtudiant({
+      idEtudiant: id,
+    });
+
+    setNotifications(notificationsChargees);
+  } catch (e: any) {
+    setNotifications([]);
+    setErreur(retournerErreur(e, ERREUR_SERVEUR));
+  }
+}
+
   /**
    * ici je charge toute la page
    * comme sa jai un seul useEffect
@@ -178,6 +198,7 @@ export default function Dashboard() {
 
     await chargerEtudiant();
     await chargerGroupes();
+    await chargerNotifications();
 
     setLoad(false);
   }
@@ -198,7 +219,7 @@ export default function Dashboard() {
 
     try {
       await API.deleteNotification({ idNotification: notificationId! });
-      await chargerEtudiant();
+      await chargerNotifications();
     } catch (e: any) {
       setErreur(retournerErreur(e, ERREUR_IMPOSSIBLE_SUPPRIMER_NOTIFICATION));
     }
@@ -216,6 +237,10 @@ export default function Dashboard() {
   async function accepterInvitation(notification: Notification) {
     viderMessages();
     const invitation = notification as any;
+
+      console.log("NOTIFICATION CLIQUEE:", notification);
+  console.log("INVITATION CAST:", invitation);
+  console.log("GROUPE DANS INVITATION:", invitation.groupe);
     try {
       await API.ajouterEtudiantDansGroupe({
         iNVITATIONGROUPEDTO: {
@@ -228,8 +253,18 @@ export default function Dashboard() {
       await chargerGroupes();
       setMessage(MESSAGE_INVITATION_ACCEPTEE);
     } catch (e: any) {
-      setErreur(retournerErreur(e, ERREUR_IMPOSSIBLE_ACCEPTER_INVITATION));
-    }
+  console.error("ERREUR ACCEPT INVITATION COMPLETE:", e);
+
+  if (e.response) {
+    const data = await e.response.json().catch(() => null);
+    console.error("REPONSE BACKEND ACCEPT INVITATION:", data);
+
+    setErreur(data?.message || ERREUR_IMPOSSIBLE_ACCEPTER_INVITATION);
+    return;
+  }
+
+  setErreur(e.message || ERREUR_IMPOSSIBLE_ACCEPTER_INVITATION);
+}
   }
 
   /**
@@ -489,11 +524,11 @@ export default function Dashboard() {
       <h4 className="mt-5 mb-3">{TITRE_NOTIFICATIONS}</h4>
 
       {/* ici soit je montre aucune notification soit la liste */}
-      {etudiant!.notifications!.length == 0 ? (
+      {notifications.length == 0 ? (
         <p>{TITRE_AUCUNE_NOTIFICATION}</p>
       ) : (
         <div className="row">
-          {etudiant!.notifications!.map((notification) => {
+          {notifications.map((notification) => {
             const estInvitation =
               notification.type == "NOUVELLE_GROUPE_INVITATION";
 

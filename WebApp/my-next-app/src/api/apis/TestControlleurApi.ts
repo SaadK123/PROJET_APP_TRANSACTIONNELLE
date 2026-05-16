@@ -15,25 +15,25 @@
 
 import * as runtime from '../runtime';
 import type {
-  AjouterActiviteDTOEtudiant,
-  AuthentificationDTO,
-  CreationConversationDTO,
-  CreationDeGroupeDTO,
-  CreationEtudiantDTO,
-  Etudiant,
-  Groupe,
-  Horaire,
-  INVITATIONGROUPEDTO,
-  MiseAJourEtudiantMotDePasse,
-  MiseAJourEtudiantProfil,
-  Notification,
-  QuitterGroupeDTO,
-  RequeteActiviteGroupeDTO,
-  RequeteInvitationDTO,
-  SucessDTO,
-  SupprimerEtudiantDTO,
-  SupprimerGroupeDTO,
-  VirerEtudiantDTO,
+    AjouterActiviteDTOEtudiant,
+    AuthentificationDTO,
+    CreationConversationDTO,
+    CreationDeGroupeDTO,
+    CreationEtudiantDTO,
+    Etudiant,
+    Groupe,
+    Horaire,
+    INVITATIONGROUPEDTO,
+    MiseAJourEtudiantMotDePasse,
+    MiseAJourEtudiantProfil,
+    Notification,
+    QuitterGroupeDTO,
+    RequeteActiviteGroupeDTO,
+    RequeteInvitationDTO,
+    SucessDTO,
+    SupprimerEtudiantDTO,
+    SupprimerGroupeDTO,
+    VirerEtudiantDTO,
 } from '../models/index';
 import {
     AjouterActiviteDTOEtudiantFromJSON,
@@ -1121,7 +1121,7 @@ export class TestControlleurApi extends runtime.BaseAPI implements TestControlle
         const requestOptions = await this.getAllNotificationsFromEtudiantRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(NotificationFromJSON));
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue);
     }
 
     /**

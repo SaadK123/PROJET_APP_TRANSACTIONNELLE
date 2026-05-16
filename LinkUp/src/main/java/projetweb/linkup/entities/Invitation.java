@@ -1,5 +1,6 @@
 package projetweb.linkup.entities;
 
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,13 +12,15 @@ import projetweb.linkup.Enumerations.NotificationType;
 @Setter
 @NoArgsConstructor
 public class Invitation extends Notification {
-    @ManyToOne (fetch = FetchType.LAZY)
+    @JsonIncludeProperties({"id", "nomGroupe", "chef"})
+    @ManyToOne (fetch = FetchType.EAGER)
     @JoinColumn(name = "groupe_id", nullable = false)
     private Groupe groupe;
 
-    @ManyToOne
+    @JsonIncludeProperties({"id", "nom", "prenom", "nomUtilisateur", "courriel", "ecole"})
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "envoyeur_id")
-    private  Etudiant envoyeur;
+    private Etudiant envoyeur;
 
 
 
