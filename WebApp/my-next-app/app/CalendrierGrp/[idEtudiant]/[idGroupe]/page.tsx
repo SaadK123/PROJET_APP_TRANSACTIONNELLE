@@ -205,18 +205,18 @@ export default function PageCalendrierGroupe() {
    * est bien le chef du groupe
    */
   function utilisateurEstChef(): boolean {
-    if (groupe === null) {
+    if (groupe == null) {
       return false;
     }
 
-    return groupe.chef!.id === idEtudiant;
+    return groupe.chef!.id == idEtudiant;
   }
 
   /**
    * sa lit le nom complet du chef
    */
   function lireNomChef(): string {
-    if (groupe === null) {
+    if (groupe == null) {
       return "";
     }
 
@@ -227,7 +227,7 @@ export default function PageCalendrierGroupe() {
    * sa compte les membre du groupe
    */
   function lireNombreMembres(): number {
-    if (groupe === null) {
+    if (groupe == null) {
       return 0;
     }
 
@@ -252,11 +252,11 @@ export default function PageCalendrierGroupe() {
   function construireEvenements(): EvenementCalendrier[] {
     const evenements: EvenementCalendrier[] = [];
 
-    if (groupe === null) {
+    if (groupe == null) {
       return evenements;
     }
 
-    if (groupe.horaire === null) {
+    if (groupe.horaire == null) {
       return evenements;
     }
 
@@ -295,17 +295,17 @@ export default function PageCalendrierGroupe() {
     e.preventDefault();
     viderMessages();
 
-    if (groupe === null) {
+    if (groupe == null) {
       setErreur(ERREUR_GROUPE_INTROUVABLE);
       return;
     }
 
-    if (utilisateurEstChef() === false) {
+    if (utilisateurEstChef() == false) {
       setErreur(ERREUR_SEUL_CHEF_INVITER);
       return;
     }
 
-    if (nomUtilisateurInvitation.trim() === "") {
+    if (nomUtilisateurInvitation.trim() == "") {
       setErreur(ERREUR_NOM_UTILISATEUR_OBLIGATOIRE);
       return;
     }
@@ -337,37 +337,37 @@ export default function PageCalendrierGroupe() {
     e.preventDefault();
     viderMessages();
 
-    if (groupe === null) {
+    if (groupe == null) {
       setErreur(ERREUR_GROUPE_INTROUVABLE);
       return;
     }
 
-    if (utilisateurEstChef() === false) {
+    if (utilisateurEstChef() == false) {
       setErreur(ERREUR_SEUL_CHEF_AJOUTER_ACTIVITE);
       return;
     }
 
-    if (groupe.horaire === null) {
+    if (groupe.horaire == null) {
       setErreur(ERREUR_HORAIRE_GROUPE_INTROUVABLE);
       return;
     }
 
-    if (titreActivite.trim() === "") {
+    if (titreActivite.trim() == "") {
       setErreur(ERREUR_TITRE_OBLIGATOIRE);
       return;
     }
 
-    if (descriptionActivite.trim() === "") {
+    if (descriptionActivite.trim() == "") {
       setErreur(ERREUR_DESCRIPTION_OBLIGATOIRE);
       return;
     }
 
-    if (tempsDebut.trim() === "") {
+    if (tempsDebut.trim() == "") {
       setErreur(ERREUR_TEMPS_DEBUT_OBLIGATOIRE);
       return;
     }
 
-    if (tempsFin.trim() === "") {
+    if (tempsFin.trim() == "") {
       setErreur(ERREUR_TEMPS_FIN_OBLIGATOIRE);
       return;
     }
@@ -433,12 +433,12 @@ export default function PageCalendrierGroupe() {
   async function retirerMembre(nomUtilisateurEtudiant: string) {
     viderMessages();
 
-    if (utilisateurEstChef() === false) {
+    if (utilisateurEstChef() == false) {
       setErreur(ERREUR_SEUL_CHEF_VIRER);
       return;
     }
 
-    if (groupe === null) {
+    if (groupe == null) {
       setErreur(ERREUR_GROUPE_INTROUVABLE);
       return;
     }
@@ -515,11 +515,11 @@ export default function PageCalendrierGroupe() {
    * un bouton virer apparait juste pour le chef
    */
   function afficherMembres() {
-    if (groupe === null) {
+    if (groupe == null) {
       return <p className="mb-0">{TITRE_AUCUN_MEMBRE}</p>;
     }
 
-    if (groupe.etudiants!.size === 0) {
+    if (groupe.etudiants!.size == 0) {
       return <p className="mb-0">{TITRE_AUCUN_MEMBRE}</p>;
     }
 
@@ -560,15 +560,15 @@ export default function PageCalendrierGroupe() {
    * chaque activite a son bloc
    */
   function afficherActivites() {
-    if (groupe === null) {
+    if (groupe == null) {
       return <p className="mb-0">{TITRE_AUCUNE_ACTIVITE}</p>;
     }
 
-    if (groupe.horaire === null) {
+    if (groupe.horaire == null) {
       return <p className="mb-0">{TITRE_AUCUNE_ACTIVITE}</p>;
     }
 
-    if (groupe.horaire!.activites!.length === 0) {
+    if (groupe.horaire!.activites!.length == 0) {
       return <p className="mb-0">{TITRE_AUCUNE_ACTIVITE}</p>;
     }
 
@@ -616,7 +616,7 @@ export default function PageCalendrierGroupe() {
    * membre = quitter groupe
    */
   function afficherBlocActions() {
-    if (groupe === null) {
+    if (groupe == null) {
       return null;
     }
 
@@ -644,11 +644,11 @@ export default function PageCalendrierGroupe() {
    * juste pour le chef
    */
   function afficherBlocInvitation() {
-    if (groupe === null) {
+    if (groupe == null) {
       return null;
     }
 
-    if (utilisateurEstChef() === false) {
+    if (utilisateurEstChef() == false) {
       return null;
     }
 
@@ -707,11 +707,11 @@ export default function PageCalendrierGroupe() {
    * juste pour le chef aussi
    */
   function afficherBlocAjoutActivite() {
-    if (groupe === null) {
+    if (groupe == null) {
       return null;
     }
 
-    if (utilisateurEstChef() === false) {
+    if (utilisateurEstChef() == false) {
       return null;
     }
 
@@ -800,7 +800,7 @@ export default function PageCalendrierGroupe() {
    * si erreur avant davoir le groupe
    * je montre juste le message
    */
-  if (erreur !== "" && groupe === null) {
+  if (erreur !== "" && groupe == null) {
     return (
       <div className="container-fluid p-4">
         <h2>{erreur}</h2>
@@ -811,7 +811,7 @@ export default function PageCalendrierGroupe() {
   /**
    * dernier filet de securite
    */
-  if (groupe === null) {
+  if (groupe == null) {
     return (
       <div className="container-fluid p-4">
         <h2>{ERREUR_GROUPE_INTROUVABLE}</h2>

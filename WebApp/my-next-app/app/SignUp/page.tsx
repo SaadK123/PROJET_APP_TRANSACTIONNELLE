@@ -130,22 +130,22 @@ export default function SignUpPage() {
     setErreur("");
     setMessage("");
 
-    if (username.trim() === "") {
+    if (username.trim() == "") {
       setErreur(ERREUR_NOM_UTILISATEUR_OBLIGATOIRE);
       return;
     }
 
-    if (name.trim() === "") {
+    if (name.trim() == "") {
       setErreur(ERREUR_NOM_OBLIGATOIRE);
       return;
     }
 
-    if (firstName.trim() === "") {
+    if (firstName.trim() == "") {
       setErreur(ERREUR_PRENOM_OBLIGATOIRE);
       return;
     }
 
-    if (uni.trim() === "") {
+    if (uni.trim() == "") {
       setErreur(ERREUR_ECOLE_OBLIGATOIRE);
       return;
     }
@@ -162,7 +162,7 @@ export default function SignUpPage() {
       return;
     }
 
-    if (conditions === false) {
+    if (conditions == false) {
       setErreur(ERREUR_CONDITIONS_OBLIGATOIRES);
       return;
     }

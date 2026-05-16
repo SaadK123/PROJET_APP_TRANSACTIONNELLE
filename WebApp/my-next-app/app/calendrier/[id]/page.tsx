@@ -152,11 +152,11 @@ export default function CalendrierUtilisateur() {
   function construireEvenements(): EvenementCalendrier[] {
     const evenements: EvenementCalendrier[] = [];
 
-    if (etudiant === null) {
+    if (etudiant == null) {
       return evenements;
     }
 
-    if (etudiant.horaire === null) {
+    if (etudiant.horaire == null) {
       return evenements;
     }
 
@@ -195,22 +195,22 @@ export default function CalendrierUtilisateur() {
     e.preventDefault();
     viderMessages();
 
-    if (titreActivite.trim() === "") {
+    if (titreActivite.trim() == "") {
       setErreur(ERREUR_TITRE_OBLIGATOIRE);
       return;
     }
 
-    if (descriptionActivite.trim() === "") {
+    if (descriptionActivite.trim() == "") {
       setErreur(ERREUR_DESCRIPTION_OBLIGATOIRE);
       return;
     }
 
-    if (tempsDebut.trim() === "") {
+    if (tempsDebut.trim() == "") {
       setErreur(ERREUR_TEMPS_DEBUT_OBLIGATOIRE);
       return;
     }
 
-    if (tempsFin.trim() === "") {
+    if (tempsFin.trim() == "") {
       setErreur(ERREUR_TEMPS_FIN_OBLIGATOIRE);
       return;
     }
@@ -255,7 +255,7 @@ export default function CalendrierUtilisateur() {
   async function supprimerUneActivite(activiteId: string) {
     const confirmation = window.confirm(MESSAGE_CONFIRMATION_SUPPRESSION);
 
-    if (confirmation === false) {
+    if (confirmation == false) {
       return;
     }
 
@@ -275,15 +275,15 @@ export default function CalendrierUtilisateur() {
    * chaque activite a son propre bloc
    */
   function afficherActivites() {
-    if (etudiant === null) {
+    if (etudiant == null) {
       return <p className="mb-0">{TITRE_AUCUNE_ACTIVITE}</p>;
     }
 
-    if (etudiant.horaire === null) {
+    if (etudiant.horaire == null) {
       return <p className="mb-0">{TITRE_AUCUNE_ACTIVITE}</p>;
     }
 
-    if (etudiant.horaire!.activites!.length === 0) {
+    if (etudiant.horaire!.activites!.length == 0) {
       return <p className="mb-0">{TITRE_AUCUNE_ACTIVITE}</p>;
     }
 
@@ -334,7 +334,7 @@ export default function CalendrierUtilisateur() {
    * si erreur avant davoir letudiant
    * je montre juste le message
    */
-  if (erreur !== "" && etudiant === null) {
+  if (erreur !== "" && etudiant == null) {
     return (
       <div className="container-fluid p-4">
         <h2>{erreur}</h2>
@@ -345,7 +345,7 @@ export default function CalendrierUtilisateur() {
   /**
    * dernier filet de securite
    */
-  if (etudiant === null) {
+  if (etudiant == null) {
     return (
       <div className="container-fluid p-4">
         <h2>{ERREUR_ETUDIANT_INTROUVABLE}</h2>

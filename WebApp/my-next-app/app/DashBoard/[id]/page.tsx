@@ -314,7 +314,7 @@ export default function Dashboard() {
    * avant davoir letudiant
    */
   if (erreur !== "") {
-    if (etudiant === null) {
+    if (etudiant == null) {
       return <p>{erreur}</p>;
     }
   }
@@ -322,7 +322,7 @@ export default function Dashboard() {
   /**
    * dernier filet de securite
    */
-  if (etudiant === null) {
+  if (etudiant == null) {
     return <p>{ERREUR_IMPOSSIBLE_CHARGER_CLIENT}</p>;
   }
 
@@ -488,11 +488,11 @@ export default function Dashboard() {
       <h4 className="mt-5 mb-3">{TITRE_NOTIFICATIONS}</h4>
 
       {/* ici soit je montre aucune notification soit la liste */}
-      {etudiant!.notifications!.length === 0 ? (
+      {(etudiant.notifications ?? []).length === 0 ? (
         <p>{TITRE_AUCUNE_NOTIFICATION}</p>
       ) : (
         <div className="row">
-          {etudiant!.notifications!.map((notification) => {
+          {(etudiant.notifications ?? []).map((notification) => {
             const estInvitation =
               notification.type === "NOUVELLE_GROUPE_INVITATION";
 

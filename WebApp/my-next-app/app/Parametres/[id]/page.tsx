@@ -73,7 +73,7 @@ export default function Parametres() {
    du profil de l'etudiant
   */
   async function handleSauvegarderProfil() {
-    if (etudiant === null) {
+    if (etudiant == null) {
       return;
     }
 
@@ -117,7 +117,7 @@ export default function Parametres() {
    de l'utilisateur
   */
   async function handleChangerMotDePasse() {
-    if (etudiant === null) {
+    if (etudiant == null) {
       return;
     }
 
@@ -163,7 +163,7 @@ export default function Parametres() {
    le compte utilisateur
   */
   async function handleSupprimerCompte() {
-    if (etudiant === null) {
+    if (etudiant == null) {
       return;
     }
 
@@ -214,7 +214,7 @@ export default function Parametres() {
     return <div className="container-fluid p-4">{Chargement()}</div>;
   }
 
-  if (erreur && etudiant === null) {
+  if (erreur && etudiant == null) {
     return (
       <div className="container p-5">
         <h2>{erreur}</h2>
@@ -222,7 +222,7 @@ export default function Parametres() {
     );
   }
 
-  if (etudiant === null) {
+  if (etudiant == null) {
     return (
       <div className="container p-5">
         <h2>Aucun étudiant trouvé</h2>
