@@ -244,7 +244,7 @@ export default function Dashboard() {
       return;
     }
 
-    if (nomNouveauGroupe.trim() === "") {
+    if (nomNouveauGroupe.trim() == "") {
       setErreur(ERREUR_NOM_GROUPE_OBLIGATOIRE);
       return;
     }
@@ -273,7 +273,7 @@ export default function Dashboard() {
       return;
     }
 
-    if (nomUtilisateurConversation.trim() === "") {
+    if (nomUtilisateurConversation.trim() == "") {
       setErreur(ERREUR_NOM_UTILISATEUR_CONVERSATION_OBLIGATOIRE);
       return;
     }
@@ -450,7 +450,7 @@ export default function Dashboard() {
       </div>
 
       {/* ici soit je montre aucun groupe soit la liste des cartes */}
-      {groupesFiltres.length === 0 ? (
+      {groupesFiltres.length == 0 ? (
         <p>{TITRE_AUCUN_GROUPE}</p>
       ) : (
         <div className="row">
@@ -488,13 +488,13 @@ export default function Dashboard() {
       <h4 className="mt-5 mb-3">{TITRE_NOTIFICATIONS}</h4>
 
       {/* ici soit je montre aucune notification soit la liste */}
-      {(etudiant.notifications ?? []).length === 0 ? (
+      {etudiant!.notifications!.length == 0 ? (
         <p>{TITRE_AUCUNE_NOTIFICATION}</p>
       ) : (
         <div className="row">
-          {(etudiant.notifications ?? []).map((notification) => {
+          {etudiant!.notifications!.map((notification) => {
             const estInvitation =
-              notification.type === "NOUVELLE_GROUPE_INVITATION";
+              notification.type == "NOUVELLE_GROUPE_INVITATION";
 
             return (
               <div key={notification.id} className="col-md-4 mb-3">
