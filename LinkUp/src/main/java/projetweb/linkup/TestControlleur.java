@@ -35,8 +35,24 @@ public class TestControlleur {
             this.serviceConversation = serviceConversation;
         }
         @PostMapping("/etudiants")
-        public Etudiant createEtudiant(@RequestBody CreationEtudiantDTO dto) {
-                return serviceEtudiant.creerEtudiant(dto);
+        public RetourEtudiantDTO createEtudiant(@RequestBody CreationEtudiantDTO dto) {
+                Etudiant etudiant = serviceEtudiant.creerEtudiant(dto);
+
+                RetourHoraireDTO retourHoraireDTO = new RetourHoraireDTO(
+                        etudiant.getHoraire().getId().toString(),
+                        etudiant.getHoraire().getActivites()
+                );
+
+                RetourEtudiantDTO retourEtudiantDTO = new RetourEtudiantDTO(
+                        etudiant.getId().toString(),
+                        etudiant.getNomUtilisateur(),
+                        etudiant.getPrenom(),
+                        etudiant.getNom(),
+                        etudiant.getCourriel(),
+                        retourHoraireDTO
+                );
+
+                return retourEtudiantDTO;
         }
 
         @DeleteMapping("/etudiants")
@@ -44,18 +60,69 @@ public class TestControlleur {
                 return serviceEtudiant.supprimerEtudiant(dto);
         }
         @PostMapping("/etudiant/auth")
-        public Etudiant getEtudiantByAuth(@RequestBody AuthentificationDTO auth) {
-                return serviceEtudiant.getEtudiantByCourrielEtMotDePasse(auth.courriel(),auth.motDePasse());
+        public RetourEtudiantDTO getEtudiantByAuth(@RequestBody AuthentificationDTO auth) {
+                Etudiant etudiant = serviceEtudiant.getEtudiantByCourrielEtMotDePasse(
+                        auth.courriel(),
+                        auth.motDePasse()
+                );
+
+                RetourHoraireDTO retourHoraireDTO = new RetourHoraireDTO(
+                        etudiant.getHoraire().getId().toString(),
+                        etudiant.getHoraire().getActivites()
+                );
+
+                RetourEtudiantDTO retourEtudiantDTO = new RetourEtudiantDTO(
+                        etudiant.getId().toString(),
+                        etudiant.getNomUtilisateur(),
+                        etudiant.getPrenom(),
+                        etudiant.getNom(),
+                        etudiant.getCourriel(),
+                        retourHoraireDTO
+                );
+
+                return retourEtudiantDTO;
         }
 
         @GetMapping("/etudiant")
-        public Etudiant getEtudiantById(@RequestParam String id) {
-                return serviceEtudiant.getEtudiantById(id);
+        public RetourEtudiantDTO getEtudiantById(@RequestParam String id) {
+                Etudiant etudiant = serviceEtudiant.getEtudiantById(id);
+
+                RetourHoraireDTO retourHoraireDTO = new RetourHoraireDTO(
+                        etudiant.getHoraire().getId().toString(),
+                        etudiant.getHoraire().getActivites()
+                );
+
+                RetourEtudiantDTO retourEtudiantDTO = new RetourEtudiantDTO(
+                        etudiant.getId().toString(),
+                        etudiant.getNomUtilisateur(),
+                        etudiant.getPrenom(),
+                        etudiant.getNom(),
+                        etudiant.getCourriel(),
+                        retourHoraireDTO
+                );
+
+                return retourEtudiantDTO;
         }
 
         @GetMapping("/etudiant/username")
-        public Etudiant getEtudiantByUsername(@RequestParam String username) {
-                return serviceEtudiant.getEtudiantByUsername(username);
+        public RetourEtudiantDTO getEtudiantByUsername(@RequestParam String username) {
+                Etudiant etudiant = serviceEtudiant.getEtudiantByUsername(username);
+
+                RetourHoraireDTO retourHoraireDTO = new RetourHoraireDTO(
+                        etudiant.getHoraire().getId().toString(),
+                        etudiant.getHoraire().getActivites()
+                );
+
+                RetourEtudiantDTO retourEtudiantDTO = new RetourEtudiantDTO(
+                        etudiant.getId().toString(),
+                        etudiant.getNomUtilisateur(),
+                        etudiant.getPrenom(),
+                        etudiant.getNom(),
+                        etudiant.getCourriel(),
+                        retourHoraireDTO
+                );
+
+                return retourEtudiantDTO;
         }
 
         @PutMapping("/etudiants/profil")
