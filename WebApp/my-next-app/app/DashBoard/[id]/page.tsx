@@ -17,7 +17,7 @@ import {
   GotoParametres,
   GoToConversations,
 } from "@/app/ChangerPage";
-import { Etudiant, Groupe, Notification, RetourEtudiantDTO } from "@/src/api/generated";
+import { Notification, RetourEtudiantDTO, RetourGroupeDTO } from "@/src/api/generated";
 
 /**
  * ici je met toute les constante en haut
@@ -96,7 +96,7 @@ export default function Dashboard() {
 
   /* state des donnees */
   const [etudiant, setEtudiant] = useState<RetourEtudiantDTO | null>();
-  const [groupes, setGroupes] = useState<Groupe[] | null>([]);
+  const [groupes, setGroupes] = useState<RetourGroupeDTO[] | null>([]);
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
   /* state des input */
@@ -225,8 +225,8 @@ export default function Dashboard() {
   }
 
   type Invitation = Notification & {
-    groupe?: Groupe;
-    envoyeur?: Etudiant;
+    groupe?: RetourGroupeDTO;
+    envoyeur?: unknown;
   };
 
   /**
@@ -243,6 +243,7 @@ export default function Dashboard() {
     try {
       await API.ajouterEtudiantDansGroupe({
         iNVITATIONGROUPEDTO: {
+          id: notification.id,
           idGroupe: invitation.groupe.id,
           idEtudiant: id,
         },
@@ -332,7 +333,7 @@ export default function Dashboard() {
    * ici je filtre les groupes
    * selon le texte taper
    */
-  const groupesFiltres: Groupe[] = groupes!.filter((groupe) =>
+  const groupesFiltres: RetourGroupeDTO[] = groupes!.filter((groupe) =>
     groupe.nomGroupe!.toLowerCase().includes(rechercheGroupe.toLowerCase()),
   );
 
@@ -502,7 +503,7 @@ export default function Dashboard() {
 
                 {/* nombre de personnes dans le groupe */}
                 <div>
-                  <b>{LABEL_NOMBRE_PERSONNES}</b> {groupe.etudiants!.size}
+                  <b>{LABEL_NOMBRE_PERSONNES}</b> {groupe.etudiants?.length ?? 0}
                 </div>
 
                 {/* bouton pour ouvrir le groupe */}

@@ -6,13 +6,11 @@ import projetweb.linkup.DTO.ACTIONS.*;
 import projetweb.linkup.DTO.TYPES.RequeteInvitationDTO;
 import projetweb.linkup.DTO.TYPES.MiseAJourEtudiantMotDePasse;
 import projetweb.linkup.DTO.TYPES.MiseAJourEtudiantProfil;
-import java.util.Collection;
+
+import java.util.*;
+
 import projetweb.linkup.Services.*;
 import projetweb.linkup.entities.*;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 
 @CrossOrigin(origins = {"http://localhost:3000", "http://127.0.0.1:3000","http://localhost:3001"})
 @RestController
@@ -110,6 +108,125 @@ public class TestControlleur {
 
                 return retourGroupes;
         }
+
+        private RetourNotificationDTO convertirNotificationEnRetourDTO(Notification notification) {
+                if (notification == null) {
+                        return null;
+                }
+
+                String notificationId = notification.getId() == null ? null : notification.getId().toString();
+                String tempsCreation = notification.getTempsCreation() == null ? null : notification.getTempsCreation().toString();
+
+                RetourGroupeDTO retourGroupeDTO = null;
+                RetourEtudiantDTO retourEnvoyeurDTO = null;
+
+                if (notification instanceof Invitation invitation) {
+                        retourGroupeDTO = convertirGroupeEnRetourDTO(invitation.getGroupe());
+                        retourEnvoyeurDTO = convertirEtudiantEnRetourDTO(invitation.getEnvoyeur());
+                }
+
+                return new RetourNotificationDTO(
+                        notificationId,
+                        notification.getTitre(),
+                        notification.getMessage(),
+                        notification.getType(),
+                        notification.isEstVu(),
+                        tempsCreation,
+                        retourGroupeDTO,
+                        retourEnvoyeurDTO
+                );
+        }
+
+        private List<RetourNotificationDTO> convertirNotificationsEnRetourDTO(List<Notification> notifications) {
+                List<RetourNotificationDTO> retourNotifications = new ArrayList<>();
+
+                if (notifications == null) {
+                        return retourNotifications;
+                }
+
+                for (Notification notification : notifications) {
+                        retourNotifications.add(convertirNotificationEnRetourDTO(notification));
+                }
+
+                return retourNotifications;
+        }
+
+        private RetourMessageDTO convertirMessageEnRetourDTO(Message message) {
+                if (message == null) {
+                        return null;
+                }
+
+                String messageId = message.getId() == null ? null : message.getId().toString();
+                String envoyeurId = message.getEnvoyeurId() == null ? null : message.getEnvoyeurId().toString();
+                String tempsEnvoi = message.getTempsEnvoi() == null ? null : message.getTempsEnvoi().toString();
+
+                return new RetourMessageDTO(
+                        messageId,
+                        envoyeurId,
+                        message.getContenu(),
+                        tempsEnvoi
+                );
+        }
+
+        private List<RetourMessageDTO> convertirMessagesEnRetourDTO(List<Message> messages) {
+                List<RetourMessageDTO> retourMessages = new ArrayList<>();
+
+                if (messages == null) {
+                        return retourMessages;
+                }
+
+                for (Message message : messages) {
+                        retourMessages.add(convertirMessageEnRetourDTO(message));
+                }
+
+                return retourMessages;
+        }
+
+        private List<String> convertirParticipantsEnString(Set<UUID> participants) {
+                List<String> participantsIds = new ArrayList<>();
+
+                if (participants == null) {
+                        return participantsIds;
+                }
+
+                for (UUID participantId : participants) {
+                        participantsIds.add(participantId.toString());
+                }
+
+                return participantsIds;
+        }
+
+        private RetourConversationDTO convertirConversationEnRetourDTO(Conversation conversation) {
+                if (conversation == null) {
+                        return null;
+                }
+
+                String conversationId = conversation.getId() == null ? null : conversation.getId().toString();
+                String chefId = conversation.getChef() == null ? null : conversation.getChef().toString();
+
+                return new RetourConversationDTO(
+                        conversationId,
+                        chefId,
+                        convertirParticipantsEnString(conversation.getParticipants()),
+                        conversation.isEstConversationGroupe(),
+                        convertirMessagesEnRetourDTO(conversation.getMessages()),
+                        conversation.getNom()
+                );
+        }
+
+        private List<RetourConversationDTO> convertirConversationsEnRetourDTO(List<Conversation> conversations) {
+                List<RetourConversationDTO> retourConversations = new ArrayList<>();
+
+                if (conversations == null) {
+                        return retourConversations;
+                }
+
+                for (Conversation conversation : conversations) {
+                        retourConversations.add(convertirConversationEnRetourDTO(conversation));
+                }
+
+                return retourConversations;
+        }
         @PostMapping("/etudiants")
         public RetourEtudiantDTO createEtudiant(@RequestBody CreationEtudiantDTO dto) {
                 Etudiant etudiant = serviceEtudiant.creerEtudiant(dto);
@@ -185,10 +302,10 @@ public class TestControlleur {
         }
 
         @GetMapping("/notifications")
-        public List<Notification> getAllNotificationsFromEtudiant(@RequestParam String idEtudiant) {
-                return serviceNotification.getToutNotificationsDeUser(idEtudiant);
+        public List<RetourNotificationDTO> getAllNotificationsFromEtudiant(@RequestParam String idEtudiant) {
+                List<Notification> notifications = serviceNotification.getToutNotificationsDeUser(idEtudiant);
+                return convertirNotificationsEnRetourDTO(notifications);
         }
-
         @PutMapping("/notifications/vue")
         public SucessDTO setNotificationToWasSeen(@RequestParam String idNotification) {
                 return serviceNotification.setToWasSeen(idNotification);
@@ -242,8 +359,9 @@ public class TestControlleur {
         }
 
         @GetMapping("/conversation")
-        public Conversation getConversationById(@RequestParam String id) {
-                return serviceConversation.getConversationById(id);
+        public RetourConversationDTO getConversationById(@RequestParam String id) {
+                Conversation conversation = serviceConversation.getConversationById(id);
+                return convertirConversationEnRetourDTO(conversation);
         }
 
         @DeleteMapping("/conversations")
@@ -276,8 +394,9 @@ public class TestControlleur {
         }
 
         @GetMapping("/conversations")
-        public List<Conversation> getConversationsParEtudiant(@RequestParam String idEtudiant) {
-                return serviceConversation.getConversationsParEtudiant(idEtudiant);
+        public List<RetourConversationDTO> getConversationsParEtudiant(@RequestParam String idEtudiant) {
+                List<Conversation> conversations = serviceConversation.getConversationsParEtudiant(idEtudiant);
+                return convertirConversationsEnRetourDTO(conversations);
         }
 
 

@@ -24,11 +24,6 @@ import {
     AuthentificationDTOToJSON,
 } from '../models/AuthentificationDTO';
 import {
-    type Conversation,
-    ConversationFromJSON,
-    ConversationToJSON,
-} from '../models/Conversation';
-import {
     type CreationConversationDTO,
     CreationConversationDTOFromJSON,
     CreationConversationDTOToJSON,
@@ -64,11 +59,6 @@ import {
     MiseAJourEtudiantProfilToJSON,
 } from '../models/MiseAJourEtudiantProfil';
 import {
-    type Notification,
-    NotificationFromJSON,
-    NotificationToJSON,
-} from '../models/Notification';
-import {
     type QuitterGroupeDTO,
     QuitterGroupeDTOFromJSON,
     QuitterGroupeDTOToJSON,
@@ -84,6 +74,11 @@ import {
     RequeteInvitationDTOToJSON,
 } from '../models/RequeteInvitationDTO';
 import {
+    type RetourConversationDTO,
+    RetourConversationDTOFromJSON,
+    RetourConversationDTOToJSON,
+} from '../models/RetourConversationDTO';
+import {
     type RetourEtudiantDTO,
     RetourEtudiantDTOFromJSON,
     RetourEtudiantDTOToJSON,
@@ -98,6 +93,11 @@ import {
     RetourHoraireDTOFromJSON,
     RetourHoraireDTOToJSON,
 } from '../models/RetourHoraireDTO';
+import {
+    type RetourNotificationDTO,
+    RetourNotificationDTOFromJSON,
+    RetourNotificationDTOToJSON,
+} from '../models/RetourNotificationDTO';
 import {
     type SucessDTO,
     SucessDTOFromJSON,
@@ -776,16 +776,16 @@ export class TestControlleurApi extends runtime.BaseAPI {
 
     /**
      */
-    async getAllNotificationsFromEtudiantRaw(requestParameters: GetAllNotificationsFromEtudiantRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Notification>>> {
+    async getAllNotificationsFromEtudiantRaw(requestParameters: GetAllNotificationsFromEtudiantRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<RetourNotificationDTO>>> {
         const requestOptions = await this.getAllNotificationsFromEtudiantRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(NotificationFromJSON));
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(RetourNotificationDTOFromJSON));
     }
 
     /**
      */
-    async getAllNotificationsFromEtudiant(requestParameters: GetAllNotificationsFromEtudiantRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Notification>> {
+    async getAllNotificationsFromEtudiant(requestParameters: GetAllNotificationsFromEtudiantRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<RetourNotificationDTO>> {
         const response = await this.getAllNotificationsFromEtudiantRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -822,16 +822,16 @@ export class TestControlleurApi extends runtime.BaseAPI {
 
     /**
      */
-    async getConversationByIdRaw(requestParameters: GetConversationByIdRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Conversation>> {
+    async getConversationByIdRaw(requestParameters: GetConversationByIdRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RetourConversationDTO>> {
         const requestOptions = await this.getConversationByIdRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => ConversationFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => RetourConversationDTOFromJSON(jsonValue));
     }
 
     /**
      */
-    async getConversationById(requestParameters: GetConversationByIdRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Conversation> {
+    async getConversationById(requestParameters: GetConversationByIdRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RetourConversationDTO> {
         const response = await this.getConversationByIdRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -868,16 +868,16 @@ export class TestControlleurApi extends runtime.BaseAPI {
 
     /**
      */
-    async getConversationsParEtudiantRaw(requestParameters: GetConversationsParEtudiantRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Conversation>>> {
+    async getConversationsParEtudiantRaw(requestParameters: GetConversationsParEtudiantRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<RetourConversationDTO>>> {
         const requestOptions = await this.getConversationsParEtudiantRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(ConversationFromJSON));
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(RetourConversationDTOFromJSON));
     }
 
     /**
      */
-    async getConversationsParEtudiant(requestParameters: GetConversationsParEtudiantRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Conversation>> {
+    async getConversationsParEtudiant(requestParameters: GetConversationsParEtudiantRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<RetourConversationDTO>> {
         const response = await this.getConversationsParEtudiantRaw(requestParameters, initOverrides);
         return await response.value();
     }

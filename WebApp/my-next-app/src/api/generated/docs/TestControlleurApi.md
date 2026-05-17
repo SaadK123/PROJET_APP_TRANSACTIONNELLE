@@ -755,7 +755,7 @@ No authorization required
 
 ## getAllNotificationsFromEtudiant
 
-> Array&lt;Notification&gt; getAllNotificationsFromEtudiant(idEtudiant)
+> Array&lt;RetourNotificationDTO&gt; getAllNotificationsFromEtudiant(idEtudiant)
 
 
 
@@ -798,7 +798,7 @@ example().catch(console.error);
 
 ### Return type
 
-[**Array&lt;Notification&gt;**](Notification.md)
+[**Array&lt;RetourNotificationDTO&gt;**](RetourNotificationDTO.md)
 
 ### Authorization
 
@@ -820,7 +820,7 @@ No authorization required
 
 ## getConversationById
 
-> Conversation getConversationById(id)
+> RetourConversationDTO getConversationById(id)
 
 
 
@@ -863,7 +863,7 @@ example().catch(console.error);
 
 ### Return type
 
-[**Conversation**](Conversation.md)
+[**RetourConversationDTO**](RetourConversationDTO.md)
 
 ### Authorization
 
@@ -885,7 +885,7 @@ No authorization required
 
 ## getConversationsParEtudiant
 
-> Array&lt;Conversation&gt; getConversationsParEtudiant(idEtudiant)
+> Array&lt;RetourConversationDTO&gt; getConversationsParEtudiant(idEtudiant)
 
 
 
@@ -928,7 +928,7 @@ example().catch(console.error);
 
 ### Return type
 
-[**Array&lt;Conversation&gt;**](Conversation.md)
+[**Array&lt;RetourConversationDTO&gt;**](RetourConversationDTO.md)
 
 ### Authorization
 

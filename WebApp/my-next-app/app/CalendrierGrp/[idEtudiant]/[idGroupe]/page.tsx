@@ -17,7 +17,7 @@ import {
 import { retournerErreur } from "@/app/attraperErreur";
 
 import Spinner from "react-bootstrap/Spinner";
-import { Activite, Etudiant, Groupe, RequeteInvitationDTOTypeEnum } from "@/src/api/generated";
+import { Activite, RetourEtudiantDTO, RetourGroupeDTO, RequeteInvitationDTOTypeEnum } from "@/src/api/generated";
 import { API } from "@/Api";
 
 /**
@@ -135,7 +135,7 @@ export default function PageCalendrierGroupe() {
   const idGroupe = params.idGroupe;
 
   /* state principal */
-  const [groupe, setGroupe] = useState<Groupe | null>(null);
+  const [groupe, setGroupe] = useState<RetourGroupeDTO | null>(null);
   const [chargement, setChargement] = useState<boolean>(true);
   const [erreur, setErreur] = useState<string>("");
   const [message, setMessage] = useState<string>("");
@@ -207,7 +207,7 @@ export default function PageCalendrierGroupe() {
       return false;
     }
 
-    return groupe.chef!.id == idEtudiant;
+    return groupe.chef!.etudiantId == idEtudiant;
   }
 
   /**
@@ -229,7 +229,7 @@ export default function PageCalendrierGroupe() {
       return 0;
     }
 
-    return groupe.etudiants!.size;
+    return groupe.etudiants?.length ?? 0;
   }
 
   /**
@@ -254,12 +254,12 @@ export default function PageCalendrierGroupe() {
       return evenements;
     }
 
-    if (groupe.horaire == null) {
+    if (groupe.retourHoraireDTO == null) {
       return evenements;
     }
 
-    for (let i = 0; i < groupe.horaire!.activites!.length; i++) {
-      const activite = groupe.horaire!.activites![i];
+    for (let i = 0; i < groupe.retourHoraireDTO!.activites!.length; i++) {
+      const activite = groupe.retourHoraireDTO!.activites![i];
 
       evenements.push({
         id: activite.id!,
@@ -355,7 +355,7 @@ export default function PageCalendrierGroupe() {
       return;
     }
 
-    if (groupe.horaire == null) {
+    if (groupe.retourHoraireDTO == null) {
       setErreur(ERREUR_HORAIRE_GROUPE_INTROUVABLE);
       return;
     }
@@ -399,7 +399,7 @@ export default function PageCalendrierGroupe() {
           titre: titreActivite,
           tempsDebut: new Date(tempsDebut),
           tempsFin: new Date(tempsFin),
-          horaireId: groupe.horaire!.id!,
+          horaireId: groupe.retourHoraireDTO!.id!,
           dureeEnMinute: duree,
         },
       });
@@ -527,13 +527,13 @@ export default function PageCalendrierGroupe() {
       return <p className="mb-0">{TITRE_AUCUN_MEMBRE}</p>;
     }
 
-    if (groupe.etudiants!.size == 0) {
+    if ((groupe.etudiants?.length ?? 0) == 0) {
       return <p className="mb-0">{TITRE_AUCUN_MEMBRE}</p>;
     }
 
     return (
       <div className="list-group">
-        {Array.from(groupe.etudiants! as Set<Etudiant>).map((etudiant) => {
+        {(groupe.etudiants ?? []).map((etudiant: RetourEtudiantDTO) => {
           return (
             <div
               key={etudiant.nomUtilisateur}
@@ -572,17 +572,17 @@ export default function PageCalendrierGroupe() {
       return <p className="mb-0">{TITRE_AUCUNE_ACTIVITE}</p>;
     }
 
-    if (groupe.horaire == null) {
+    if (groupe.retourHoraireDTO == null) {
       return <p className="mb-0">{TITRE_AUCUNE_ACTIVITE}</p>;
     }
 
-    if (groupe.horaire!.activites!.length == 0) {
+    if (groupe.retourHoraireDTO!.activites!.length == 0) {
       return <p className="mb-0">{TITRE_AUCUNE_ACTIVITE}</p>;
     }
 
     return (
       <div className="d-flex flex-column gap-3">
-        {groupe.horaire!.activites!.map((activite: Activite) => {
+        {groupe.retourHoraireDTO!.activites!.map((activite: Activite) => {
           return (
             <div key={activite.id} className="card">
               <div className="card-body">
