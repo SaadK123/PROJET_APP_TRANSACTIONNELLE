@@ -12,7 +12,7 @@ import { API } from "../../../Api";
 import { GotoDashboard, GotoHomePage, GotoLogin } from "@/app/ChangerPage";
 
 import { retournerErreur } from "@/app/attraperErreur";
-import { Activite, Etudiant } from "@/src/api";
+import { Activite, RetourEtudiantDTO } from "@/src/api/generated";
 
 /**
  * ici je met toute les constante en haut
@@ -92,7 +92,7 @@ export default function CalendrierUtilisateur() {
   const idEtudiant = params.id;
 
   /* state principal */
-  const [etudiant, setEtudiant] = useState<Etudiant | null>(null);
+  const [etudiant, setEtudiant] = useState<RetourEtudiantDTO | null>(null);
   const [chargement, setChargement] = useState<boolean>(true);
   const [erreur, setErreur] = useState<string>("");
   const [message, setMessage] = useState<string>("");
@@ -156,12 +156,16 @@ export default function CalendrierUtilisateur() {
       return evenements;
     }
 
-    if (etudiant.horaire == null) {
+    if (etudiant.retourHoraireDTO == null) {
       return evenements;
     }
 
-    for (let i = 0; i < etudiant.horaire!.activites!.length; i++) {
-      const activite = etudiant.horaire!.activites![i];
+    if (etudiant.retourHoraireDTO.activites == null) {
+      return evenements;
+    }
+
+    for (let i = 0; i < etudiant.retourHoraireDTO.activites.length; i++) {
+      const activite = etudiant.retourHoraireDTO.activites[i];
 
       evenements.push({
         id: activite.id!,
@@ -279,17 +283,21 @@ export default function CalendrierUtilisateur() {
       return <p className="mb-0">{TITRE_AUCUNE_ACTIVITE}</p>;
     }
 
-    if (etudiant.horaire == null) {
+    if (etudiant.retourHoraireDTO == null) {
       return <p className="mb-0">{TITRE_AUCUNE_ACTIVITE}</p>;
     }
 
-    if (etudiant.horaire!.activites!.length == 0) {
+    if (etudiant.retourHoraireDTO.activites == null) {
+      return <p className="mb-0">{TITRE_AUCUNE_ACTIVITE}</p>;
+    }
+
+    if (etudiant.retourHoraireDTO.activites.length == 0) {
       return <p className="mb-0">{TITRE_AUCUNE_ACTIVITE}</p>;
     }
 
     return (
       <div className="d-flex flex-column gap-3">
-        {etudiant.horaire!.activites!.map((activite: Activite) => {
+        {etudiant.retourHoraireDTO.activites.map((activite: Activite) => {
           return (
             <div key={activite.id} className="card">
               <div className="card-body">
@@ -373,7 +381,7 @@ export default function CalendrierUtilisateur() {
           <button
             type="button"
             className="btn btn-secondary me-2"
-            onClick={() => GotoDashboard(router, etudiant.id!)}
+            onClick={() => GotoDashboard(router, etudiant.etudiantId ?? idEtudiant)}
           >
             {BOUTON_DASHBOARD}
           </button>

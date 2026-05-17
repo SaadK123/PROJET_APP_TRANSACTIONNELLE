@@ -5,7 +5,7 @@ import type { FormEvent } from "react";
 import { useParams, useRouter } from "next/navigation";
 
 import { API } from "../../../Api";
-import type { Conversation } from "@/app/TypesObjets";
+import type { Conversation } from "@/src/api/generated";
 import { GoToConversation } from "@/app/ChangerPage";
 
 export default function ListeConversationsPage() {
@@ -47,7 +47,12 @@ export default function ListeConversationsPage() {
     }
 
     try {
-      await API.creerConversation(id, nomConversation.trim());
+      await API.creerConversation({
+        creationConversationDTO: {
+          chefId: id,
+          nomConversation: nomConversation.trim(),
+        },
+      });
       setNomConversation("");
       setMessage("Conversation créée avec succès.");
       await chargerConversations();
@@ -115,7 +120,7 @@ export default function ListeConversationsPage() {
               <h5>{conversation.nom}</h5>
 
               <p className="mb-1">
-                Participants : {conversation.participants?.length ?? 0}
+                Participants : {conversation.participants?.size ?? 0}
               </p>
 
               <p className="mb-2">
@@ -127,7 +132,7 @@ export default function ListeConversationsPage() {
 
               <button
                 className="btn btn-primary btn-sm"
-                onClick={() => GoToConversation(router, id, conversation.id)}
+                onClick={() => GoToConversation(router, id, conversation.id!)}
               >
                 Ouvrir
               </button>

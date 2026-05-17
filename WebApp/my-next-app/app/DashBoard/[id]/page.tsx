@@ -17,7 +17,7 @@ import {
   GotoParametres,
   GoToConversations,
 } from "@/app/ChangerPage";
-import { Etudiant, Groupe, Notification } from "@/src/api";
+import { Etudiant, Groupe, Notification, RetourEtudiantDTO } from "@/src/api/generated";
 
 /**
  * ici je met toute les constante en haut
@@ -95,7 +95,7 @@ export default function Dashboard() {
   const [message, setMessage] = useState<string>("");
 
   /* state des donnees */
-  const [etudiant, setEtudiant] = useState<Etudiant | null>();
+  const [etudiant, setEtudiant] = useState<RetourEtudiantDTO | null>();
   const [groupes, setGroupes] = useState<Groupe[] | null>([]);
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
@@ -131,7 +131,6 @@ export default function Dashboard() {
       }
 
       const etudiantCharge = await API.getEtudiantById({ id });
-      etudiantCharge.notifications = etudiantCharge.notifications ?? [];
       setEtudiant(etudiantCharge);
     } catch (e: any) {
       setEtudiant(null);
@@ -316,7 +315,6 @@ export default function Dashboard() {
 
     try {
       await API.creerConversation({
-        id:id,
         creationConversationDTO: {
           chefId: id,
           nomConversation: `Conversation avec ${nomUtilisateurConversation.trim()}`,
@@ -424,11 +422,11 @@ export default function Dashboard() {
         </div>
 
         <div className="mb-2">
-          <b>{LABEL_COURRIEL}</b> {etudiant!.courriel}
+          <b>{LABEL_COURRIEL}</b> {etudiant!.email}
         </div>
 
         <div className="mb-2">
-          <b>{LABEL_ECOLE}</b> {etudiant!.ecole}
+          <b>{LABEL_ECOLE}</b> {(etudiant as { ecole?: string }).ecole ?? ""}
         </div>
       </div>
 

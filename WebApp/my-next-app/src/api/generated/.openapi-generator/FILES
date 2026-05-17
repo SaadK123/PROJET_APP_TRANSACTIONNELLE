@@ -1,4 +1,3 @@
-.openapi-generator-ignore
 apis/TestControlleurApi.ts
 apis/index.ts
 docs/Activite.md
@@ -9,9 +8,6 @@ docs/CreationConversationDTO.md
 docs/CreationDeGroupeDTO.md
 docs/CreationEtudiantDTO.md
 docs/EnvoyerMessageDTO.md
-docs/Etudiant.md
-docs/Groupe.md
-docs/Horaire.md
 docs/INVITATIONGROUPEDTO.md
 docs/Message.md
 docs/MiseAJourEtudiantMotDePasse.md
@@ -21,6 +17,7 @@ docs/QuitterGroupeDTO.md
 docs/RequeteActiviteGroupeDTO.md
 docs/RequeteInvitationDTO.md
 docs/RetourEtudiantDTO.md
+docs/RetourGroupeDTO.md
 docs/RetourHoraireDTO.md
 docs/SucessDTO.md
 docs/SupprimerEtudiantDTO.md
@@ -36,9 +33,6 @@ models/CreationConversationDTO.ts
 models/CreationDeGroupeDTO.ts
 models/CreationEtudiantDTO.ts
 models/EnvoyerMessageDTO.ts
-models/Etudiant.ts
-models/Groupe.ts
-models/Horaire.ts
 models/INVITATIONGROUPEDTO.ts
 models/Message.ts
 models/MiseAJourEtudiantMotDePasse.ts
@@ -48,6 +42,7 @@ models/QuitterGroupeDTO.ts
 models/RequeteActiviteGroupeDTO.ts
 models/RequeteInvitationDTO.ts
 models/RetourEtudiantDTO.ts
+models/RetourGroupeDTO.ts
 models/RetourHoraireDTO.ts
 models/SucessDTO.ts
 models/SupprimerEtudiantDTO.ts

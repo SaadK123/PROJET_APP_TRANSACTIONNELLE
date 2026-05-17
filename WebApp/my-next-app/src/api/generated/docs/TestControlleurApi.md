@@ -300,7 +300,7 @@ No authorization required
 
 ## createGroup
 
-> Groupe createGroup(creationDeGroupeDTO)
+> RetourGroupeDTO createGroup(creationDeGroupeDTO)
 
 
 
@@ -343,7 +343,7 @@ example().catch(console.error);
 
 ### Return type
 
-[**Groupe**](Groupe.md)
+[**RetourGroupeDTO**](RetourGroupeDTO.md)
 
 ### Authorization
 
@@ -1145,7 +1145,7 @@ No authorization required
 
 ## getGroupById
 
-> Groupe getGroupById(idGroupe)
+> RetourGroupeDTO getGroupById(idGroupe)
 
 
 
@@ -1188,7 +1188,7 @@ example().catch(console.error);
 
 ### Return type
 
-[**Groupe**](Groupe.md)
+[**RetourGroupeDTO**](RetourGroupeDTO.md)
 
 ### Authorization
 
@@ -1210,7 +1210,7 @@ No authorization required
 
 ## getGroupsFromEtudiant
 
-> Array&lt;Groupe&gt; getGroupsFromEtudiant(idEtudiant)
+> Array&lt;RetourGroupeDTO&gt; getGroupsFromEtudiant(idEtudiant)
 
 
 
@@ -1253,7 +1253,7 @@ example().catch(console.error);
 
 ### Return type
 
-[**Array&lt;Groupe&gt;**](Groupe.md)
+[**Array&lt;RetourGroupeDTO&gt;**](RetourGroupeDTO.md)
 
 ### Authorization
 
@@ -1275,7 +1275,7 @@ No authorization required
 
 ## getHoraireById
 
-> Horaire getHoraireById(id)
+> RetourHoraireDTO getHoraireById(id)
 
 
 
@@ -1318,7 +1318,7 @@ example().catch(console.error);
 
 ### Return type
 
-[**Horaire**](Horaire.md)
+[**RetourHoraireDTO**](RetourHoraireDTO.md)
 
 ### Authorization
 

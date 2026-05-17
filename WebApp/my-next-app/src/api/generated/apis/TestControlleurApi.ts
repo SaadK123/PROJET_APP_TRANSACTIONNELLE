@@ -49,16 +49,6 @@ import {
     EnvoyerMessageDTOToJSON,
 } from '../models/EnvoyerMessageDTO';
 import {
-    type Groupe,
-    GroupeFromJSON,
-    GroupeToJSON,
-} from '../models/Groupe';
-import {
-    type Horaire,
-    HoraireFromJSON,
-    HoraireToJSON,
-} from '../models/Horaire';
-import {
     type INVITATIONGROUPEDTO,
     INVITATIONGROUPEDTOFromJSON,
     INVITATIONGROUPEDTOToJSON,
@@ -98,6 +88,16 @@ import {
     RetourEtudiantDTOFromJSON,
     RetourEtudiantDTOToJSON,
 } from '../models/RetourEtudiantDTO';
+import {
+    type RetourGroupeDTO,
+    RetourGroupeDTOFromJSON,
+    RetourGroupeDTOToJSON,
+} from '../models/RetourGroupeDTO';
+import {
+    type RetourHoraireDTO,
+    RetourHoraireDTOFromJSON,
+    RetourHoraireDTOToJSON,
+} from '../models/RetourHoraireDTO';
 import {
     type SucessDTO,
     SucessDTOFromJSON,
@@ -459,16 +459,16 @@ export class TestControlleurApi extends runtime.BaseAPI {
 
     /**
      */
-    async createGroupRaw(requestParameters: CreateGroupRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Groupe>> {
+    async createGroupRaw(requestParameters: CreateGroupRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RetourGroupeDTO>> {
         const requestOptions = await this.createGroupRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => GroupeFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => RetourGroupeDTOFromJSON(jsonValue));
     }
 
     /**
      */
-    async createGroup(requestParameters: CreateGroupRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Groupe> {
+    async createGroup(requestParameters: CreateGroupRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RetourGroupeDTO> {
         const response = await this.createGroupRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -1051,16 +1051,16 @@ export class TestControlleurApi extends runtime.BaseAPI {
 
     /**
      */
-    async getGroupByIdRaw(requestParameters: GetGroupByIdRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Groupe>> {
+    async getGroupByIdRaw(requestParameters: GetGroupByIdRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RetourGroupeDTO>> {
         const requestOptions = await this.getGroupByIdRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => GroupeFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => RetourGroupeDTOFromJSON(jsonValue));
     }
 
     /**
      */
-    async getGroupById(requestParameters: GetGroupByIdRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Groupe> {
+    async getGroupById(requestParameters: GetGroupByIdRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RetourGroupeDTO> {
         const response = await this.getGroupByIdRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -1097,16 +1097,16 @@ export class TestControlleurApi extends runtime.BaseAPI {
 
     /**
      */
-    async getGroupsFromEtudiantRaw(requestParameters: GetGroupsFromEtudiantRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Groupe>>> {
+    async getGroupsFromEtudiantRaw(requestParameters: GetGroupsFromEtudiantRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<RetourGroupeDTO>>> {
         const requestOptions = await this.getGroupsFromEtudiantRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(GroupeFromJSON));
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(RetourGroupeDTOFromJSON));
     }
 
     /**
      */
-    async getGroupsFromEtudiant(requestParameters: GetGroupsFromEtudiantRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Groupe>> {
+    async getGroupsFromEtudiant(requestParameters: GetGroupsFromEtudiantRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<RetourGroupeDTO>> {
         const response = await this.getGroupsFromEtudiantRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -1143,16 +1143,16 @@ export class TestControlleurApi extends runtime.BaseAPI {
 
     /**
      */
-    async getHoraireByIdRaw(requestParameters: GetHoraireByIdRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Horaire>> {
+    async getHoraireByIdRaw(requestParameters: GetHoraireByIdRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RetourHoraireDTO>> {
         const requestOptions = await this.getHoraireByIdRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => HoraireFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => RetourHoraireDTOFromJSON(jsonValue));
     }
 
     /**
      */
-    async getHoraireById(requestParameters: GetHoraireByIdRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Horaire> {
+    async getHoraireById(requestParameters: GetHoraireByIdRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RetourHoraireDTO> {
         const response = await this.getHoraireByIdRaw(requestParameters, initOverrides);
         return await response.value();
     }

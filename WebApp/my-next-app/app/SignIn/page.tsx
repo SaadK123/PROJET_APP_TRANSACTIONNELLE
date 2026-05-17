@@ -98,8 +98,15 @@ export default function SignIn() {
           motDePasse: password,
         },
       });
-      localStorage.setItem("idEtudiant", etudiant.id!);
-      GotoDashboard(router, etudiant.id!);
+
+      const idEtudiant = etudiant.etudiantId;
+
+      if (!idEtudiant) {
+        throw new Error("Id etudiant manquant");
+      }
+
+      localStorage.setItem("idEtudiant", idEtudiant);
+      GotoDashboard(router, idEtudiant);
     } catch (e: any) {
       setErreur(retournerErreur(e, ERREUR_CONNEXION));
     } finally {

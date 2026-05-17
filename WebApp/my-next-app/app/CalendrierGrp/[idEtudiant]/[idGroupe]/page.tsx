@@ -17,9 +17,7 @@ import {
 import { retournerErreur } from "@/app/attraperErreur";
 
 import Spinner from "react-bootstrap/Spinner";
-import { Activite, Groupe, INVITATIONGROUPEDTO } from "@/src/api";
-
-import { RequeteInvitationDTOTypeEnum } from "@/src/api";
+import { Activite, Etudiant, Groupe, RequeteInvitationDTOTypeEnum } from "@/src/api/generated";
 import { API } from "@/Api";
 
 /**
@@ -535,7 +533,7 @@ export default function PageCalendrierGroupe() {
 
     return (
       <div className="list-group">
-        {Array.from(groupe.etudiants!).map((etudiant) => {
+        {Array.from(groupe.etudiants! as Set<Etudiant>).map((etudiant) => {
           return (
             <div
               key={etudiant.nomUtilisateur}

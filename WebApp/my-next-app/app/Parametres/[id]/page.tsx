@@ -13,7 +13,7 @@ import {
 } from "@/app/ChangerPage";
 
 import Spinner from "react-bootstrap/Spinner";
-import { Etudiant, MiseAJourEtudiantProfilFromJSON } from "@/src/api";
+import { RetourEtudiantDTO } from "@/src/api/generated";
 import { API } from "@/Api";
 
 export default function Parametres() {
@@ -22,7 +22,7 @@ export default function Parametres() {
 
   const router = useRouter();
 
-  const [etudiant, setEtudiant] = useState<Etudiant | null>(null);
+  const [etudiant, setEtudiant] = useState<RetourEtudiantDTO | null>(null);
 
   const [chargement, setChargement] = useState(true);
   const [erreur, setErreur] = useState("");
@@ -57,10 +57,10 @@ export default function Parametres() {
       setEtudiant(etudiantCharge);
 
       // on remplit les champs avec les infos recues
-      setPrenom(etudiantCharge.prenom!);
-      setNom(etudiantCharge.nom!);
-      setNomUtilisateur(etudiantCharge.nomUtilisateur!);
-      setEcole(etudiantCharge.ecole!);
+      setPrenom(etudiantCharge.prenom ?? "");
+      setNom(etudiantCharge.nom ?? "");
+      setNomUtilisateur(etudiantCharge.nomUtilisateur ?? "");
+      setEcole((etudiantCharge as { ecole?: string }).ecole ?? "");
     } catch (e) {
       setErreur(retournerErreur(e, "Erreur chargement étudiant"));
     } finally {
@@ -143,7 +143,7 @@ export default function Parametres() {
 
       await API.updateEtudiantPassword({
         miseAJourEtudiantMotDePasse: {
-          etudiantID: etudiant.id,
+          etudiantID: etudiant.etudiantId ?? idEtudiant,
           vieuxMotDePasse: vieuxTrim,
           nouveauMotDePasse: nouveauTrim,
         },
@@ -187,7 +187,7 @@ export default function Parametres() {
 
       await API.deleteEtudiant({
         supprimerEtudiantDTO: {
-          courriel: etudiant.courriel,
+          courriel: etudiant.email,
           motDePasse: motDePasseTrim,
         },
       });

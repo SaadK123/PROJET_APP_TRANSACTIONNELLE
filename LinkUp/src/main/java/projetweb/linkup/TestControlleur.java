@@ -6,9 +6,11 @@ import projetweb.linkup.DTO.ACTIONS.*;
 import projetweb.linkup.DTO.TYPES.RequeteInvitationDTO;
 import projetweb.linkup.DTO.TYPES.MiseAJourEtudiantMotDePasse;
 import projetweb.linkup.DTO.TYPES.MiseAJourEtudiantProfil;
+import java.util.Collection;
 import projetweb.linkup.Services.*;
 import projetweb.linkup.entities.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -34,25 +36,84 @@ public class TestControlleur {
             this.serviceNotification = serviceNotification;
             this.serviceConversation = serviceConversation;
         }
-        @PostMapping("/etudiants")
-        public RetourEtudiantDTO createEtudiant(@RequestBody CreationEtudiantDTO dto) {
-                Etudiant etudiant = serviceEtudiant.creerEtudiant(dto);
 
-                RetourHoraireDTO retourHoraireDTO = new RetourHoraireDTO(
-                        etudiant.getHoraire().getId().toString(),
-                        etudiant.getHoraire().getActivites()
+        private RetourHoraireDTO convertirHoraireEnRetourDTO(Horaire horaire) {
+                if (horaire == null) {
+                        return null;
+                }
+
+                String horaireId = horaire.getId() == null ? null : horaire.getId().toString();
+
+                return new RetourHoraireDTO(
+                        horaireId,
+                        horaire.getActivites()
                 );
+        }
 
-                RetourEtudiantDTO retourEtudiantDTO = new RetourEtudiantDTO(
-                        etudiant.getId().toString(),
+        private RetourEtudiantDTO convertirEtudiantEnRetourDTO(Etudiant etudiant) {
+                if (etudiant == null) {
+                        return null;
+                }
+
+                String etudiantId = etudiant.getId() == null ? null : etudiant.getId().toString();
+
+                return new RetourEtudiantDTO(
+                        etudiantId,
                         etudiant.getNomUtilisateur(),
                         etudiant.getPrenom(),
                         etudiant.getNom(),
                         etudiant.getCourriel(),
-                        retourHoraireDTO
+                        convertirHoraireEnRetourDTO(etudiant.getHoraire())
                 );
+        }
 
-                return retourEtudiantDTO;
+        private List<RetourEtudiantDTO> convertirEtudiantsEnRetourDTO(Collection<Etudiant> etudiants) {
+                List<RetourEtudiantDTO> retourEtudiants = new ArrayList<>();
+
+                if (etudiants == null) {
+                        return retourEtudiants;
+                }
+
+                for (Etudiant etudiant : etudiants) {
+                        retourEtudiants.add(convertirEtudiantEnRetourDTO(etudiant));
+                }
+
+                return retourEtudiants;
+        }
+
+        private RetourGroupeDTO convertirGroupeEnRetourDTO(Groupe groupe) {
+                if (groupe == null) {
+                        return null;
+                }
+
+                String groupeId = groupe.getId() == null ? null : groupe.getId().toString();
+
+                return new RetourGroupeDTO(
+                        groupeId,
+                        convertirEtudiantEnRetourDTO(groupe.getChef()),
+                        groupe.getNomGroupe(),
+                        convertirEtudiantsEnRetourDTO(groupe.getEtudiants()),
+                        convertirHoraireEnRetourDTO(groupe.getHoraire())
+                );
+        }
+
+        private List<RetourGroupeDTO> convertirGroupesEnRetourDTO(List<Groupe> groupes) {
+                List<RetourGroupeDTO> retourGroupes = new ArrayList<>();
+
+                if (groupes == null) {
+                        return retourGroupes;
+                }
+
+                for (Groupe groupe : groupes) {
+                        retourGroupes.add(convertirGroupeEnRetourDTO(groupe));
+                }
+
+                return retourGroupes;
+        }
+        @PostMapping("/etudiants")
+        public RetourEtudiantDTO createEtudiant(@RequestBody CreationEtudiantDTO dto) {
+                Etudiant etudiant = serviceEtudiant.creerEtudiant(dto);
+                return convertirEtudiantEnRetourDTO(etudiant);
         }
 
         @DeleteMapping("/etudiants")
@@ -66,63 +127,19 @@ public class TestControlleur {
                         auth.motDePasse()
                 );
 
-                RetourHoraireDTO retourHoraireDTO = new RetourHoraireDTO(
-                        etudiant.getHoraire().getId().toString(),
-                        etudiant.getHoraire().getActivites()
-                );
-
-                RetourEtudiantDTO retourEtudiantDTO = new RetourEtudiantDTO(
-                        etudiant.getId().toString(),
-                        etudiant.getNomUtilisateur(),
-                        etudiant.getPrenom(),
-                        etudiant.getNom(),
-                        etudiant.getCourriel(),
-                        retourHoraireDTO
-                );
-
-                return retourEtudiantDTO;
+                return convertirEtudiantEnRetourDTO(etudiant);
         }
 
         @GetMapping("/etudiant")
         public RetourEtudiantDTO getEtudiantById(@RequestParam String id) {
                 Etudiant etudiant = serviceEtudiant.getEtudiantById(id);
-
-                RetourHoraireDTO retourHoraireDTO = new RetourHoraireDTO(
-                        etudiant.getHoraire().getId().toString(),
-                        etudiant.getHoraire().getActivites()
-                );
-
-                RetourEtudiantDTO retourEtudiantDTO = new RetourEtudiantDTO(
-                        etudiant.getId().toString(),
-                        etudiant.getNomUtilisateur(),
-                        etudiant.getPrenom(),
-                        etudiant.getNom(),
-                        etudiant.getCourriel(),
-                        retourHoraireDTO
-                );
-
-                return retourEtudiantDTO;
+                return convertirEtudiantEnRetourDTO(etudiant);
         }
 
         @GetMapping("/etudiant/username")
         public RetourEtudiantDTO getEtudiantByUsername(@RequestParam String username) {
                 Etudiant etudiant = serviceEtudiant.getEtudiantByUsername(username);
-
-                RetourHoraireDTO retourHoraireDTO = new RetourHoraireDTO(
-                        etudiant.getHoraire().getId().toString(),
-                        etudiant.getHoraire().getActivites()
-                );
-
-                RetourEtudiantDTO retourEtudiantDTO = new RetourEtudiantDTO(
-                        etudiant.getId().toString(),
-                        etudiant.getNomUtilisateur(),
-                        etudiant.getPrenom(),
-                        etudiant.getNom(),
-                        etudiant.getCourriel(),
-                        retourHoraireDTO
-                );
-
-                return retourEtudiantDTO;
+                return convertirEtudiantEnRetourDTO(etudiant);
         }
 
         @PutMapping("/etudiants/profil")
@@ -136,17 +153,20 @@ public class TestControlleur {
         }
 
         @PostMapping("/groupes")
-        public Groupe createGroup(@RequestBody CreationDeGroupeDTO dto) {
-                return serviceGroupe.creerGroupe(dto, serviceConversation);
+        public RetourGroupeDTO createGroup(@RequestBody CreationDeGroupeDTO dto) {
+                Groupe groupe = serviceGroupe.creerGroupe(dto, serviceConversation);
+                return convertirGroupeEnRetourDTO(groupe);
         }
 
         @GetMapping("/groupes")
-        public List<Groupe> getGroupsFromEtudiant(@RequestParam String idEtudiant) {
-                return serviceGroupe.getToutGroupesDeUser(idEtudiant);
+        public List<RetourGroupeDTO> getGroupsFromEtudiant(@RequestParam String idEtudiant) {
+                List<Groupe> groupes = serviceGroupe.getToutGroupesDeUser(idEtudiant);
+                return convertirGroupesEnRetourDTO(groupes);
         }
         @GetMapping("/groupe")
-        public Groupe getGroupById(@RequestParam String idGroupe) {
-                return serviceGroupe.getGroupeById(idGroupe);
+        public RetourGroupeDTO getGroupById(@RequestParam String idGroupe) {
+                Groupe groupe = serviceGroupe.getGroupeById(idGroupe);
+                return convertirGroupeEnRetourDTO(groupe);
         }
         @PostMapping("/groupes/invitations")
         public SucessDTO envoyerInvitationGroupe(@RequestBody RequeteInvitationDTO dto) {
@@ -159,8 +179,9 @@ public class TestControlleur {
         }
 
         @GetMapping("/horaire")
-        public Horaire getHoraireById(@RequestParam String id) {
-                return serviceHoraire.getHoraireFromId(id);
+        public RetourHoraireDTO getHoraireById(@RequestParam String id) {
+                Horaire horaire = serviceHoraire.getHoraireFromId(id);
+                return convertirHoraireEnRetourDTO(horaire);
         }
 
         @GetMapping("/notifications")
