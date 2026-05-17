@@ -13,21 +13,6 @@
  */
 
 import { mapValues } from '../runtime';
-import type { Horaire } from './Horaire';
-import {
-    HoraireFromJSON,
-    HoraireFromJSONTyped,
-    HoraireToJSON,
-    HoraireToJSONTyped,
-} from './Horaire';
-import type { Notification } from './Notification';
-import {
-    NotificationFromJSON,
-    NotificationFromJSONTyped,
-    NotificationToJSON,
-    NotificationToJSONTyped,
-} from './Notification';
-
 /**
  * 
  * @export
@@ -76,18 +61,6 @@ export interface Etudiant {
      * @memberof Etudiant
      */
     ecole?: string;
-    /**
-     * 
-     * @type {Horaire}
-     * @memberof Etudiant
-     */
-    horaire?: Horaire;
-    /**
-     * 
-     * @type {Array<Notification>}
-     * @memberof Etudiant
-     */
-    notifications?: Array<Notification>;
 }
 
 /**
@@ -114,8 +87,6 @@ export function EtudiantFromJSONTyped(json: any, ignoreDiscriminator: boolean): 
         'nom': json['nom'] == null ? undefined : json['nom'],
         'prenom': json['prenom'] == null ? undefined : json['prenom'],
         'ecole': json['ecole'] == null ? undefined : json['ecole'],
-        'horaire': json['horaire'] == null ? undefined : HoraireFromJSON(json['horaire']),
-        'notifications': json['notifications'] == null ? undefined : ((json['notifications'] as Array<any>).map(NotificationFromJSON)),
     };
 }
 
@@ -137,8 +108,6 @@ export function EtudiantToJSONTyped(value?: Etudiant | null, ignoreDiscriminator
         'nom': value['nom'],
         'prenom': value['prenom'],
         'ecole': value['ecole'],
-        'horaire': HoraireToJSON(value['horaire']),
-        'notifications': value['notifications'] == null ? undefined : ((value['notifications'] as Array<any>).map(NotificationToJSON)),
     };
 }
 

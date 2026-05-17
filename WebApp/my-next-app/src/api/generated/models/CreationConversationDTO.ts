@@ -31,6 +31,12 @@ export interface CreationConversationDTO {
      * @memberof CreationConversationDTO
      */
     nomConversation?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreationConversationDTO
+     */
+    idConversation?: string;
 }
 
 /**
@@ -52,6 +58,7 @@ export function CreationConversationDTOFromJSONTyped(json: any, ignoreDiscrimina
         
         'chefId': json['chefId'] == null ? undefined : json['chefId'],
         'nomConversation': json['nomConversation'] == null ? undefined : json['nomConversation'],
+        'idConversation': json['idConversation'] == null ? undefined : json['idConversation'],
     };
 }
 
@@ -68,6 +75,7 @@ export function CreationConversationDTOToJSONTyped(value?: CreationConversationD
         
         'chefId': value['chefId'],
         'nomConversation': value['nomConversation'],
+        'idConversation': value['idConversation'],
     };
 }
 

@@ -24,6 +24,12 @@ export interface INVITATIONGROUPEDTO {
      * @type {string}
      * @memberof INVITATIONGROUPEDTO
      */
+    id?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof INVITATIONGROUPEDTO
+     */
     idGroupe?: string;
     /**
      * 
@@ -50,6 +56,7 @@ export function INVITATIONGROUPEDTOFromJSONTyped(json: any, ignoreDiscriminator:
     }
     return {
         
+        'id': json['id'] == null ? undefined : json['id'],
         'idGroupe': json['idGroupe'] == null ? undefined : json['idGroupe'],
         'idEtudiant': json['idEtudiant'] == null ? undefined : json['idEtudiant'],
     };
@@ -66,6 +73,7 @@ export function INVITATIONGROUPEDTOToJSONTyped(value?: INVITATIONGROUPEDTO | nul
 
     return {
         
+        'id': value['id'],
         'idGroupe': value['idGroupe'],
         'idEtudiant': value['idEtudiant'],
     };

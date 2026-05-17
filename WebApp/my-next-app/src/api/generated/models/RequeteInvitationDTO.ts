@@ -85,7 +85,7 @@ export function RequeteInvitationDTOFromJSONTyped(json: any, ignoreDiscriminator
         return json;
     }
     return {
-
+        
         'etudiantNomUtilisateur': json['etudiantNomUtilisateur'] == null ? undefined : json['etudiantNomUtilisateur'],
         'message': json['message'] == null ? undefined : json['message'],
         'type': json['type'] == null ? undefined : json['type'],
@@ -105,12 +105,12 @@ export function RequeteInvitationDTOToJSONTyped(value?: RequeteInvitationDTO | n
     }
 
     return {
-
+        
         'etudiantNomUtilisateur': value['etudiantNomUtilisateur'],
         'message': value['message'],
         'type': value['type'],
         'titre': value['titre'],
-        'groupId': value['destination'],
+        'destination': value['destination'],
         'envoyeurId': value['envoyeurId'],
     };
 }
