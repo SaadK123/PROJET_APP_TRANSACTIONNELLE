@@ -1,5 +1,5 @@
 
-# INVITATIONGROUPEDTO
+# RetourNotificationDTO
 
 
 ## Properties
@@ -7,20 +7,30 @@
 Name | Type
 ------------ | -------------
 `id` | string
-`idGroupe` | string
-`idEtudiant` | string
+`titre` | string
+`message` | string
+`type` | string
+`estVu` | boolean
+`tempsCreation` | string
+`groupe` | [RetourGroupeDTO](RetourGroupeDTO.md)
+`envoyeur` | [RetourEtudiantDTO](RetourEtudiantDTO.md)
 
 ## Example
 
 ```typescript
-import type { INVITATIONGROUPEDTO } from ''
+import type { RetourNotificationDTO } from ''
 
 // TODO: Update the object below with actual values
 const example = {
   "id": null,
-  "idGroupe": null,
-  "idEtudiant": null,
-} satisfies INVITATIONGROUPEDTO
+  "titre": null,
+  "message": null,
+  "type": null,
+  "estVu": null,
+  "tempsCreation": null,
+  "groupe": null,
+  "envoyeur": null,
+} satisfies RetourNotificationDTO
 
 console.log(example)
 
@@ -29,7 +39,7 @@ const exampleJSON: string = JSON.stringify(example)
 console.log(exampleJSON)
 
 // Parse the JSON string back to an object
-const exampleParsed = JSON.parse(exampleJSON) as INVITATIONGROUPEDTO
+const exampleParsed = JSON.parse(exampleJSON) as RetourNotificationDTO
 console.log(exampleParsed)
 ```
 

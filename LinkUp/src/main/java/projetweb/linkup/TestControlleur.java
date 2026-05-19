@@ -1,20 +1,30 @@
 package projetweb.linkup;
 
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.web.bind.annotation.*;
 import projetweb.linkup.DTO.ACTIONS.*;
 import projetweb.linkup.DTO.TYPES.RequeteInvitationDTO;
 import projetweb.linkup.DTO.TYPES.MiseAJourEtudiantMotDePasse;
 import projetweb.linkup.DTO.TYPES.MiseAJourEtudiantProfil;
 
+import java.time.Duration;
 import java.util.*;
 
 import projetweb.linkup.Services.*;
 import projetweb.linkup.entities.*;
 
-@CrossOrigin(origins = {"http://localhost:3000", "http://127.0.0.1:3000", "http://localhost:3001"})
+@CrossOrigin(
+        origins = {"http://localhost:3000", "http://127.0.0.1:3000", "http://localhost:3001"},
+        allowCredentials = "true"
+)
 @RestController
 @RequestMapping("/api")
 public class TestControlleur {
+
+        private static final String NOM_COOKIE_TOKEN = "token";
+        private static final int TEMPS_EXPIRATION_COOKIE_SECONDES = 60 * 60 * 2;
 
         private final ServiceEtudiant serviceEtudiant;
         private final ServiceGroupe serviceGroupe;
@@ -232,6 +242,30 @@ public class TestControlleur {
                 return retourConversations;
         }
 
+        private void ajouterCookieToken(HttpServletResponse response, String token) {
+                ResponseCookie cookie = ResponseCookie.from(NOM_COOKIE_TOKEN, token)
+                        .httpOnly(true)
+                        .secure(false)
+                        .sameSite("Lax")
+                        .path("/")
+                        .maxAge(Duration.ofSeconds(TEMPS_EXPIRATION_COOKIE_SECONDES))
+                        .build();
+
+                response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+        }
+
+        private void supprimerCookieToken(HttpServletResponse response) {
+                ResponseCookie cookie = ResponseCookie.from(NOM_COOKIE_TOKEN, "")
+                        .httpOnly(true)
+                        .secure(false)
+                        .sameSite("Lax")
+                        .path("/")
+                        .maxAge(0)
+                        .build();
+
+                response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+        }
+
         @PostMapping("/etudiants")
         public RetourEtudiantDTO createEtudiant(@RequestBody CreationEtudiantDTO dto) {
                 Etudiant etudiant = serviceEtudiant.creerEtudiant(dto);
@@ -244,16 +278,25 @@ public class TestControlleur {
         }
 
         @PostMapping("/etudiant/auth")
-        public RetourAuthentificationDTO getEtudiantByAuth(@RequestBody AuthentificationDTO auth) {
+        public RetourEtudiantDTO getEtudiantByAuth(
+                @RequestBody AuthentificationDTO auth,
+                HttpServletResponse response
+        ) {
                 Etudiant etudiant = serviceEtudiant.getEtudiantByCourrielEtMotDePasse(
                         auth.courriel(),
                         auth.motDePasse()
                 );
 
-                RetourEtudiantDTO retourEtudiantDTO = convertirEtudiantEnRetourDTO(etudiant);
                 String token = serviceToken.creerToken(etudiant);
+                ajouterCookieToken(response, token);
 
-                return new RetourAuthentificationDTO(retourEtudiantDTO, token);
+                return convertirEtudiantEnRetourDTO(etudiant);
+        }
+
+        @PostMapping("/etudiant/logout")
+        public SucessDTO logout(HttpServletResponse response) {
+                supprimerCookieToken(response);
+                return new SucessDTO(true, "Deconnexion reussie");
         }
 
         @GetMapping("/etudiant")

@@ -105,7 +105,6 @@ export default function SignIn() {
         throw new Error("Id etudiant manquant");
       }
 
-      localStorage.setItem("idEtudiant", idEtudiant);
       GotoDashboard(router, idEtudiant);
     } catch (e: any) {
       setErreur(retournerErreur(e, ERREUR_CONNEXION));
@@ -253,7 +252,6 @@ export default function SignIn() {
             </label>
           </div>
         </form>
-        {/* </form>*/}
       </div>
     </div>
   );

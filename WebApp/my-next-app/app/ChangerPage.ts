@@ -1,3 +1,5 @@
+import { API } from "@/Api";
+
 // aller au calendrier d'un groupe
 export function GotoCalendarGroupe(router: any, idEtudiant: string, idGroupe: string) {
     router.push(`/CalendrierGrp/${idEtudiant}/${idGroupe}`)
@@ -15,22 +17,31 @@ export function GotoParametres(router: any, idEtudiant: string) {
 
 // aller aux conversations
 export function GoToConversations(router: any, idEtudiant: string) {
-    router.push(`/Conversations/${idEtudiant}`);
+    router.push(`/Conversations/${idEtudiant}`)
 }
+
 // aller a une conversation
-export function GoToConversation(router: any, idEtudiant: string, idConversation: string,) {
-    router.push(`/Conversations/${idEtudiant}/${idConversation}`);
+export function GoToConversation(router: any, idEtudiant: string, idConversation: string) {
+    router.push(`/Conversations/${idEtudiant}/${idConversation}`)
 }
+
 // aller a la page d'accueil
 export function GotoHomePage(router: any) {
     router.push("/HomePage")
 }
 
+// aller au calendrier
 export function GotoCalendar(router: any, idEtudiant: string) {
-    router.push(`/Calendrier/${idEtudiant}`)
+    router.push(`/calendrier/${idEtudiant}`)
 }
+
 // aller au login
-export function GotoLogin(router: any) {
+export async function GotoLogin(router: any) {
+    try {
+        await API.logout()
+    } catch (e) {
+    }
+
     router.push("/SignIn")
 }
 

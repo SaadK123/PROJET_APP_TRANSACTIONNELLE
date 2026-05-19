@@ -1,26 +1,30 @@
 
-# CreationConversationDTO
+# RetourGroupeDTO
 
 
 ## Properties
 
 Name | Type
 ------------ | -------------
-`chefId` | string
-`nomConversation` | string
-`idConversation` | string
+`id` | string
+`chef` | [RetourEtudiantDTO](RetourEtudiantDTO.md)
+`nomGroupe` | string
+`etudiants` | [Array&lt;RetourEtudiantDTO&gt;](RetourEtudiantDTO.md)
+`retourHoraireDTO` | [RetourHoraireDTO](RetourHoraireDTO.md)
 
 ## Example
 
 ```typescript
-import type { CreationConversationDTO } from ''
+import type { RetourGroupeDTO } from ''
 
 // TODO: Update the object below with actual values
 const example = {
-  "chefId": null,
-  "nomConversation": null,
-  "idConversation": null,
-} satisfies CreationConversationDTO
+  "id": null,
+  "chef": null,
+  "nomGroupe": null,
+  "etudiants": null,
+  "retourHoraireDTO": null,
+} satisfies RetourGroupeDTO
 
 console.log(example)
 
@@ -29,7 +33,7 @@ const exampleJSON: string = JSON.stringify(example)
 console.log(exampleJSON)
 
 // Parse the JSON string back to an object
-const exampleParsed = JSON.parse(exampleJSON) as CreationConversationDTO
+const exampleParsed = JSON.parse(exampleJSON) as RetourGroupeDTO
 console.log(exampleParsed)
 ```
 
