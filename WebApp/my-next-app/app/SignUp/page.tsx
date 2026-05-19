@@ -10,7 +10,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 import { API } from "../../Api";
 
-import { GotoHomePage, GotoLogin, GotoSignUp } from "@/app/ChangerPage";
+import { GotoHomePage, GotoPageLogin, GotoSignUp } from "@/app/ChangerPage";
 
 /**
  * ici je met toute les constante en haut
@@ -182,7 +182,7 @@ export default function SignUpPage() {
       });
 
       setMessage(MESSAGE_COMPTE_CREE);
-      GotoLogin(router);
+      GotoPageLogin(router);
     } catch (e: any) {
       setErreur(retournerErreur(e, ERREUR_CREATION_COMPTE));
     } finally {
@@ -237,7 +237,7 @@ export default function SignUpPage() {
           {/* connexion et inscription */}
           <div className="col-2 p-3 text-center">
             <button
-              onClick={() => GotoLogin(router)}
+              onClick={() => GotoPageLogin(router)}
               className="ps-3 pe-3 mt-3"
               type="button"
             >
@@ -421,7 +421,7 @@ export default function SignUpPage() {
                   <button
                     type="button"
                     className="btn btn-link p-0 align-baseline"
-                    onClick={() => GotoLogin(router)}
+                    onClick={() => GotoPageLogin(router)}
                   >
                     {TEXTE_CONNECTE_TOI}
                   </button>

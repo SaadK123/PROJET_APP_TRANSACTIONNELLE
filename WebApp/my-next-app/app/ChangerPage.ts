@@ -35,7 +35,12 @@ export function GotoCalendar(router: any, idEtudiant: string) {
     router.push(`/calendrier/${idEtudiant}`)
 }
 
-// aller au login
+// aller a la page login sans supprimer le cookie
+export function GotoPageLogin(router: any) {
+    router.push("/SignIn")
+}
+
+// aller au login en supprimant le cookie
 export async function GotoLogin(router: any) {
     try {
         await API.logout()

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { FormEvent, ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
 
@@ -12,7 +12,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import {
   GotoDashboard,
   GotoHomePage,
-  GotoLogin,
+  GotoPageLogin,
   GotoSignUp,
 } from "../ChangerPage";
 
@@ -27,6 +27,7 @@ const ERREUR_CONNEXION = "impossible de se connecter";
 
 /* titres */
 const TITRE_PAGE = "Connecte toi !";
+const TITRE_VERIFICATION_CONNEXION = "Verification de la connexion...";
 
 /* boutons header */
 const BOUTON_PRODUIT = "Produit";
@@ -63,7 +64,31 @@ export default function SignIn() {
   /* state interface */
   const [erreur, setErreur] = useState<string>("");
   const [chargement, setChargement] = useState<boolean>(false);
+  const [verificationConnexion, setVerificationConnexion] = useState<boolean>(true);
   const [voirMotDePasse, setVoirMotDePasse] = useState<boolean>(false);
+
+  /**
+   * ici je verifie si un cookie jwt est deja valide
+   * si oui on envoie directement vers le dashboard
+   */
+  useEffect(() => {
+    async function verifierConnexionExistante() {
+      try {
+        const etudiant = await API.getEtudiantConnecte();
+        const idEtudiant = etudiant.etudiantId;
+
+        if (idEtudiant) {
+          GotoDashboard(router, idEtudiant);
+          return;
+        }
+      } catch (e) {
+      }
+
+      setVerificationConnexion(false);
+    }
+
+    verifierConnexionExistante();
+  }, [router]);
 
   /**
    * ici je gere lenvoie du formulaire
@@ -113,6 +138,14 @@ export default function SignIn() {
     }
   }
 
+  if (verificationConnexion) {
+    return (
+      <div className="container mt-4">
+        <p>{TITRE_VERIFICATION_CONNEXION}</p>
+      </div>
+    );
+  }
+
   return (
     <div>
       <div className="container-fluid">
@@ -160,7 +193,7 @@ export default function SignIn() {
           {/* connexion et inscription */}
           <div className="col-2 p-3 text-center">
             <button
-              onClick={() => GotoLogin(router)}
+              onClick={() => GotoPageLogin(router)}
               className="ps-3 pe-3 mt-3"
               type="button"
             >
