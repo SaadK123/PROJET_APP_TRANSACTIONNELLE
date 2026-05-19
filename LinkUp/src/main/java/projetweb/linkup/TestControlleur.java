@@ -1,6 +1,5 @@
 package projetweb.linkup;
 
-import com.sun.net.httpserver.Authenticator;
 import org.springframework.web.bind.annotation.*;
 import projetweb.linkup.DTO.ACTIONS.*;
 import projetweb.linkup.DTO.TYPES.RequeteInvitationDTO;
@@ -12,7 +11,7 @@ import java.util.*;
 import projetweb.linkup.Services.*;
 import projetweb.linkup.entities.*;
 
-@CrossOrigin(origins = {"http://localhost:3000", "http://127.0.0.1:3000","http://localhost:3001"})
+@CrossOrigin(origins = {"http://localhost:3000", "http://127.0.0.1:3000", "http://localhost:3001"})
 @RestController
 @RequestMapping("/api")
 public class TestControlleur {
@@ -22,17 +21,22 @@ public class TestControlleur {
         private final ServiceHoraire serviceHoraire;
         private final ServiceNotification serviceNotification;
         private final ServiceConversation serviceConversation;
+        private final ServiceToken serviceToken;
+
         public TestControlleur(
                 ServiceEtudiant serviceEtudiant,
                 ServiceGroupe serviceGroupe,
-                ServiceHoraire serviceHoraire, ServiceNotification serviceNotification,
-                ServiceConversation serviceConversation
+                ServiceHoraire serviceHoraire,
+                ServiceNotification serviceNotification,
+                ServiceConversation serviceConversation,
+                ServiceToken serviceToken
         ) {
                 this.serviceEtudiant = serviceEtudiant;
                 this.serviceGroupe = serviceGroupe;
                 this.serviceHoraire = serviceHoraire;
-            this.serviceNotification = serviceNotification;
-            this.serviceConversation = serviceConversation;
+                this.serviceNotification = serviceNotification;
+                this.serviceConversation = serviceConversation;
+                this.serviceToken = serviceToken;
         }
 
         private RetourHoraireDTO convertirHoraireEnRetourDTO(Horaire horaire) {
@@ -227,6 +231,7 @@ public class TestControlleur {
 
                 return retourConversations;
         }
+
         @PostMapping("/etudiants")
         public RetourEtudiantDTO createEtudiant(@RequestBody CreationEtudiantDTO dto) {
                 Etudiant etudiant = serviceEtudiant.creerEtudiant(dto);
@@ -237,14 +242,18 @@ public class TestControlleur {
         public SucessDTO deleteEtudiant(@RequestBody SupprimerEtudiantDTO dto) {
                 return serviceEtudiant.supprimerEtudiant(dto);
         }
+
         @PostMapping("/etudiant/auth")
-        public RetourEtudiantDTO getEtudiantByAuth(@RequestBody AuthentificationDTO auth) {
+        public RetourAuthentificationDTO getEtudiantByAuth(@RequestBody AuthentificationDTO auth) {
                 Etudiant etudiant = serviceEtudiant.getEtudiantByCourrielEtMotDePasse(
                         auth.courriel(),
                         auth.motDePasse()
                 );
 
-                return convertirEtudiantEnRetourDTO(etudiant);
+                RetourEtudiantDTO retourEtudiantDTO = convertirEtudiantEnRetourDTO(etudiant);
+                String token = serviceToken.creerToken(etudiant);
+
+                return new RetourAuthentificationDTO(retourEtudiantDTO, token);
         }
 
         @GetMapping("/etudiant")
@@ -280,11 +289,13 @@ public class TestControlleur {
                 List<Groupe> groupes = serviceGroupe.getToutGroupesDeUser(idEtudiant);
                 return convertirGroupesEnRetourDTO(groupes);
         }
+
         @GetMapping("/groupe")
         public RetourGroupeDTO getGroupById(@RequestParam String idGroupe) {
                 Groupe groupe = serviceGroupe.getGroupeById(idGroupe);
                 return convertirGroupeEnRetourDTO(groupe);
         }
+
         @PostMapping("/groupes/invitations")
         public SucessDTO envoyerInvitationGroupe(@RequestBody RequeteInvitationDTO dto) {
                 return serviceGroupe.envoyerRequeteAEtudiant(dto);
@@ -306,6 +317,7 @@ public class TestControlleur {
                 List<Notification> notifications = serviceNotification.getToutNotificationsDeUser(idEtudiant);
                 return convertirNotificationsEnRetourDTO(notifications);
         }
+
         @PutMapping("/notifications/vue")
         public SucessDTO setNotificationToWasSeen(@RequestParam String idNotification) {
                 return serviceNotification.setToWasSeen(idNotification);
@@ -316,29 +328,22 @@ public class TestControlleur {
                 return serviceNotification.deleteNotification(idNotification);
         }
 
-
-
         @PostMapping("/groupes/ajouter")
-
         public SucessDTO ajouterEtudiantDansGroupe(@RequestBody INVITATION_GROUPE_DTO invitation) {
                 return serviceGroupe.rejoindreGroupe(invitation);
         }
 
-
         @PostMapping("/groupes/virer")
-
         public SucessDTO virerEtudiantDunGroupe(@RequestBody VirerEtudiantDTO virerEtudiantDTO) {
                 return serviceGroupe.virerEtudiant(virerEtudiantDTO);
         }
 
         @PostMapping("/groupes/activites/ajouter")
-
         public SucessDTO ajouterActivite(@RequestBody RequeteActiviteGroupeDTO requeteActiviteGroupeDTO) {
                 return serviceHoraire.trouverActivite(requeteActiviteGroupeDTO);
         }
 
         @PostMapping("/etudiants/activites/ajouter")
-
         public SucessDTO ajouterActivitePourEtudiant(@RequestBody AjouterActiviteDTOEtudiant ajouterActiviteDTOEtudiant) {
                 return serviceHoraire.ajouterActivitePourEtudiant(ajouterActiviteDTOEtudiant);
         }
@@ -388,8 +393,9 @@ public class TestControlleur {
         public SucessDTO virerEtudiantConversation(@RequestBody VirerEtudiantDTO dto) {
                 return serviceConversation.virerEtudiantConversation(dto);
         }
-        @PostMapping("conversation/envoyerMessage")
-        public SucessDTO envoyerMessage(@RequestBody EnvoyerMessageDTO dto){
+
+        @PostMapping("/conversation/envoyerMessage")
+        public SucessDTO envoyerMessage(@RequestBody EnvoyerMessageDTO dto) {
                 return serviceConversation.envoyerMessage(dto);
         }
 
@@ -398,6 +404,4 @@ public class TestControlleur {
                 List<Conversation> conversations = serviceConversation.getConversationsParEtudiant(idEtudiant);
                 return convertirConversationsEnRetourDTO(conversations);
         }
-
-
 }
