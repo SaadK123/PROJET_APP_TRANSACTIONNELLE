@@ -278,7 +278,7 @@ public class TestControlleur {
 
         @DeleteMapping("/etudiants")
         public SucessDTO deleteEtudiant(@RequestBody SupprimerEtudiantDTO dto) {
-                return serviceEtudiant.supprimerEtudiant(dto);
+                return serviceEtudiant.supprimerEtudiant(dto,serviceNotification);
         }
 
         @PostMapping("/etudiant/auth")

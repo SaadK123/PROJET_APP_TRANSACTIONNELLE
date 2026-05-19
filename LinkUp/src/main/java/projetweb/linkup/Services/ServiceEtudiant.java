@@ -116,7 +116,7 @@ public class ServiceEtudiant {
 
 
     @Transactional
-    public SucessDTO supprimerEtudiant(SupprimerEtudiantDTO dto) {
+    public SucessDTO supprimerEtudiant(SupprimerEtudiantDTO dto,ServiceNotification serviceNotification) {
    /* pour supprimer un etudiant il faut supprimer ses dependances qui sont tous ses groupes
    * il faut le retirer de tous les groupes car il faut pas garder de dependances*/
 
@@ -125,6 +125,7 @@ public class ServiceEtudiant {
            entityManager.createQuery("delete Etudiant e where e.id = :id")
                    .setParameter("id",e.getId()).executeUpdate();
 
+           serviceNotification.supprimerToutNotificationsDeEtudiant(e.getId().toString());
            entityManager.flush();
 
 
