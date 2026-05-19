@@ -62,27 +62,55 @@ public class ServiceHoraire {
         LocalDateTime tempsFinMax = activiteGroupeDTO.tempsFin();
         Horaire horaire = getHoraireFromId(activiteGroupeDTO.horaireId());
 
+        LocalDateTime debutJournee = tempsDebut.toLocalDate().atTime(6, 0);
+        LocalDateTime finJournee = tempsDebut.toLocalDate().atTime(23, 0);
+
+        // ici on force la recherche a commencer minimum a 6h du matin
+        if (tempsDebut.isBefore(debutJournee)) {
+            tempsDebut = debutJournee;
+        }
+
+        // ici on force la recherche a finir maximum a 23h
+        if (tempsFinMax.isAfter(finJournee)) {
+            tempsFinMax = finJournee;
+        }
+
+        // si apres correction la plage est impossible alors on trouve rien
+        if (!tempsDebut.isBefore(tempsFinMax)) {
+            return new SucessDTO(false, "aucune activite trouver");
+        }
+
         while (true) {
             ///  on demarre la fin de lactivite au temps du debut couranmment + la duree
             LocalDateTime tempsFinActivite =
                     tempsDebut.plusMinutes(activiteGroupeDTO.dureeEnMinute());
 
-
-            ///  si on depasse sans trouver de un temps alors on quitte
-            if (tempsFinActivite.isAfter(tempsFinMax)) {
-                return new SucessDTO(false,"aucune activite trouver");
+            ///  si on depasse la fin demander ou 23h alors on quitte
+            if (tempsFinActivite.isAfter(tempsFinMax) || tempsFinActivite.isAfter(finJournee)) {
+                return new SucessDTO(false, "aucune activite trouver");
             }
 
             ///  si on est pas overlapper sur lactivite courante alors on la prend et on sors
             if (!estOverlapper(tempsDebut, tempsFinActivite, horaire)) {
-             horaire.getActivites().add(new Activite(activiteGroupeDTO.description(),
-                     tempsDebut,tempsFinActivite,activiteGroupeDTO.titre()));
-             break;
+                horaire.getActivites().add(new Activite(
+                        activiteGroupeDTO.description(),
+                        tempsDebut,
+                        tempsFinActivite,
+                        activiteGroupeDTO.titre()
+                ));
+                break;
             }
-           ///  10 minutes par delai
+
+            ///  10 minutes par delai
             tempsDebut = tempsDebut.plusMinutes(10);
+
+            // si le prochain debut depasse 23h alors on arrete
+            if (!tempsDebut.isBefore(finJournee)) {
+                return new SucessDTO(false, "aucune activite trouver");
+            }
         }
-        return new SucessDTO(true,"une activite a ete trouver");
+
+        return new SucessDTO(true, "une activite a ete trouver");
     }
 
     @Transactional
