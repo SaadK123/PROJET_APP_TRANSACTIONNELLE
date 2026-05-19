@@ -2,8 +2,12 @@ package projetweb.linkup;
 
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import projetweb.linkup.DTO.ACTIONS.*;
 import projetweb.linkup.DTO.TYPES.RequeteInvitationDTO;
 import projetweb.linkup.DTO.TYPES.MiseAJourEtudiantMotDePasse;
@@ -297,6 +301,19 @@ public class TestControlleur {
         public SucessDTO logout(HttpServletResponse response) {
                 supprimerCookieToken(response);
                 return new SucessDTO(true, "Deconnexion reussie");
+        }
+
+        @GetMapping("/etudiant/connecte")
+        public RetourEtudiantDTO getEtudiantConnecte(@AuthenticationPrincipal Jwt jwt) {
+                if (jwt == null) {
+                        throw new ResponseStatusException(
+                                HttpStatus.UNAUTHORIZED,
+                                "Utilisateur non connecte"
+                        );
+                }
+
+                Etudiant etudiant = serviceEtudiant.getEtudiantById(jwt.getSubject());
+                return convertirEtudiantEnRetourDTO(etudiant);
         }
 
         @GetMapping("/etudiant")

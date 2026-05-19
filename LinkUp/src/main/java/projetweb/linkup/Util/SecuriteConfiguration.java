@@ -71,6 +71,7 @@ public class SecuriteConfiguration {
                               "/swagger-ui.html",
                               "/error"
                       ).permitAll()
+                      .requestMatchers("/api/etudiant/connecte").authenticated()
                       .anyRequest().permitAll()
               )
               .oauth2ResourceServer(oauth2 -> oauth2

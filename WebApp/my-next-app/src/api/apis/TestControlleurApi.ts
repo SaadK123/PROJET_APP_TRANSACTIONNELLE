@@ -983,6 +983,41 @@ export class TestControlleurApi extends runtime.BaseAPI {
     }
 
     /**
+     * Creates request options for getEtudiantConnecte without sending the request
+     */
+    async getEtudiantConnecteRequestOpts(): Promise<runtime.RequestOpts> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+
+        let urlPath = `/api/etudiant/connecte`;
+
+        return {
+            path: urlPath,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     */
+    async getEtudiantConnecteRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RetourEtudiantDTO>> {
+        const requestOptions = await this.getEtudiantConnecteRequestOpts();
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => RetourEtudiantDTOFromJSON(jsonValue));
+    }
+
+    /**
+     */
+    async getEtudiantConnecte(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RetourEtudiantDTO> {
+        const response = await this.getEtudiantConnecteRaw(initOverrides);
+        return await response.value();
+    }
+
+    /**
      * Creates request options for getGroupById without sending the request
      */
     async getGroupByIdRequestOpts(requestParameters: GetGroupByIdRequest): Promise<runtime.RequestOpts> {
