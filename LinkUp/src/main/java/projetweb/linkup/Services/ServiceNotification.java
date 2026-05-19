@@ -44,42 +44,21 @@ public class ServiceNotification {
         try {
             Etudiant etudiant = serviceEtudiant.getEtudiantById(idEtudiant);
 
-            // ici on fait une copie parce quon ne peut pas modifier une liste pendant quon la parcourt
             List<Notification> notifications = new ArrayList<>(etudiant.getNotifications());
 
             for (Notification notification : notifications) {
                 etudiant.getNotifications().remove(notification);
 
-                Notification notificationManaged = entityManager.find(
-                        Notification.class,
-                        notification.getId()
-                );
+                Notification notificationManaged = entityManager.find(Notification.class, notification.getId());
 
                 if (notificationManaged != null) {
                     entityManager.remove(notificationManaged);
                 }
             }
 
-            // ici on supprime aussi les invitations envoyees par cet etudiant
-            // car meme si elles ne sont pas dans sa liste de notifications,
-            // elles peuvent encore pointer vers lui avec envoyeur_id
-            List<Invitation> invitationsEnvoyees = entityManager
-                    .createQuery(
-                            "select i from Invitation i where i.envoyeur.id = :id",
-                            Invitation.class
-                    )
-                    .setParameter("id", etudiant.getId())
-                    .getResultList();
-
-            for (Invitation invitation : invitationsEnvoyees) {
-                entityManager.remove(invitation);
-            }
-
             entityManager.flush();
 
             return new SucessDTO(true, "Toutes les notifications ont été supprimées");
-        } catch (LinkUpException e) {
-            throw e;
         } catch (Exception e) {
             throw new LinkUpException(
                     ERREUR_TYPE.ERREUR_INTERNE,
@@ -87,7 +66,6 @@ public class ServiceNotification {
             );
         }
     }
-
     @Transactional
     public SucessDTO setToWasSeen(String idNotification) {
         // permet de mettre une notification a vu pas encore utilise
