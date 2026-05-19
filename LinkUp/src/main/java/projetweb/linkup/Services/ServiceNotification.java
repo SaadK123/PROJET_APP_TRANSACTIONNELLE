@@ -49,10 +49,10 @@ public class ServiceNotification {
             for (Notification notification : notifications) {
                 etudiant.getNotifications().remove(notification);
 
-                Notification notificationManaged = entityManager.find(Notification.class, notification.getId());
+                Notification notificationCourante = entityManager.find(Notification.class, notification.getId());
 
-                if (notificationManaged != null) {
-                    entityManager.remove(notificationManaged);
+                if (notificationCourante != null) {
+                    entityManager.remove(notificationCourante);
                 }
             }
 
