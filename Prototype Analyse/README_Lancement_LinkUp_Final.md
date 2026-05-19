@@ -12,7 +12,7 @@ Le projet peut être lancé de deux façons :
 | Mode  | Branche à utiliser | Description                                     |
 | ----- | ------------------ | ----------------------------------------------- |
 | Cloud | `develop`          | Utilise la version déjà configurée en ligne     |
-| Local | `PROTOTYPE_LOCAL`  | Utilise le backend en local avec Docker Desktop |
+| Local | `LOCAL_PROJET_FINAl`  | Utilise le backend en local avec Docker Desktop |
 
 ---
 
@@ -54,8 +54,8 @@ Utilisez cette version si vous voulez exécuter le projet localement avec votre 
 ### Étapes à suivre
 
 1. Ouvrez le projet.
-2. Placez-vous sur la branche `PROTOTYPE_LOCAL`.
-3. Faites un `git pull` de la branche `PROTOTYPE_LOCAL`.
+2. Placez-vous sur la branche `LOCAL_PROJET_FINAL`.
+3. Faites un `git pull` de la branche `LOCAL_PROJET_FINAL`.
 4. Ouvrez le projet dans VS Code.
 5. Assurez-vous que **Docker Desktop est ouvert**.
 
@@ -102,7 +102,7 @@ npm run dev
 ### Mode local
 
 ```bash
-git checkout PROTOTYPE_LOCAL
+git checkout LOCAL_PROJET_FINAL
 git pull
 .\start-local.bat
 npm install
@@ -125,7 +125,7 @@ npm run dev
 
 1. Ouvrir Docker Desktop
 2. Ouvrir le projet dans VS Code
-3. Se placer sur la branche `PROTOTYPE_LOCAL`
+3. Se placer sur la branche `LOCAL_PROJET_FINAL`
 4. Faire le `git pull`
 5. Lancer `start-local.bat`
 6. Ouvrir le frontend
