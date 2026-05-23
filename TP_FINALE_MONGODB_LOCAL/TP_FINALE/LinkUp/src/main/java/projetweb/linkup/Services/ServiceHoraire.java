@@ -1,0 +1,150 @@
+package projetweb.linkup.Services;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
+import org.springframework.stereotype.Service;
+import projetweb.linkup.DTO.ACTIONS.AjouterActiviteDTOEtudiant;
+import projetweb.linkup.DTO.ACTIONS.RequeteActiviteGroupeDTO;
+import projetweb.linkup.DTO.ACTIONS.SucessDTO;
+import projetweb.linkup.Enumerations.ERREUR_TYPE;
+import projetweb.linkup.Exceptions.LinkUpException;
+import projetweb.linkup.entities.Activite;
+import projetweb.linkup.entities.Etudiant;
+import projetweb.linkup.entities.Horaire;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.UUID;
+
+@Service
+public class ServiceHoraire {
+
+
+    private final ServiceEtudiant serviceEtudiant;
+    ServiceGroupe serviceGroupe;
+    @PersistenceContext
+    EntityManager entityManager;
+    public ServiceHoraire(ServiceGroupe serviceGroupe, ServiceEtudiant serviceEtudiant) {
+     this.serviceGroupe = serviceGroupe;
+        this.serviceEtudiant = serviceEtudiant;
+    }
+
+   // recupere un horaire avec son id
+    public Horaire getHoraireFromId(String id) {
+        try {
+         UUID uuid = UUID.fromString(id);
+          return  entityManager
+                  .createQuery("select h from Horaire  h where id = :id", Horaire.class)
+                  .setParameter("id",uuid).getSingleResult();
+
+        } catch (Exception e) {
+          throw new LinkUpException(ERREUR_TYPE.NON_EXISTANT,"cet horaire n'existe pas");  // todo
+        }
+    }
+    // verifie si un temps trouver est overlapper par une autre activite
+    @Transactional
+    public boolean estOverlapper(LocalDateTime debut,LocalDateTime fin,Horaire horaire) {
+        ///  ici on verifie si le debut est avant la fin et si la fin est apres le debut
+        for(var activiteCourant : horaire.getActivites()) {
+            if(debut.isBefore(activiteCourant.getTempsFin()) &&
+                    fin.isAfter(activiteCourant.getTempsDebut())) {
+            return true; /// on retourne vrai c'est overlapper
+            }
+        }
+        return false; /// on retourne faux
+    }
+
+    // permet de envoyer une requete et de demander de rechercher une activite
+    @Transactional
+    public SucessDTO trouverActivite(RequeteActiviteGroupeDTO activiteGroupeDTO) {
+        LocalDateTime tempsDebut = activiteGroupeDTO.tempsDebut();
+        LocalDateTime tempsFinMax = activiteGroupeDTO.tempsFin();
+        Horaire horaire = getHoraireFromId(activiteGroupeDTO.horaireId());
+
+        LocalDateTime debutJournee = tempsDebut.toLocalDate().atTime(6, 0);
+        LocalDateTime finJournee = tempsDebut.toLocalDate().atTime(23, 0);
+
+        // ici on force la recherche a commencer minimum a 6h du matin
+        if (tempsDebut.isBefore(debutJournee)) {
+            tempsDebut = debutJournee;
+        }
+
+        // ici on force la recherche a finir maximum a 23h
+        if (tempsFinMax.isAfter(finJournee)) {
+            tempsFinMax = finJournee;
+        }
+
+        // si apres correction la plage est impossible alors on trouve rien
+        if (!tempsDebut.isBefore(tempsFinMax)) {
+            return new SucessDTO(false, "aucune activite trouver");
+        }
+
+        while (true) {
+            ///  on demarre la fin de lactivite au temps du debut couranmment + la duree
+            LocalDateTime tempsFinActivite =
+                    tempsDebut.plusMinutes(activiteGroupeDTO.dureeEnMinute());
+
+            ///  si on depasse la fin demander ou 23h alors on quitte
+            if (tempsFinActivite.isAfter(tempsFinMax) || tempsFinActivite.isAfter(finJournee)) {
+                return new SucessDTO(false, "aucune activite trouver");
+            }
+
+            ///  si on est pas overlapper sur lactivite courante alors on la prend et on sors
+            if (!estOverlapper(tempsDebut, tempsFinActivite, horaire)) {
+                horaire.getActivites().add(new Activite(
+                        activiteGroupeDTO.description(),
+                        tempsDebut,
+                        tempsFinActivite,
+                        activiteGroupeDTO.titre()
+                ));
+                break;
+            }
+
+            ///  10 minutes par delai
+            tempsDebut = tempsDebut.plusMinutes(10);
+
+            // si le prochain debut depasse 23h alors on arrete
+            if (!tempsDebut.isBefore(finJournee)) {
+                return new SucessDTO(false, "aucune activite trouver");
+            }
+        }
+
+        return new SucessDTO(true, "une activite a ete trouver");
+    }
+
+    @Transactional
+    public SucessDTO ajouterActivitePourEtudiant(AjouterActiviteDTOEtudiant ajouter) {
+        Etudiant etudiant = serviceEtudiant.getEtudiantById(ajouter.etudiantId());
+
+      // si lactivite est overlapper alors on va retourner une exception
+        if (estOverlapper(
+                ajouter.activite().getTempsDebut(),
+                ajouter.activite().getTempsFin(),
+                etudiant.getHoraire())) {
+            throw new LinkUpException(
+                    ERREUR_TYPE.ERREUR_INTERNE,
+                    "Lactivite est en collision avec une autre"
+            );
+        }
+         // sinon on ajoute lactivite
+        etudiant.getHoraire().getActivites().add(ajouter.activite());
+
+        return new SucessDTO(true, "sa marche");
+    }
+
+
+    @Transactional public SucessDTO supprimerActivite(String activiteId) {
+        try {
+            // ici on peut supprimer une activite avec son id
+            entityManager.createQuery("delete from Activite e  where e.id = :id")
+                    .setParameter("id",UUID.fromString(activiteId)).executeUpdate();
+            return new SucessDTO(true,"lactivite a ete ajouter");
+        }catch (Exception e) {
+            throw new LinkUpException(ERREUR_TYPE.ERREUR_INTERNE,"impossible dajouter une activite");
+        }
+
+    }
+
+
+}

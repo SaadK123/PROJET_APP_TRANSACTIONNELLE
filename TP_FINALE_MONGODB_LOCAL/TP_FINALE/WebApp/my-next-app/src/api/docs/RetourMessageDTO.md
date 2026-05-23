@@ -1,0 +1,40 @@
+
+# RetourMessageDTO
+
+
+## Properties
+
+Name | Type
+------------ | -------------
+`id` | string
+`envoyeurId` | string
+`contenu` | string
+`tempsEnvoi` | string
+
+## Example
+
+```typescript
+import type { RetourMessageDTO } from ''
+
+// TODO: Update the object below with actual values
+const example = {
+  "id": null,
+  "envoyeurId": null,
+  "contenu": null,
+  "tempsEnvoi": null,
+} satisfies RetourMessageDTO
+
+console.log(example)
+
+// Convert the instance to a JSON string
+const exampleJSON: string = JSON.stringify(example)
+console.log(exampleJSON)
+
+// Parse the JSON string back to an object
+const exampleParsed = JSON.parse(exampleJSON) as RetourMessageDTO
+console.log(exampleParsed)
+```
+
+[[Back to top]](#) [[Back to API list]](../README.md#api-endpoints) [[Back to Model list]](../README.md#models) [[Back to README]](../README.md)
+
+
