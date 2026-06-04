@@ -4,15 +4,13 @@ import { useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 
-import { creerEtudiant } from "@/app/FetchsMethodesEtudiants";
 import { verifierEmail, verifierMotDePasse } from "@/app/VerificationEmail";
 import { retournerErreur } from "@/app/attraperErreur";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
-import {
-  GotoHomePage,
-  GotoLogin,
-  GotoSignUp,
-} from "@/app/ChangerPage";
+import { API } from "../../Api";
+
+import { GotoHomePage, GotoLogin, GotoSignUp } from "@/app/ChangerPage";
 
 /**
  * ici je met toute les constante en haut
@@ -21,17 +19,16 @@ import {
  */
 
 /* erreurs */
-const ERREUR_CREATION_COMPTE = "impossible de creer le compte";
+const ERREUR_CREATION_COMPTE = "Impossible de creer le compte";
 const ERREUR_NOM_UTILISATEUR_OBLIGATOIRE =
-  "le nom d utilisateur est obligatoire";
-const ERREUR_NOM_OBLIGATOIRE = "le nom est obligatoire";
-const ERREUR_PRENOM_OBLIGATOIRE = "le prenom est obligatoire";
-const ERREUR_ECOLE_OBLIGATOIRE = "l ecole est obligatoire";
-const ERREUR_CONDITIONS_OBLIGATOIRES =
-  "accepter les conditions d utilisation";
+  "Le nom d'utilisateur est obligatoire";
+const ERREUR_NOM_OBLIGATOIRE = "Le nom est obligatoire";
+const ERREUR_PRENOM_OBLIGATOIRE = "Le prénom est obligatoire";
+const ERREUR_ECOLE_OBLIGATOIRE = " L'école est obligatoire";
+const ERREUR_CONDITIONS_OBLIGATOIRES = "Accepter les conditions d'utilisation";
 
 /* succes */
-const MESSAGE_COMPTE_CREE = "compte cree avec succes";
+const MESSAGE_COMPTE_CREE = "Compte crée avec succes";
 
 /* titres */
 const TITRE_PAGE = "Creer un compte";
@@ -46,9 +43,9 @@ const BOUTON_CONNEXION = "Connection";
 const BOUTON_INSCRIPTION = "Inscription";
 
 /* formulaire */
-const LABEL_NOM_UTILISATEUR = "Nom d utilisateur";
+const LABEL_NOM_UTILISATEUR = "Nom d'utilisateur";
 const LABEL_NOM = "Nom";
-const LABEL_PRENOM = "Prenom";
+const LABEL_PRENOM = "Prénom";
 const LABEL_ECOLE = "Universite Cegep";
 const LABEL_EMAIL = "Email etudiant";
 const LABEL_MOT_DE_PASSE = "Mot de passe";
@@ -56,8 +53,8 @@ const LABEL_MOT_DE_PASSE = "Mot de passe";
 const TEXTE_REGLES_MOT_DE_PASSE =
   "Le mot de passe doit contenir au moins 8 caracteres, une majuscule, un chiffre et un caractere special.";
 
-const TEXTE_CONDITIONS_1 = "J accepte les";
-const TEXTE_CONDITIONS_2 = "conditions d utilisation";
+const TEXTE_CONDITIONS_1 = "J'accepte les";
+const TEXTE_CONDITIONS_2 = "conditions d'utilisation";
 const TEXTE_CONDITIONS_3 = "et la";
 const TEXTE_CONDITIONS_4 = "politique de confidentialite";
 
@@ -65,8 +62,8 @@ const TEXTE_DEJA_COMPTE = "Tu as deja un compte ?";
 const TEXTE_CONNECTE_TOI = "Connecte-toi";
 
 /* boutons formulaire */
-const BOUTON_VOIR = "Voir";
-const BOUTON_CACHER = "Cacher";
+const BOUTON_VOIR = <FaEye />;
+const BOUTON_CACHER = <FaEyeSlash />;
 const BOUTON_CREER_COMPTE = "Creer mon compte";
 const BOUTON_CREATION_EN_COURS = "Creation...";
 
@@ -104,7 +101,7 @@ const ECOLES: string[] = [
   "Universite du Quebec a Chicoutimi (UQAC)",
 ];
 
-export default function SignUpTestPage() {
+export default function SignUpPage() {
   const router = useRouter();
 
   /* state des champs */
@@ -173,14 +170,16 @@ export default function SignUpTestPage() {
     try {
       setChargement(true);
 
-      await creerEtudiant(
-        firstName.trim(),
-        name.trim(),
-        username.trim(),
-        uni.trim(),
-        password,
-        email.trim()
-      );
+      await API.createEtudiant({
+        creationEtudiantDTO: {
+          prenom: firstName.trim(),
+          nom: name.trim(),
+          nomUtilisateur: username.trim(),
+          ecole: uni.trim(),
+          motDePasse: password,
+          courriel: email.trim(),
+        },
+      });
 
       setMessage(MESSAGE_COMPTE_CREE);
       GotoLogin(router);
@@ -368,7 +367,7 @@ export default function SignUpTestPage() {
 
                 <button
                   type="button"
-                  className="btn btn-outline-secondary"
+                  className="btn"
                   onClick={() => setVoirMotDePasse(!voirMotDePasse)}
                 >
                   {voirMotDePasse ? BOUTON_CACHER : BOUTON_VOIR}
